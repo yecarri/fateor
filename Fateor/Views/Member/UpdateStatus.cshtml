@@ -1,0 +1,93 @@
+﻿@model Fateor.Models.UpdateStatusViewModel
+@{
+    ViewBag.Title = "Actualizar Estatus";
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.MemberId)
+    <div class="container py-2">
+
+        <div class="card">
+            <div class="card-header">
+                @Html.HiddenFor(m => Model.GivenName) @Html.HiddenFor(m => Model.Surname)
+                <h3>@Html.DisplayFor(m => Model.GivenName) @Html.DisplayFor(m => Model.Surname)</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group col-md-4">
+                        <label>Sección</label>
+                        <div>
+                            @Html.DropDownListFor(model => model.UnitId,
+                        new SelectList(Model.Units, "UnitId", "UnitName"),
+                        new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.UnitId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Estatus</label>
+                        <div>
+                            @Html.DropDownListFor(model => model.StatusId,
+                        new SelectList(Model.Statuses, "StatusId", "StatusDescription"),
+                        new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.StatusId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="@Html.NameFor(m=>m.StatusDate)" class="control-label">Fecha del Estatus</label>
+                        @Html.TextBoxFor(model => model.StatusDate, "{0:yyyy-MM-dd}",
+                    new
+                    {
+                    @type = "date",
+                    @class = "form-control"
+                    })
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-lg-9 offset-lg-1">
+                        <h5>Historial</h5>
+                        <table id="status" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Sección</th>
+                                    <th>Estatus</th>
+                                    <th>Actualizado por</th>
+                                    <th>Fecha de Actualización</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.MemberStatuses != null)
+                                {
+                                    for (int i = 0; i < Model.MemberStatuses.Count; i++)
+                                    {
+                                        @Html.EditorFor(m => Model.MemberStatuses[i])
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="offset-md-10"></div>
+                    <div class="col-md-2">
+                        <input type="button" class="btn btn-secondary" value="Volver" onclick="document.location.href='@Url.Content("~/Member")/@Model.MemberId';" />
+                        <input type="submit" class="btn btn-primary" value="Actualizar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (Model.Messages?.Count > 0)
+        {
+            <div class="card bg-warning mt-2">
+                <div class="container text-center">
+                    <partial name="_Error" model="Model.Messages" />
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,7 @@
+﻿@model Fateor.Models.ResponseViewModel
+<tr onclick="document.location.href = '@(Url.Content("~/Response")+"/"+Model.ResponseId.ToString())'">
+    <td>@Html.DisplayFor(m => m.ResponseId)</td>
+    <td>@Html.DisplayFor(m => m.Questionnaire)</td>
+    <td>@Html.DisplayFor(m => m.LastModificationDate)</td>
+</tr>
+

@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fateor - @ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", false)
+</head>
+<body>
+    <header>
+        <div class="row">
+            <div class="col-sm-12 offset-md-1 col-md-4 offset-lg-2">
+                <img src="~/img/logo-rect.png" style="margin:0; padding:0; max-height:120px;" />
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <h3 class="mt-lg-3">Registro de Miembros del Movimiento Libertario de Venezuela</h3>
+            </div>
+       </div>
+    </header>
+    <partial name="_Nav"/>
+    <main>
+        @RenderBody()
+    </main>
+    <footer>
+        <div class="py-3" style="color:rgb(248,249,250)">Copyright &copy; 2019-@DateTime.Today.Year oSoft Ingeniería de Software SL</div>
+    </footer>
+</body>
+</html>

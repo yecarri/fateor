@@ -1,0 +1,76 @@
+﻿@model Fateor.Models.UnitListViewModel
+@{
+    ViewBag.Title = "Lista de Secciones";
+    Layout = "~/Views/Shared/_Internal.cshtml";
+}
+@section Scripts
+    {
+    <link href='@Url.Content("~/Scripts/DataTables/datatables.min.css")' rel="stylesheet" />
+    <script type="text/javascript" src='@Url.Content("~/lib/DataTables/datatables.min.js")'></script>
+    <script type="text/javascript">
+        $(document).ready(
+            function () {
+                var table = $("#unitTable")
+                    .DataTable(
+                        {
+                            language: {
+                                url: '@Url.Content("~/lib/DataTables/languages/Spanish.json")'
+                            }
+                        });
+
+                $("#unitTable").on('click', 'tr', function () {
+                    var data = table.row(this).data();
+                    document.location.href = '@Url.Content("~/Unit")/' + data[0];
+                });
+            });
+    </script>
+}
+    <div class="container py-2">
+        <div class="card">
+            <div class="card-header"><h3>Listado de Secciones</h3></div>
+            <div class="card-body">
+                <table class="table hover" id="unitTable">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>
+                                Sección
+                            </th>
+                            <th>
+                                Pertenece a
+                            </th>
+                            <th>
+                                Coordinador
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    @foreach (var item in Model.Units)
+                    {
+                        var parent = Model.Units.FirstOrDefault(p => p.UnitId == item.ParentUnitId);
+                        var coordinator = Model.Coordinators.FirstOrDefault(m => m.MemberId == item.CoordinatorId);
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UnitId)
+                            </td>
+                            <td>
+                                @Html.HiddenFor(modelItem => item.UnitName)
+                                @Html.DisplayFor(modelItem => item.UnitName)
+                            </td>
+                            <td>
+                                @Html.HiddenFor(modelItem => item.ParentUnitId)
+                                @Html.DisplayFor(p => parent.UnitName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(p => coordinator.FullName)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

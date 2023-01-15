@@ -1,0 +1,27 @@
+﻿@model Fateor.Application.Organization.Entities.MemberStatus
+<tr>
+    <td>
+        @Model.StatusDate.ToString("dd/MM/yyyy")
+        @Html.HiddenFor(m => Model.StatusDate)
+    </td>
+    <td>
+        @Html.DisplayFor(m => Model.UnitName)
+        @Html.HiddenFor(m => Model.UnitId)
+        @Html.HiddenFor(m => Model.UnitName)
+    </td>
+    <td>
+        @Html.DisplayFor(m => Model.StatusDescription)
+        @Html.HiddenFor(m => Model.StatusDescription)
+        @Html.HiddenFor(m => Model.StatusId)
+        @Html.HiddenFor(m => Model.IsActiveMember)
+    </td>
+    <td>
+        @Html.DisplayFor(m => Model.LastModificationUser)
+        @Html.HiddenFor(m => Model.LastModificationUser)
+        @Html.HiddenFor(m => Model.LastModificationUserId)
+    </td>
+    <td>
+        @Model.LastModificationDate.ToString("yyyy-MM-dd HH:mm:ss")
+        @Html.HiddenFor(m => Model.LastModificationDate)
+    </td>
+</tr>

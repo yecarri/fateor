@@ -1,0 +1,93 @@
+﻿@model Fateor.Models.GetResponseTokenViewModel
+@{
+    ViewBag.Title = "GetToken";
+    Layout = "~/Views/Shared/_Internal.cshtml";
+}
+@section Scripts
+    {
+    <link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+    <script type="text/javascript" src="~/lib/jquery-ui/jquery-ui.js"></script>    
+    <script type="text/javascript">
+        function submitForm(command) {
+            $("#@Html.IdFor(m=>m.Command)").val(command);
+            document.forms[0].submit();
+        }
+
+        $(document).ready(function () {
+            $("#@Html.IdFor(m=>m.Member)").autocomplete(
+                {
+                    minLength: 1,
+                    source: function (request, response) {
+                        $.ajax({
+                            url: '@Url.Content("~/api/member/search/")' + request.term,
+                            type: "GET",
+                            datyaType: "json",
+                            success: function (data) { response(data); }
+                        })
+                    },
+                    focus: function (event, ui) {
+                        $("#@Html.IdFor(m=>m.Member)").val(ui.item.label);
+                        return false;
+                    },
+                    select: function (event, ui) {
+                        $("#@Html.IdFor(m=>m.Member)").val(ui.item.label);
+                        $("#@Html.IdFor(m=>m.MemberId)").val(ui.item.key);
+                        //$("#form")[0].submit('send','');
+                        return false;
+                    },
+                    change: function (event, ui) {
+                        if (ui.item == null) {
+                            event.currentTarget.value = '';
+                            event.currentTarget.focus();
+                        }
+                    }
+                })
+                .autocomplete("instance")._renderItem = function (ul, item) {
+                    return $("<li>")
+                        .append(item.label)
+                        .appendTo(ul);
+                };
+        });
+    </script>
+}
+    <div class="py-2 m-auto container">
+        <div class="card">
+        @using (Html.BeginForm("gettoken", "response", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Command)
+            <div class="card-header"><h3>Obtener Token para Cuestionario</h3></div>
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col">
+                        @Html.LabelFor(m => m.QuestionnaireId, new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.QuestionnaireId,
+                    new SelectList(Model.Questionnaires, "QuestionnaireId", "QuestionnaireName"),
+                    new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.QuestionnaireId)
+                    </div>
+                    <div class="col">
+                        @Html.LabelFor(m => m.MemberId, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Member, new { @class = "form-control" })
+                        @Html.HiddenFor(m => m.MemberId)
+                        @Html.ValidationMessageFor(m => m.MemberId)
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        @Html.DisplayFor(m => m.Token, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <input type="submit" class="btn btn-primary" value="Request" />
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                &nbsp;
+            </div>
+        }
+    </div>
+</div>

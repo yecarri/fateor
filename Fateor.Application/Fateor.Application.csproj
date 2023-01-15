@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Bulletin\Services\IBulletinRepositoryBuilder.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="12.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+		<PackageReference Include="MigraDocCore.Rendering" Version="1.3.41" />
+		<PackageReference Include="MySql.Data" Version="8.0.31" />
+		<PackageReference Include="oSoft.Data" Version="1.2.0" />
+		<PackageReference Include="oSoft.Data.MySql" Version="1.2.0" />
+		<PackageReference Include="oSoft.Mail" Version="1.0.1" />
+		<PackageReference Include="PdfSharpCore" Version="1.3.41" />
+		<PackageReference Include="QRCoder" Version="1.4.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Fateor.Infrastructure\Fateor.Infrastructure.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>Fateor</_Parameter1>
+			<!-- The name of the project that you want the Internal class to be visible To it -->
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Credentials\Services\MLVCredential.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>MLVCredential.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Credentials\Services\MLVCredential.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>MLVCredential.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Credentials\Resources\GEOSANSLIGHT-OBLIQUE.TTF">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Credentials\Resources\GEOSANSLIGHT.TTF">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+</Project>

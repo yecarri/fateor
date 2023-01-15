@@ -1,0 +1,293 @@
+﻿@model Fateor.Models.RegistrationViewModel
+@{
+    ViewBag.Title = "Editar Miembro";
+    Layout = "~/Views/Shared/_External.cshtml";
+}
+@section Scripts
+{
+    <script src="~/js/regions.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () { onAlreadyInIntranetChanged(); });
+
+        function beforeSubmit() {
+            enableCheckboxes();
+            alreadyInIntranet();
+            return true;
+        }
+
+        function onCountryChanged() {
+            var url = '@Url.Content("~/api/country")';
+            setRegions(url, '#@Html.IdFor(m=> Model.CountryId)', '#@Html.IdFor(m=> Model.RegionId)');
+        }
+
+        function enableCheckboxes() {
+            $('input').removeAttr('disabled');
+            return true;
+        }
+
+        function onAlreadyInIntranetChanged() {
+            var inIntranet = $("#@Html.IdFor(m=>m.AlreadyInIntranet)")[0].checked;
+            if (inIntranet) {
+                $("#@Html.IdFor(m=>m.Password2)").parent().attr("hidden", "hidden");
+                $("#retrieve").removeAttr("hidden");
+            }
+            else {
+                $("#@Html.IdFor(m=>m.Password2)").parent().removeAttr("hidden");
+                $("#retrieve").attr("hidden", "hidden");
+            }
+        }
+
+        function alreadyInIntranet() {
+            var inIntranet = $("#@Html.IdFor(m=>m.AlreadyInIntranet)")[0].checked;
+            if (inIntranet) {
+                $("#@Html.IdFor(m=>m.Password2)").val($("#@Html.IdFor(m=>m.Password)").val());
+            }
+        }
+
+    </script>
+    <style>
+        .bold {
+            font-weight: 700;
+        }
+
+        .notice {
+            border-radius: 5px;
+            border: 1px solid #404040;
+            background-color: #f7f0c9;
+        }
+    </style>
+}
+<div class="container py-2">
+    @using (Html.BeginForm("Registration", "Member", FormMethod.Post, new { @id = "registrationForm", @onsubmit = "return beforeSubmit();" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Command);
+        @Html.HiddenFor(m => m.MemberId)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div id="intro" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <p>
+                            El movimiento Libertario de Venezuela es una Organización sin Fines de Lucro que se dedica
+                            a la promoción y difusión del Libertarismo en Venezuela y entre los venezolanos alrededor
+                            del mundo.
+                        </p>
+                        <p>Nuestros valores son:</p>
+                        <ul>
+                            <li>
+                                <span class="bold">Libertad Individual:</span> cada persona tiene el derecho a desarrollar su vida sin más
+                                limitación que el derecho de los demás. Nadie tiene derecho a imponerse sobre otros, ni por
+                                acción ni por coacción.
+                            </li>
+                            <li>
+                                <span class="bold">Propiedad Privada:</span> toda persona es dueña de cuerpo, del resultado de su trabajo y
+                                su creatividad; y sobre los recursos que ocupe sin perjudicar los derechos de otros.
+                            </li>
+                            <li>
+                                <span class="bold">Voluntarismo:</span> Las personas están obligadas moralmente a cumplir los pactos y
+                                contratos que acuerde libremente, pero no están obligados a cumplir lo que no han acordado
+                                libremente.
+                            <li>
+                                <span class="bold">Igualdad Moral:</span> Todas las personas son iguales ante la ley. Los valores morales
+                                de una persona son tan válidos como los de cualquier otro (excepto si esos valores contravienen
+                                estos principios)
+                            <li>
+                                <span class="bold">Responsabilidad:</span> Cada persona es responsable de sus actos y de las consecuencias de sus
+                                consecuencias y eso las obliga a resarcir los daños que causados a otras personas por su acción
+                                o por su negligencia.
+                            </li>
+                            <li>
+                                <span class="bold">Individualismo Político:</span> El individuo es soberano y tiene derechos frente a otros individuos
+                                y frente a los Estados, incluso antes de que exista una ley escrita que los ampare
+                            </li>
+                            <li>
+                                <span class="bold">No agresión:</span> Nadie tiene derecho a iniciar la violencia contra otros, sin embargo, todos
+                                tenemos el derecho a responder con violencia proporcional cuando somos víctimas de una agresión
+                            </li>
+                        </ul>
+                        <p>
+                            Antes de registrarte en el movimiento, queremos que conozcas los deberes y derechos
+                            de los miembros:
+                        </p>
+                        <p>Como miembro adherente, tienes derecho a:</p>
+                        <ul>
+                            <li>Participar en las actividades propias del Movimiento</li>
+                            <li>Participar en las asambleas</li>
+                            <li>Ser informado sobre la gestión del movimiento</li>
+                        </ul>
+                        <p>
+                            Nuestra organización tiene varias categorías de miembros:
+                        </p>
+                        <ul>
+                            <li>
+                                <span class="bold">Miembros Activistas:</span> Pueden elegir y ser ser electos para la Junta Directiva,
+                                el Consejo Académico y otros cargos de elección. Tiene voz y voto en las asambleas.
+                            </li>
+                            <li>
+                                <span class="bold">Miembros Simpatizantes:</span> Pueden participar en las actividades y en las Asambleas
+                                pero no tienen derecho a votar.
+                            </li>
+
+                            <li>
+                                <span class="bold">Miembros Benefactores:</span> Apoyan al Movimiento materialmente o en las actividades sin
+                                los deberes y derechos inherentes a los otros tipos de miembros.
+                            </li>
+                        </ul>
+                        <p>Los deberes de los miembros son:</p>
+                        <ul>
+                            <li>Cumplir y hacer complir los estatutos, reglamentos y decisiones de la Asamblea</li>
+                            <li>Asistir y participar en las asambleas, comisiones y actividades del movimiento</li>
+                            <li>Desempeñar las funciones para las cuales resulen electos o sean desigandos</li>
+                        </ul>
+                        <div class="text-center mb-2">
+                            <input type="button" data-bs-dismiss="modal" data-bs-target="#intro" value="No Acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedMembershipConditions)').attr('checked', false);"/>
+                            <input type="button" data-bs-dismiss="modal" data-bs-target="#intro" value="Acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedMembershipConditions)').attr('checked', true);" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="gdpr" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <h5>Política de Privacidad de Datos</h5>
+                        <h6>Responsable del Cuidado de tus Datos</h6>
+                        <p>
+                            Los datos recogidos en esta página web y los que publiques en la intranet y los foros de discusión son custodiados por la asociación
+                            civil Movimiento Libertario de Venezuela y se encuentran almacenados en servidores que están bajo la jurisdicción norteamericana y/o europea.
+                        </p>
+                        <h6>Consentimiento para el uso de tus datos</h6>
+                        <p>
+                            Los datos serán usados exclusivamente para los fines propios de nuestra organización, como por ejemplo: el registro de miembros, convocatoria
+                            a Asambleas y actividades, comunicaciones internas, discusiones y debates, etc. <span class="bold">Tus datos nunca serán cedidos a terceros</span>
+                            fuera de la organización, pero podrían ser accesads por los coordinadores y otras personas que ejercen cargos para el cumplimiento de sus funciones.
+                        </p>
+                        <h6>Ejercicio de tus derechos ARCO</h6>
+                        <p>
+                            Puedes ejercer tus derechos de acceso, rectificación, cancelación y oposición al uso de tus datos contactándonos
+                            mediante el @Html.ActionLink("Formulario de Solicitud RGPD", "rpgd", "member").
+                        </p>
+                        <h6>Datos del Usuario</h6>
+                        <p>
+                            Al aceptar la política de protección de datos te comprometes a garantizar que los datos son verdaderos, exactos, completos y actualizados,
+                            siendo responsable de cualquier daño o perjuicio, directo o indirecto, que pudiera ocasionarse como consecuencia del incumplimiento de tal obligación.
+                        </p>
+                        <h6>Cookies</h6>
+                        <p>
+                            Las Cookies son archivos que contienen pequeñas cantidades de información que se descargan en el dispositivo del Usuario cuando visita una página web.
+                            Sólo usamos las cookies estrictamente necesarias para el funcionamiento de la intranet, los foros de discusión, el sistema de registro de miembros
+                            y el sistema de votación. No usamos cookies para el análisis de datos comerciales o de visitas ni otras finalidades.
+                        </p>
+                        <h6>Aceptación</h6>
+                        <p>
+                            Al aceptar, reconoces que has leído y comprendes la política de privacidad que te estamos presentando en todos sus aspectos y que esto constituye un
+                            acuerdo entre el Movimiento Libertario de Venezuela y tu persona con respecto al uso de tus datos.
+                        </p>
+                    </div>
+                    <div class="text-center mb-2">
+                        <input type="button" data-bs-dismiss="modal" data-bs-target="#gdpr" value="No Acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedGDPR)').attr('checked', false);" />
+                        <input type="button" data-bs-dismiss="modal" data-bs-target="#gdpr" value="Acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedGDPR)').attr('checked', true);" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3>Bienvenido al MLV</h3>
+            </div>
+            <div class="card-body">
+                @if (Model.CreateExternalUser)
+                {
+                    <div class="form-row">
+                        <div class="col">
+                            <h5>Usuario y Contraseña</h5>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.Login, htmlAttributes: new { @class = "control-label" })
+                            @Html.TextBoxFor(model => model.Login, new { @class = "form-control", @autocomplete = "none" })
+                            @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group col-md-4" style="margin-top: 2.25rem;">
+                            <div class="form-check">
+                                @Html.CheckBoxFor(model => model.AlreadyInIntranet, new { @class = "form-check-input", @onclick = "onAlreadyInIntranetChanged();" })
+                                @Html.LabelFor(model => model.AlreadyInIntranet, htmlAttributes: new { @class = "form-check-label" })
+                                @Html.ValidationMessageFor(model => model.AlreadyInIntranet, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
+                            @Html.PasswordFor(model => model.Password, new { @class = "form-control", @autocomplete = "none" })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group col-md-4">
+                            @Html.LabelFor(model => model.Password2, htmlAttributes: new { @class = "control-label" })
+                            @Html.PasswordFor(model => model.Password2, new { @class = "form-control", @autocomplete = "none" })
+                            @Html.ValidationMessageFor(model => model.Password2, "", new { @class = "text-danger" })
+                        </div>
+                        <div id="retrieve" class="form-group col-md-4" style="margin-top: 2rem;">
+                            <input type="button" class="btn btn-secondary" value="Recuperar datos de la Intranet" />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    @Html.CheckBoxFor(model => model.AlreadyInIntranet, new { @class = "form-check-input", @onclick = "onAlreadyInIntranetChanged();", style = "display:none;" })
+                    @Html.HiddenFor(model => model.Login)
+                    @Html.HiddenFor(model => model.Password)
+                    @Html.HiddenFor(model => model.Password2)
+                }
+                <partial name = "member" model="Model" />
+                <div class="row mt-1 mb-2">
+                    <div class="col">
+                        Al completar el proceso de registro, te enviaremos un correo electrónico y te presentaremos una encuesta para conocer tu opinión sobre 20 temas políticos.
+                        Te agradecemos mucho tu participación.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-check form-check-inline">
+                            @Html.CheckBoxFor(model => model.AcceptedMembershipConditions, new { @class = "form-check-input", @disabled = "disabled" })
+                            @Html.LabelFor(model => model.AcceptedMembershipConditions, "Acepto cumplir los estatutos y reglamentos del MLV", htmlAttributes: new { @class = "form-check-label" })
+                            @Html.ValidationMessageFor(model => model.AcceptedMembershipConditions, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col">
+                        <input type="button" value="Leer para aceptar" class="btn btn-secondary mx-2" data-bs-toggle="modal" data-bs-target="#intro" />
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col">
+                        <div class="form-check form-check-inline ">
+                            @Html.CheckBoxFor(model => model.AcceptedGDPR, new { @class = "form-check-input", @disabled = "disabled" })
+                            @Html.LabelFor(model => model.AcceptedGDPR, "Acepto la política de protección de datos", htmlAttributes: new { @class = "form-check-label" })
+                            @Html.ValidationMessageFor(model => model.AcceptedGDPR, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col">
+                        <input type="button" value="Leer para aceptar" class="btn btn-secondary mx-2" data-bs-toggle="modal" data-bs-target="#gdpr" />
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="col-md-2 offset-md-10">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.Messages?.Count > 0)
+    {
+        <div class="card bg-warning mt-2">
+            <div class="container">
+                <partial name="_Error", model="Model.Messages"/>
+            </div>
+        </div>
+    }
+</div>

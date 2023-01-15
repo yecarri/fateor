@@ -1,0 +1,12 @@
+﻿@model List<string>
+@if (Model.Count > 0)
+{
+    <table id="messages">
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr>
+                <td colspan="2">@Html.DisplayFor(m => Model[i])</td>
+            </tr>
+        }
+    </table>
+}

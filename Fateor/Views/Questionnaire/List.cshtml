@@ -1,0 +1,67 @@
+﻿@model Fateor.Models.QuestionnaireListViewModel
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_Internal.cshtml";
+}
+@section Scripts
+    {
+    <link href='@Url.Content("~/lib/DataTables/datatables.css")' rel="stylesheet" />
+    <script type="text/javascript" src='@Url.Content("~/lib/DataTables/datatables.js")'></script>
+
+    <style type="text/css">
+        .deleted {
+            color: #a10000;
+            font-style: italic;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(document).ready(
+            function () {
+                var table = $("#table")
+                    .DataTable(
+                        {
+                            language: {
+                                url: '@Url.Content("~/lib/DataTables/languages/Spanish.json")'
+                            },
+                            "createdRow": function (row, data, index) { if (data[3] == 'True') { $(row).addClass("deleted"); } }
+                        });
+
+                $("#table").on('click', 'tr', function () {
+                    var data = table.row(this).data();
+                    document.location.href = '@Url.Content("~/questionnaire/")' + data[0];
+                });
+            });
+    </script>
+}
+    <div class="container py-2">
+        <div class="card">
+            <div class="card-header"><h3>Cuestionarios</h3></div>
+            <div class="card-body">
+
+                <table class="table" id="table">
+                    <thead>
+                        <tr>
+                            <th class="">Id</th>
+                            <th>Título</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    @foreach (var item in Model.Questionnaires)
+                    {
+                        <tr>
+                            <td>
+                                @item.QuestionnaireId
+                            </td>
+                            <td>
+                                @item.QuestionnaireName
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,74 @@
+﻿@model IEnumerable<Fateor.Application.UserAccess.Entities.User>
+@{
+    ViewBag.Title = "Listado de Usuarios";
+    Layout = "~/Views/Shared/_Internal.cshtml";
+}
+@section Scripts
+{
+    <script src="~/lib/datatables/datatables.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
+
+    <style type="text/css">
+        .deleted {
+            color: #a10000;
+            font-style: italic;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(document).ready(
+            function () {
+                var table = $("#userTable")
+                    .DataTable(
+                        {
+                            columns: [null, null, null, { visible: false}],
+                            language: {
+                                url: 'lib/DataTables/languages/Spanish.json'
+                            },
+                            "createdRow": function (row, data, index) { if (data[3]=='True') { $(row).addClass("deleted");}}
+                        });
+
+                $("#userTable").on('click', 'tr', function () {
+                    var data = table.row(this).data();
+                    document.location.href = '@Url.Content("~/User")/'+data[0];
+                });
+            });
+    </script>
+}
+<div class="container py-2">
+    <div class="card">
+        <div class="card-header"><h3>Listado de Usuarios</h3></div>
+        <div class="card-body">
+            <table class="table" id="userTable">
+                <thead>
+                    <tr>
+                        <th class="">Id</th>
+                        <th>Login</th>
+                        <th>Email</th>
+                        <th>Eliminado</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(m=> item.UserId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(m=> item.Login)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(m=> item.Email)
+                            </td>
+                            <td>
+                                @item.IsDeleted
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

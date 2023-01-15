@@ -1,0 +1,141 @@
+﻿@model Fateor.Models.NolanViewModel
+@{
+    Layout = Model.External ? "~/Views/Shared/_External.cshtml" : "~/Views/Shared/_Internal.cshtml";
+    ViewBag.Title = "Gráfico de Nolan";
+}
+
+@section scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var pad = 50;
+            var maxx = 500 - 2 * pad;
+            var maxy = 500 - 2 * pad;
+            var canvas = document.getElementById("chart");
+            var ctx = canvas.getContext("2d");
+
+            var x = pad + @Model.X.ToString(System.Globalization.CultureInfo.InvariantCulture) * (maxx - pad) / 10;
+            var y = maxy - @Model.Y.ToString(System.Globalization.CultureInfo.InvariantCulture) * (maxy - pad) / 10;
+
+            ctx.lineWidth = 1;
+
+            ctx.moveTo(pad - .5, pad - .5);
+            ctx.lineTo(pad - .5, maxy - .5);
+            ctx.lineTo(maxy - .5, maxx - .5);
+            ctx.lineTo(maxy - .5, pad - .5);
+            ctx.lineTo(pad - .5, pad - .5);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.textAlign = "center";
+            ctx.fillText(100, maxx, maxx + 10);
+
+            ctx.beginPath();
+            ctx.textAlign = "right";
+            ctx.fillText(100, pad - 5, pad + 3);
+
+            ctx.beginPath();
+            ctx.textAlign = "center";
+            var cFont = ctx.font;
+            var fontArgs = cFont.split(" ");
+            ctx.font = '12px ' + fontArgs[fontArgs.length - 1];
+            ctx.fillText("Eje Económico", pad + (maxx - pad) / 2, maxy + 25);
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.translate(pad - 20, pad + (maxx - pad) / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText("Eje Social", 0, 0);
+            ctx.restore();
+
+            ctx.font = cFont;
+
+            for (var i = 1; i <= 9; i++) {
+                midx = pad + i * (maxx - pad) / 10;
+
+                ctx.beginPath();
+                ctx.textAlign = "center";
+                ctx.fillText(i * 10, midx, maxy + 10);
+
+                ctx.beginPath();
+                ctx.textAlign = "right";
+                ctx.fillText(100 - i * 10, pad - 5, midx + 3);
+
+                for (var j = 1; j <= 9; j++) {
+                    midy = pad + j * (maxy - pad) / 10;
+
+
+                    ctx.beginPath();
+                    ctx.lineWidth = 0.1;
+                    ctx.strokeStyle = "#707070";
+
+                    midy = pad + j * (maxy - pad) / 10;
+                    ctx.moveTo(midx - .5, pad - .5);
+                    ctx.lineTo(midx - .5, maxy - .5);
+                    ctx.stroke();
+
+                    ctx.moveTo(pad - .5, midy - .5);
+                    ctx.lineTo(maxx - .5, midy - .5);
+                    ctx.stroke();
+                }
+            }
+
+            ctx.beginPath();
+            ctx.fillStyle = "rgba(248, 178, 2, 0.5)"
+            ctx.moveTo(maxx, pad)
+            ctx.arc(maxx, pad, 0.25 * Math.sqrt(2) * (maxx - pad), Math.PI * 0.5, Math.PI, false);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.fillStyle = "#000070";
+            ctx.arc(x, y, 5, 0, Math.PI * 2);
+            ctx.fill();
+        });
+    </script>
+}
+
+    <div class="container py-2">
+        <div class="card">
+            <div class="card-header"><h3>Gráfico de Nolan de @Html.DisplayFor(m => m.Member)</h3></div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div style="width:500px; height:500px; margin:auto; display:block">
+                        <canvas id="chart" width="500" height="500">
+                        </canvas>
+                    </div>
+                </div>
+
+            @if (Model.External)
+            {
+                <div class="row">
+                    <div class="col">
+                        <p>
+                            Muchas gracias por dejar tus opiniones. Esta gráfica muestra tu posición política en
+                            relación con los ejes social y económico. La zona en amarillo muestra aproximadamente
+                            las posiciones de otros miembros del Movimiento Libertario de Venezuela.
+                        </p>
+                        <p>
+                            Pronto te contactará uno de nuestros coordinadores.
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="card-footer">
+            @if (Model.External)
+            {
+                <span>&nbsp;</span>
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-1 offset-11">
+                        <button type="button" class="btn btn-primary" onclick='document.location.href = "@Url.Content("~/response/list")"'>Volver</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

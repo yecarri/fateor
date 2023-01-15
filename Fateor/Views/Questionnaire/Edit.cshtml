@@ -1,0 +1,131 @@
+﻿@model Fateor.Models.QuestionnaireViewModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Internal.cshtml";
+}
+@section Scripts
+    {
+    <link href="~/lib/fontawesome/css/all.min.css" rel="stylesheet" />
+    <script type="text/javascript">
+        function doSubmit(command, tags) {
+            $('#@Html.IdFor(m=>m.Command)').val(command);
+            $('#@Html.IdFor(m=>m.Tags)').val(tags);
+            $('#form').submit();
+        }
+
+        $(window).on('load', function () {
+            $("html, body").animate({ scrollTop: $(document).height() }, 1);
+        });
+    </script>
+}
+
+    <div class="container py-2">
+        <div class="card">
+        @using (Html.BeginForm("Create", "Questionnaire", FormMethod.Post, new { id = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.QuestionnaireId)
+            @Html.HiddenFor(m => m.Command)
+            @Html.HiddenFor(m => m.Tags)
+            <div class="card-header">
+                <h3>Cuestionario</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group col">
+                        <h5>@Html.LabelFor(model => model.QuestionnaireName, htmlAttributes: new { @class = "control-label" })</h5>
+                        @Html.TextAreaFor(model => model.QuestionnaireName, new { @class = "form-control", @style = "max-width: unset;" })
+                        @Html.ValidationMessageFor(model => model.QuestionnaireName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="form-group col">
+                        <h5>@Html.LabelFor(model => model.RedirectUrl, htmlAttributes: new { @class = "control-label" })</h5>
+                        @Html.TextAreaFor(model => model.RedirectUrl, new { @class = "form-control", @style = "max-width: unset;" })
+                        @Html.ValidationMessageFor(model => model.RedirectUrl, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @for (int i = 0; i < Model.Questions.Count; i++)
+                {
+                    @Html.HiddenFor(m => Model.Questions[i].QuestionId)
+                    ;
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <div class="row mt-3">
+                                <div class="col-md-10">
+                                    <h5>Pergunta @(i + 1)</h5>
+                                </div>
+                                <div class="col-md-2">
+                                    <a href="#" class='btn btn-secondary float-right @(i==0?"disabled":"")' onclick="doSubmit('MoveQuestionUp',@i)"><span class="fas fa-arrow-up" /></a>
+                                    <a href="#" class="btn btn-secondary float-right @(i==Model.Questions.Count-1?"disabled":"") mr-1" onclick="doSubmit('MoveQuestionDown',@i)"><span class="fas fa-arrow-down" /></a>
+                                    <a href="#" class='btn btn-secondary float-right mr-1' onclick="doSubmit('DeleteQuestion',@i)"><span class="fas fa-trash-alt" /></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="form-group col">
+                                    @Html.LabelFor(model => model.Questions[i].QuestionTypeId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.DropDownListFor(
+                            model => model.Questions[i].QuestionTypeId,
+                            new SelectList(Model.QuestionTypes, "QuestionTypeId", "QuestionTypeName", Model.Questions[i].QuestionTypeId),
+                            new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Questions[i].QuestionTypeId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    @Html.LabelFor(model => model.Questions[i].QuestionText, htmlAttributes: new { @class = "control-label" })
+                                    @Html.TextAreaFor(model => model.Questions[i].QuestionText, new { @class = "form-control", @style = "max-width: unset;" })
+                                    @Html.ValidationMessageFor(model => model.Questions[i].QuestionText, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <h6 mt-3>Opciones</h6>
+                            </div>
+                            @for (int j = 0; j < Model.Questions[i].Options.Count; j++)
+                            {
+                                @Html.HiddenFor(m => Model.Questions[i].Options[j].OptionId)
+                                <div class="row">
+                                    <div class="form-group col-md-9">
+                                        @Html.LabelFor(model => model.Questions[i].Options[j].OptionText, htmlAttributes: new { @class = "control-label" })
+                                        @Html.TextAreaFor(model => model.Questions[i].Options[j].OptionText, new { @class = "form-control", @style = "max-width: unset; height: calc(1.5em + 0.75rem + 2px);" })
+                                        @Html.ValidationMessageFor(model => model.Questions[i].Options[j].OptionText, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        @Html.LabelFor(model => model.Questions[i].Options[j].Points, htmlAttributes: new { @class = "control-label" })
+                                        <div class="input-group">
+                                            @Html.TextBoxFor(model => model.Questions[i].Options[j].Points, new { @class = "form-control w-50" })
+                                            <a href="#" class='btn btn-secondary float-right btn-sm mx-1 @(j==0?"disabled":"")' onclick="doSubmit('MoveOptionUp','@($"{i},{j}")')"><span class="fas fa-arrow-up" /></a>
+                                            <a href="#" class="btn btn-secondary float-right btn-sm mr-1 @(j==Model.Questions[i].Options.Count-1?"disabled":"")" onclick="doSubmit('MoveOptionDown','@($"{i},{j}")')"><span class="fas fa-arrow-down" /></a>
+                                            <a href="#" class="btn btn-secondary float-right btn-sm" onclick="doSubmit('DeleteOption','@($"{i},{j}")')"><span class="fas fa-trash-alt"></span></a>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Questions[i].Options[j].Points, "", new { @class = "text-danger" })
+
+                                    </div>
+                                </div>
+                            }
+                            <div class="row">
+                                <div class="col">
+                                    <a href="#" class="btn btn-secondary btn-sm float-right" onclick="doSubmit('AddOption',@i)"><span class="fas fa-plus"></span> <span style="margin-top:0;vertical-align:top; line-height:1.25;">opción</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="row">
+                    <div class="col">
+                        <a href="#" class="btn btn-secondary btn-sm float-right" onclick="doSubmit('AddQuestion')"><span class="fas fa-plus mr-1"></span> <span style="margin-top:0;vertical-align:top; line-height:1.25;">pregunta</span></a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-2 offset-md-10">
+                        <button id="save" type="button" class="btn btn-primary float-right" onclick="doSubmit('Save')">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

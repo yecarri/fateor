@@ -1,0 +1,88 @@
+﻿@model Fateor.Models.ViewModelBase
+@{
+    Layout = "~/Views/Shared/_External.cshtml";
+}
+
+@section scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var pad = 20;
+            var maxx = 400 - 2 * pad;
+            var maxy = 400 - 2 * pad;
+            var canvas = document.getElementById("chart");
+            var ctx = canvas.getContext("2d");
+
+            var x = pad + (@Context.Request.Query["x"] * (maxx - pad) / 100);
+            var y = maxy - (@Context.Request.Query["y"] * (maxy - pad) / 100);
+
+            ctx.lineWidth = 1;
+
+            ctx.moveTo(pad - .5, pad - .5);
+            ctx.lineTo(pad - .5, maxy - .5);
+            ctx.lineTo(maxy - .5, maxx - .5);
+            ctx.lineTo(maxy - .5, pad - .5);
+            ctx.lineTo(pad - .5, pad - .5);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.textAlign = "center";
+            ctx.fillText(100, maxx, maxx + 10);
+
+            ctx.beginPath();
+            ctx.textAlign = "left";
+            ctx.fillText(100, 0, pad + 3);
+
+            for (var i = 1; i <= 9; i++) {
+                midx = pad + i * (maxx - pad) / 10;
+
+                ctx.beginPath();
+                ctx.textAlign = "center";
+                ctx.fillText(i * 10, midx, maxy + 10);
+
+                ctx.beginPath();
+                ctx.textAlign = "left";
+                ctx.fillText(100 - i * 10, 0, midx + 3);
+
+                for (var j = 1; j <= 9; j++) {
+                    midy = pad + j * (maxy - pad) / 10;
+
+
+                    ctx.beginPath();
+                    ctx.lineWidth = 0.1;
+                    ctx.strokeStyle = "#707070";
+
+                    midy = pad + j * (maxy - pad) / 10;
+                    ctx.moveTo(midx - .5, pad - .5);
+                    ctx.lineTo(midx - .5, maxy - .5);
+                    ctx.stroke();
+
+                    ctx.moveTo(pad - .5, midy - .5);
+                    ctx.lineTo(maxx - .5, midy - .5);
+                    ctx.stroke();
+
+
+                }
+            }
+
+            ctx.beginPath();
+            ctx.fillStyle = "rgba(248, 178, 2, 0.5)"
+            ctx.moveTo(maxx, pad)
+            ctx.arc(maxx, pad, 0.25 * Math.sqrt(2) * (maxx - pad), Math.PI * 0.5, Math.PI, false);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.fillStyle = "#000070";
+            ctx.arc(x, y, 5, 0, Math.PI * 2);
+            ctx.fill();
+        });
+    </script>
+}
+
+    <div style="width:100vw; height:100vh;">
+        <div style="margin:auto; width:400px; height:400px">
+            <canvas id="chart" width="400" height="400" style="margin:auto;" class="mt-5">
+            </canvas>
+        </div>
+    </div>
