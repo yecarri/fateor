@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fateor.Infrastructure", "Fa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fateor", "Fateor\Fateor.csproj", "{B443A6D1-B440-44F0-8B6C-C824FCB64C84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fateor.Tests", "Fateor.Tests\Fateor.Tests.csproj", "{00D6E688-0470-489F-B75D-D46A9CA0BEFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fateor.Tests", "Fateor.Tests\Fateor.Tests.csproj", "{00D6E688-0470-489F-B75D-D46A9CA0BEFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fateor.Database.MySql", "Fateor.Database.MySql\Fateor.Database.MySql.csproj", "{CBAD88CD-570D-4082-ADB4-1A9BF1F3A16F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{00D6E688-0470-489F-B75D-D46A9CA0BEFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00D6E688-0470-489F-B75D-D46A9CA0BEFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00D6E688-0470-489F-B75D-D46A9CA0BEFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBAD88CD-570D-4082-ADB4-1A9BF1F3A16F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBAD88CD-570D-4082-ADB4-1A9BF1F3A16F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBAD88CD-570D-4082-ADB4-1A9BF1F3A16F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBAD88CD-570D-4082-ADB4-1A9BF1F3A16F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

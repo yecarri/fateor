@@ -1,3 +1,5 @@
+using Fateor;
+using Fateor.Database.MySql;
 using Fateor.Infrastructure.Services;
 using Fateor.Setup;
 
@@ -34,11 +36,19 @@ builder.AddServices();
 
 builder.Services.AddSession();
 
-builder.Services.Configure<CookieTempDataProviderOptions>(options => {
+builder.Services.Configure<CookieTempDataProviderOptions>(options =>
+{
     options.Cookie.IsEssential = true;
 });
 
 var app = builder.Build();
+
+var binPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+var scriptPath = Path.Combine(binPath ?? throw new Exception("No Bin"), "Scripts");
+var dbUpdater = new DBUpdates(builder.Configuration.GetConnectionString("fateor"), scriptPath);
+var dbUpdateLog = dbUpdater.Update();
+
+(app.Services.GetService<ILogger<DBUpdates>>() ?? throw new Exception("no log")).LogInformation(dbUpdateLog) ;
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

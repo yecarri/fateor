@@ -44,6 +44,8 @@ namespace Fateor.Application.Mappers
                 .ForMember(m => m.QuestionnaireId, opt => opt.MapFrom(m1 => m1.QuestionaireId))
                 .ReverseMap();
 
+            CreateMap<Organization.Dto.MemberFee, Organization.Entities.MemberFee>().ReverseMap();
+
             //CreateMap<Bulletin.Dto.Bulletin, Bulletin.Entities.Bulletin>().ReverseMap();
             //CreateMap<Bulletin.Dto.BulletinCountryFilter, Bulletin.Entities.BulletinCountryFilter>().ReverseMap();
             //CreateMap<Bulletin.Dto.BulletinStatusFilter, Bulletin.Entities.BulletinStatusFilter>().ReverseMap();

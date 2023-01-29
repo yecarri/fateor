@@ -1,0 +1,32 @@
+﻿@model Fateor.Models.MemberFeeBatchListViewModel
+@{
+    ViewBag.Title = "Listado de Miembros";
+}
+<div class="py-2 m-auto" style="width:85%;">
+    <div class="card">
+        <div class="card-header"><h3>Listado de Miembros</h3></div>
+        @using (Html.BeginForm(FormMethod.Post))
+        {
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        @Html.LabelFor(m => m.Statuses, htmlAttributes: new { @class = "control-label" })
+                        @*<div class="form-control">
+                            <div style="display:grid; grid-template-columns: 1fr 25px">
+                                @foreach (Fateor.Models.StatusSelectViewModel status in Model.Statuses)
+                                {
+                                    <div>
+                                        @Html.DisplayFor(x => status.StatusName)
+                                    </div>
+                                    <div>
+                                        @Html.CheckBoxFor(x => status.Selected)
+                                    </div>
+                                }
+                            </div>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
