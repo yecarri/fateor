@@ -143,6 +143,12 @@ namespace Fateor.Setup
                  builder.Configuration.GetValue<int>("Fateor:InitialStatusId")
                 ));
 
+            services.AddScoped<IMemberFeeBatchService, MemberFeeBatchService>(s => new MemberFeeBatchService(
+                s.GetRequiredService<IMemberFeeBatchRepository>(),
+                s.GetRequiredService<IMapper>(),
+                s.GetRequiredService<ILogger<MemberFeeBatchService>>()
+                ));
+
         }
 
     }

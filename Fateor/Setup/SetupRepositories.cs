@@ -21,6 +21,7 @@ namespace Fateor.Setup
         {
             builder.Services.AddScoped<IUserRepository, UserRepository>(s => new UserRepository(builder.Configuration.GetConnectionString("fateor")));
             builder.Services.AddScoped<IMemberRepository, MemberRepository>(s => new MemberRepository(builder.Configuration.GetConnectionString("fateor")));
+            builder.Services.AddScoped<IMemberFeeBatchRepository, MemberFeeBatchRepository>(s => new MemberFeeBatchRepository(builder.Configuration.GetConnectionString("fateor")));
             builder.Services.AddScoped<IResponseRepository, ResponseRepository>(s => new ResponseRepository(builder.Configuration.GetConnectionString("fateor")));
             builder.Services.AddScoped<IUnitRepository, UnitRepository>(s => new UnitRepository(builder.Configuration.GetConnectionString("fateor")));
             builder.Services.AddScoped<ICountryRepository, CountryRepository>(s => new CountryRepository(builder.Configuration.GetConnectionString("fateor")));

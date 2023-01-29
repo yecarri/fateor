@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Fateor.Application.Organization.Dto;
+using Fateor.Application.Organization.Repositories.Interfaces;
 using oSoft.Data.MySql;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Fateor.Application.Organization.Repositories.MySql
 {
-    public class MemberFeeBatchRepository: Repository<MemberFeeBatch>
+    public class MemberFeeBatchRepository : Repository<MemberFeeBatch>, IMemberFeeBatchRepository
     {
         public MemberFeeBatchRepository(IDbConnection connection) : base(connection)
         {
@@ -24,9 +25,9 @@ namespace Fateor.Application.Organization.Repositories.MySql
         {
         }
 
-        public IEnumerable<MemberFeeBatch> GetMemberFeeBatches(DateOnly dateFrom, DateOnly dateTo)
+        public IEnumerable<MemberFeeBatch> GetMemberFeeBatches(DateTime dateFrom, DateTime dateTo)
         {
-            var parameters = new {DateFrom = dateFrom, DateTo = dateTo};
+            var parameters = new { DateFrom = dateFrom, DateTo = dateTo };
 
             var results = Connection.Query<MemberFeeBatch>("SELECT * FROM org_MemberFeeBatch", parameters, Transaction, commandType: CommandType.Text);
 

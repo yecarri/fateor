@@ -4,6 +4,6 @@ namespace Fateor.Application.Organization.Service
 {
     public interface IMemberFeeBatchService
     {
-        MemberFeeBatch[] GetMemberFeeBatches(DateOnly dateFrom, DateOnly dateTo);
+        MemberFeeBatch[] GetMemberFeeBatches(DateTime dateFrom, DateTime dateTo);
     }
 }

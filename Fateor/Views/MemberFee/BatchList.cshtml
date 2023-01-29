@@ -1,29 +1,41 @@
 ﻿@model Fateor.Models.MemberFeeBatchListViewModel
 @{
-    ViewBag.Title = "Listado de Miembros";
+    ViewBag.Title = "Lotes de Cuotas";
 }
-<div class="py-2 m-auto" style="width:85%;">
+<div class="py-2 container" >
     <div class="card">
-        <div class="card-header"><h3>Listado de Miembros</h3></div>
+        <div class="card-header"><h3>Lotes de Cuotas</h3></div>
         @using (Html.BeginForm(FormMethod.Post))
         {
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4 form-group">
-                        @Html.LabelFor(m => m.Statuses, htmlAttributes: new { @class = "control-label" })
-                        @*<div class="form-control">
-                            <div style="display:grid; grid-template-columns: 1fr 25px">
-                                @foreach (Fateor.Models.StatusSelectViewModel status in Model.Statuses)
-                                {
-                                    <div>
-                                        @Html.DisplayFor(x => status.StatusName)
-                                    </div>
-                                    <div>
-                                        @Html.CheckBoxFor(x => status.Selected)
-                                    </div>
-                                }
-                            </div>
+                        @Html.LabelFor(m=> m.DateFrom, htmlAttributes: new { @class = "control-label" })
+                        @Html.TextBoxFor(m=> m.DateFrom, "{0:yyyy-MM-dd}", htmlAttributes: new { @type="date", @class = "form-control"})
+                    </div>
+                    <div class="col-md-4 form-group">
+                        @Html.LabelFor(m=> m.DateTo, htmlAttributes: new { @class = "control-label" })
+                        @Html.TextBoxFor(m=> m.DateTo, "{0:yyyy-MM-dd}", htmlAttributes: new { @type="date", @class = "form-control"})
+                    </div>
+                        @*@Html.LabelFor(m => m.Statuses, htmlAttributes: new { @class = "control-label" })
+
+                        <div class="form-control">
+                        <div style="display:grid; grid-template-columns: 1fr 25px">
+                        @foreach (Fateor.Models.StatusSelectViewModel status in Model.Statuses)
+                        {
+                        <div>
+                        @Html.DisplayFor(x => status.StatusName)
+                        </div>
+                        <div>
+                        @Html.CheckBoxFor(x => status.Selected)
+                        </div>
+                        }
+                        </div>
                         </div>*@
+                </div>
+                <div class="row">
+                    <div class="col-md-2 offset-md-10">
+                        <input type="submit" value="Flitrar" class="btn btn-primary" />
                     </div>
                 </div>
             </div>

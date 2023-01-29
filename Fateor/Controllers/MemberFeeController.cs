@@ -29,8 +29,8 @@ namespace Fateor.Controllers
         public IActionResult BatchList()
         {
             var model = new MemberFeeBatchListViewModel();
-            model.DateFrom = new DateOnly(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-2);
-            model.DateTo = new DateOnly(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+            model.DateFrom = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-2);
+            model.DateTo = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
             //model.Statuses = _statusService.GetStatuses().Select(s => _mapper.Map<Status, StatusSelectViewModel>(s)).ToArray();
             model.Batches = _memberFeeBatchService.GetMemberFeeBatches(model.DateFrom, model.DateTo);
             return View(model);
