@@ -1,4 +1,5 @@
-﻿namespace Fateor.Mappers
+﻿
+namespace Fateor.Mappers
 {
     public class ModelMapper : AutoMapper.Profile
     {
@@ -18,7 +19,9 @@
             CreateMap<Models.AnswerOptionViewModel, Application.Questionnaires.Entities.AnswerOption>().ReverseMap();
             CreateMap<Models.AnswerViewModel, Application.Questionnaires.Entities.Answer>().ReverseMap();
             CreateMap<Models.AnswerViewModel, Application.Questionnaires.Entities.Question>().ReverseMap();                        
-            CreateMap<Models.OptionViewModel, Application.Questionnaires.Entities.Option>().ReverseMap();            
+            CreateMap<Models.OptionViewModel, Application.Questionnaires.Entities.Option>().ReverseMap();
+            CreateMap<Models.MemberFeeViewModel, Application.Organization.Entities.MemberFee>().ReverseMap();
+            CreateMap<Models.MemberFeeBatchViewModel, Application.Organization.Entities.MemberFeeBatch>().ReverseMap();
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Fateor.Application.Organization.Entities;
 using Fateor.Application.Organization.Repositories.Interfaces;
-using Fateor.Application.Organization.Repositories.MySql;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

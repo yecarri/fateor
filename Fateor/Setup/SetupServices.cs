@@ -4,7 +4,6 @@ using Fateor.Application.Location.Repositories.Interfaces;
 using Fateor.Application.Location.Services;
 using Fateor.Application.Notification;
 using Fateor.Application.Organization.Repositories.Interfaces;
-using Fateor.Application.Organization.Repositories.MySql;
 using Fateor.Application.Organization.Service;
 using Fateor.Application.Questionnaires.Repositories.Interfaces;
 using Fateor.Application.Questionnaires.Repositories.MySql;
@@ -85,7 +84,6 @@ namespace Fateor.Setup
 
             string templatesPath = Path.Combine(builder.Environment.WebRootPath, "sites", site, "templates");
 
-
             services.AddScoped<INotificationService, NotificationService>(s => new NotificationService(
                 s.GetRequiredService<IUserService>(),
                 s.GetRequiredService<ILocationService>(),
@@ -144,11 +142,10 @@ namespace Fateor.Setup
                 ));
 
             services.AddScoped<IMemberFeeBatchService, MemberFeeBatchService>(s => new MemberFeeBatchService(
-                s.GetRequiredService<IMemberFeeBatchRepository>(),
                 s.GetRequiredService<IMapper>(),
-                s.GetRequiredService<ILogger<MemberFeeBatchService>>()
+                s.GetRequiredService<ILogger<MemberFeeBatchService>>(),
+                s.GetRequiredService<IMemberFeeUnitOfWork>()
                 ));
-
         }
 
     }

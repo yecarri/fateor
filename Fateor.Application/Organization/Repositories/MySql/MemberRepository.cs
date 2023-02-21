@@ -93,5 +93,28 @@ namespace Fateor.Application.Organization.Repositories.MySql
                     order by ms.StatusDate desc limit 1) x
                 where x.CanBeElected=1 and x.IsDeleted=0", null, Transaction);
         }
+
+        public IEnumerable<Member> GetByFeeBatchId(int batchId)
+        {
+            return Connection.Query<Member>(
+                @"SELECT m.* 
+                FROM org_Member m 
+                JOIN org_MemberFee mf on mf.MemberId=m.MemberId 
+                WHERE mf.MemberFeeBatchId=@MemberFeeBatchId", new { MemberFeeBatchId = batchId }, Transaction);
+        }
+
+        public IEnumerable<Member> GetByStatusIds(int[] statusIds)
+        {
+            return Connection.Query<Member>(
+                @"select m.*
+                from org_member m,
+                lateral (
+	                select ms.StatusId, ms.StatusDate, s.CanBeElected, s.CanVote, s.IsDeleted 
+                    from org_member_status ms 
+	                join org_status s  on ms.StatusId=s.StatusId
+	                where m.MemberId=ms.MemberId     
+                    order by ms.StatusDate desc limit 1) x
+                where x.StatusId in @StatusIds and x.IsDeleted=0", new { StatusIds = statusIds }, Transaction);
+        }
     }
 }

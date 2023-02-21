@@ -7,7 +7,6 @@ using System.Text;
 namespace Fateor.Controllers
 {
     [ApiController]
-    [Authorize]
     public sealed class MemberApiController : ControllerBase
     {
         private readonly IMemberService _memberService;
@@ -18,12 +17,22 @@ namespace Fateor.Controllers
         }
 
         [Route("/api/member/search/{term}")]
-        [HttpGet]
+        [HttpGet]        
         public IActionResult MemberSearch(string term)
         {
             var members = _memberService.GetAllMembers().Where(m => RemoveAccents(m.FullName)?.Contains(RemoveAccents(term) ?? string.Empty) ?? false);
             var ret = members.Select(m => new { key = m.MemberId, label = m.FullName }).ToArray();
             return Ok(ret);
+        }
+
+        [Route("/api/member/instatus/")]
+        [HttpPost]
+        public IActionResult GetMembersByStatus( [FromBody] int[] statuses)
+        {
+            var allMembers = _memberService.GetAllMembers();
+            var members = allMembers.Where(
+                ms => statuses.Any(s => s == (ms.MemberStatuses?.OrderBy(ms => ms.StatusDate).FirstOrDefault()?.StatusId ?? int.MinValue ))).ToArray();
+            return Ok(members);
         }
 
         private string? RemoveAccents(string s)

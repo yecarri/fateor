@@ -2,7 +2,15 @@
 @{
     ViewBag.Title = "Lotes de Cuotas";
 }
-<div class="py-2 container" >
+@section Scripts
+{
+    <style type="text/css">
+        table{
+            width: 100%;
+        }
+    </style>
+}
+<div class="py-2 container">
     <div class="card">
         <div class="card-header"><h3>Lotes de Cuotas</h3></div>
         @using (Html.BeginForm(FormMethod.Post))
@@ -17,25 +25,34 @@
                         @Html.LabelFor(m=> m.DateTo, htmlAttributes: new { @class = "control-label" })
                         @Html.TextBoxFor(m=> m.DateTo, "{0:yyyy-MM-dd}", htmlAttributes: new { @type="date", @class = "form-control"})
                     </div>
-                        @*@Html.LabelFor(m => m.Statuses, htmlAttributes: new { @class = "control-label" })
-
-                        <div class="form-control">
-                        <div style="display:grid; grid-template-columns: 1fr 25px">
-                        @foreach (Fateor.Models.StatusSelectViewModel status in Model.Statuses)
-                        {
-                        <div>
-                        @Html.DisplayFor(x => status.StatusName)
-                        </div>
-                        <div>
-                        @Html.CheckBoxFor(x => status.Selected)
-                        </div>
-                        }
-                        </div>
-                        </div>*@
-                </div>
-                <div class="row">
                     <div class="col-md-2 offset-md-10">
                         <input type="submit" value="Flitrar" class="btn btn-primary" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Lote</th>
+                                    <th>Fecha desde</th>
+                                    <th>Fecha Hasta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Batches != null)
+                                {
+                                    foreach (var b in Model.Batches)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(m=> b.BatchTitle)</td>
+                                            <td>@Html.DisplayFor(m=> b.DateFrom)</td>
+                                            <td>@Html.DisplayFor(m=> b.DateTo)</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

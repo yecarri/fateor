@@ -1,0 +1,199 @@
+﻿@model Fateor.Models.MemberFeeBatchViewModel
+@{
+    ViewBag.Title = "Lote de Cuotas";
+}
+@section Scripts
+    {
+    <link href="~/lib/fontawesome/css/all.css" rel="stylesheet" />
+    <style>
+        /* Tooltip container */
+        .tt {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+            /* Tooltip text */
+            .tt .tttext {
+                visibility: hidden;
+                min-width: 120px;
+                max-width: 360px;
+                border: 1px solid #7f7f7f;
+                box-shadow: 3px 3px black;
+                background-color: white;
+                color: #7f7f7f;
+                text-align: center;
+                padding: 5px;
+                border-radius: 6px;
+                /* Position the tt text - see examples below! */
+                position: absolute;
+                z-index: 1;
+            }
+
+            /* Show the tt text when you mouse over the tt container */
+            .tt:hover .tttext {
+                visibility: visible;
+            }
+    </style>
+}
+
+<div class="py-2 container">
+    <div class="card">
+        <div class="card-header"><h3>Lote de Cuotas</h3></div>
+        @using (Html.BeginForm(FormMethod.Post))
+        {
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        @Html.LabelFor(m=>m.BatchTitle)
+                        @Html.TextBoxFor(m=>m.BatchTitle, "{0:yyyy-MM-dd}", new { @class="form-control" })
+                    </div>
+                    <div class="col">
+                        <label for="Periodicidad">Periodicidad</label>
+                        @Html.DropDownListFor(m=> m.Periodicity, new SelectList(Periodicity.Periodicities, "Value", "Text"), htmlAttributes: new {@class = "form-select"})
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        @Html.LabelFor(m=>m.DateFrom)
+                        @Html.TextBoxFor(m=>m.DateFrom, "{0:yyyy-MM-dd}", new { @class="form-control", @type="date"})
+                    </div>
+                    <div class="col">
+                        @Html.LabelFor(m=>m.DateTo)
+                        @Html.TextBoxFor(m=>m.DateTo, "{0:yyyy-MM-dd}", new { @class="form-control", @type="date"})
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-lg-6 d-flex align-items-stretch">
+                        <div class="card w-100">
+                            <div class="card-header">
+                                Datos
+                            </div>
+                            <div class="card-body">
+                                <label for="ReferencePatten">Formato para la referencia</label>
+                                @Html.TextBoxFor(m=>m.ReferencePattern,new { @class="form-control"})
+                                @Html.LabelFor(m=>m.Amount)
+                                @Html.TextBoxFor(m=>m.Amount, format: "{0:0.00}", htmlAttributes: new { @class="form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-flex align-items-stretch">
+                        <div class="card w-100">
+                            <div class="card-header">
+                                Estatuses
+                            </div>
+                            <div class="card-body">
+                                @Html.ListBoxFor(m => m.SelectedStatuses, new SelectList(Model.Statuses, "StatusId", "StatusDescription"), new { @class="form-select"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col">
+                        <input type="submit" class="btn btn-secondary float-end" value="Actualizar" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                Cuotas
+                            </div>
+                            <div class="card-body">
+                                <div style="border-top:inset; border-left:inset; border-right:inset; border-bottom:1px solid lightgray; width: 100%; padding:5px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 30px 1fr 1fr 30px 16px; ">
+                                    <div>Apellido</div>
+                                    <div>Nombre</div>
+                                    <div>Referencia</div>
+                                    <div>Importe</div>
+                                    <div class="tt"><span class="fa fa-coins"></span><span class="tttext">Indica si la cuota está pagada o no</span></div>
+                                    <div>Forma de pago</div>
+                                    <div class="tt">Referencia del Pago<span class="tttext">Puede colocar aquí el número de referencia de la transferencia o el pago por tarjeta</span></div>
+                                    <div></div>
+                                </div>
+                                <div style="border-left:inset; width: 100%; height: 200px; padding:5px; display:  grid; grid-template-columns: 1fr 1fr 1fr 1fr 30px 1fr 1fr 30px; overflow-y:scroll;">
+                                    @foreach (var m in Model.MemberFees)
+                                    {
+                                        @Html.EditorFor(x => m)
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col">
+                        <input type="submit" class="btn btn-primary float-end" value="Generar" />
+                    </div>
+                </div>
+            </div>           
+        }
+    </div>
+</div>
+<template id="feeRow">
+    <input type="hidden" name="MemberFeeId" />
+    <input type="hidden" name="MemberFeeBatchId" />
+    <input type="hidden" name="MemberId" />
+    <div><label name="GivenName"></label></div>
+    <div><label name="Surname"></label></div>
+    <div><label name="FeeReference"></label></div>
+    <div><label name="Amount"></label></div>
+    <div style="align-content:flex-start; text-align:left"><input type="checkbox" name="Paid" /></div>
+    <div style="width:95%">
+        <select class="form-select" name="PaymentMethodId">
+            <option value="1">Transferencia</option>
+            <option value="2">Tarjeta</option>
+            <option value="3">Efectivo</option>
+        </select>
+    </div>
+    <div><input type="text" class="form-control" name="PaymentReference" /></div>
+    <div style="align-content:center; text-align:center"><span class="fa fa-trash-alt"></span></div>
+</template>
+<template class="hidden">
+    <div class="col">
+        <ul>
+            <li>
+                %FD = Fecha Desde
+                <ul>
+                    <li>%FD.AAAA = Año, 4 dígitos</li>
+                    <li>%FD.AA = Año, 2 dígitos</li>
+                    <li>%FD.MM = Mes</li>
+                    <li>%FD.DD = Mes</li>
+                    <li>%FD.TR= Trimestre</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="col">
+        <ul>
+            <li>
+                %FH = Fecha Hasta
+                <ul>
+                    <li>%FD.AAAA = Año, 4 dígitos</li>
+                    <li>%FD.AA = Año, 2 dígitos</li>
+                    <li>%FD.MM = Mes</li>
+                    <li>%FD.DD = Mes</li>
+                    <li>%FD.TR= Trimestre</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="col">
+        <ul>
+            <li>
+                %U = Usuario
+                <ul>
+                    <li>
+                        %U.ID = Identificador
+                    </li>
+                    <li>
+                        %U.N = Nombre
+                    </li>
+                    <li>
+                        %U.A = Apellido
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <p>Se puede colocar entre paréntesis el número de caracteres, por ejemplo: %U.ID(4)</p>
+    </div>
+</template>

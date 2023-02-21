@@ -7,11 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Scripts\20220129_MemberFees.sql" />
+    <None Remove="Scripts\20230129_MemberFees.sql" />
+    <None Remove="Scripts\20230205_vw_org_MemberStatus.sql" />
+    <None Remove="Scripts\20230205_vw_qst_answers.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Scripts\20220129_MemberFees.sql">
+    <Content Include="Scripts\20230129_MemberFees.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scripts\20230205_vw_org_MemberStatus.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scripts\20230205_vw_qst_answers.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -4,6 +4,8 @@ namespace Fateor.Application.Organization.Service
 {
     public interface IMemberFeeBatchService
     {
+        MemberFeeBatch GetMemberFeeBatchById(int batchFeeId, bool includeMemberFees = false);
         MemberFeeBatch[] GetMemberFeeBatches(DateTime dateFrom, DateTime dateTo);
+        IEnumerable<MemberFee> MockFees(MemberFeeBatch batch);
     }
 }

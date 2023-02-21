@@ -1,31 +1,154 @@
-﻿using Fateor.Application.Organization.Entities;
+﻿using Fateor.Application.Mappers;
+using Fateor.Application.Organization.Entities;
 using Fateor.Application.Organization.Repositories.Interfaces;
 using Fateor.Infrastructure.Mappers;
 using Microsoft.Extensions.Logging;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Markup;
 
 namespace Fateor.Application.Organization.Service
 {
     public class MemberFeeBatchService : IMemberFeeBatchService
     {
-        private readonly IMemberFeeBatchRepository _memberFeeBatchRepository;
+        private readonly IMemberFeeUnitOfWork _memberFeeUnitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public MemberFeeBatchService(IMemberFeeBatchRepository memberFeeBatchRepository,
-                                     IMapper mapper,
-                                     ILogger<MemberFeeBatchService> logger)
+        public MemberFeeBatchService(IMapper mapper,
+                                     ILogger<MemberFeeBatchService> logger,
+                                     IMemberFeeUnitOfWork memberFeeUnitOfWork)
         {
-            _memberFeeBatchRepository=memberFeeBatchRepository;
             _mapper=mapper;
             _logger=logger;
+            _memberFeeUnitOfWork=memberFeeUnitOfWork;
+        }
+
+        public MemberFeeBatch GetMemberFeeBatchById(int batchId, bool includeMemberFees = false)
+        {
+            try
+            {
+                _memberFeeUnitOfWork.BeginTransaction();
+                var b = _memberFeeUnitOfWork.MemberFeeBatchRepository.Get(batchId);
+                var result = _mapper.Map<Dto.MemberFeeBatch, Entities.MemberFeeBatch>(b);
+
+                var members = _memberFeeUnitOfWork.MemberRepository.GetByFeeBatchId(batchId);
+                if (includeMemberFees)
+                {
+                    result.MemberFees = _memberFeeUnitOfWork.MemberFeeRepository
+                        .GetByBatchId(batchId)
+                        .Join(members, mf => mf.MemberId, m => m.MemberId, (mf, m) =>
+                        {
+                            var e = _mapper.Map<Dto.MemberFee, Entities.MemberFee>(mf);
+                            e.Surname = m.Surname;
+                            e.GivenName = m.GivenName;
+                            return e;
+                        })
+                        .ToList();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error reading Member Fee Batches");
+                throw;
+            }
+            finally
+            {
+                _memberFeeUnitOfWork.Rollback();
+            }
         }
 
         public MemberFeeBatch[] GetMemberFeeBatches(DateTime dateFrom, DateTime dateTo)
         {
-            return _memberFeeBatchRepository
+            return _memberFeeUnitOfWork.MemberFeeBatchRepository
                 .GetMemberFeeBatches(dateFrom, dateTo)
                 .Select(b => _mapper.Map<Dto.MemberFeeBatch, Entities.MemberFeeBatch>(b))
                 .ToArray();
+        }
+
+        public IEnumerable<MemberFee> MockFees(MemberFeeBatch batch)
+        {
+            var re = new Regex(@"(?:%(?<token>FD|FH)(\.(?<format>AAAA|AA|MM|DD|TR))?%|%(?<token>U)\.(?<element>N|A|ID)(?:\((?<length>\d)\))?%)");
+            var allMembers = _memberFeeUnitOfWork.MemberRepository.GetByStatusIds(batch.SelectedStatuses);
+            return allMembers.Select(m =>
+            {
+                var x = _mapper.Map<Dto.Member, Entities.MemberFee>(m);
+                var sb = new StringBuilder(batch.ReferencePattern);
+
+                x.Amout = batch.Amount;
+                var matches = re.Matches(batch.ReferencePattern);
+                string rep;
+
+                foreach (Match match in matches)
+                {
+                    var token = match.Groups["token"];
+                    Group format;
+                    string s;
+                    switch (token.Value.ToUpper())
+                    {
+                        case "FD":
+                            format = match.Groups["format"];
+                            s= format.Value.ToUpper();
+                            rep=FormatDatePart(DateTime.Now, s);
+                            break;
+                        case "FH":
+                            format = match.Groups["format"];
+                            s= format.Value.ToUpper();
+                            rep=FormatDatePart(DateTime.Now, s);
+                            break;
+                        case "U":
+                            var element = match.Groups["element"];
+                            var length = match.Groups["length"];
+                            switch(element.Value.ToUpper())
+                            {
+                                case "ID":
+                                    rep = m.MemberId.ToString();
+                                    break;
+                                case "N":
+                                    rep = m.GivenName;
+                                    break;
+                                case "A":
+                                    rep = m.Surname;
+                                    break;
+                                default:
+                                    rep = token.Value;
+                                    break;
+                            }
+                            if (length != null)
+                            {
+                                int l = int.Parse(length.Value);
+                                rep = (new string('0',l-rep.Length) + rep);
+                            }
+                            break;
+                        default:
+                            rep = token.Value;
+                            break;
+                    }
+                    
+                    sb.Replace(match.Value, rep);
+                }
+                x.FeeReference = sb.ToString();
+                return x;
+            });
+        }
+
+        private static string FormatDatePart(DateTime date, string s)
+        {
+            switch (s)
+            {
+                case "AA":
+                    return date.ToString("yy");
+                case "AAAA":
+                    return date.ToString("yyyy");
+                case "DD":
+                    return date.ToString("dd");
+                case "MM":
+                    return date.ToString("MM");
+                case "TR":
+                    return ((date.Month -1) / 3 +1).ToString();
+                default: return s;
+            }
         }
     }
 }

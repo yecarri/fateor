@@ -37,6 +37,7 @@ namespace Fateor.Setup
             builder.Services.AddScoped<IIdentityDocumentTypeRepository, IdentityDocumentTypeRepository>(s => new IdentityDocumentTypeRepository(builder.Configuration.GetConnectionString("fateor")));
             builder.Services.AddScoped<IResponseUnitOfWork, ResponseUnitOfWork>(s => new ResponseUnitOfWork(builder.Configuration.GetConnectionString("fateor")));
             builder.Services.AddScoped<IQuestionnaireUnitOfWork, QuestionnaireUnitOfWork>(s => new QuestionnaireUnitOfWork(builder.Configuration.GetConnectionString("fateor")));
+            builder.Services.AddScoped<IMemberFeeUnitOfWork, MemberFeeUnitOfWork>(s => new MemberFeeUnitOfWork(builder.Configuration.GetConnectionString("fateor")));
         }
     }
 }

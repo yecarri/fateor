@@ -5,6 +5,7 @@
         public string BatchTitle { get; set; } = "";
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
+        public string RefferencePattern { get; set; } = "";
         public IList<int>? StatusIds { get; set; }
     }
 }

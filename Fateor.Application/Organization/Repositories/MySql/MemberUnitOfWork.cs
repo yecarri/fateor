@@ -1,6 +1,8 @@
-﻿using oSoft.Data.MySql;
+﻿using Fateor.Application.Organization.Repositories.Interfaces;
+using oSoft.Data.MySql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,18 +12,34 @@ namespace Fateor.Application.Organization.Repositories.MySql
     public class MemberUnitOfWork : IDisposable, IMemberUnitOfWork
     {
         private bool disposedValue;
+        private readonly UnitOfWork _uow;
 
         public MemberRepository MemberRepository { get; private set; }
+        public MemberStatusRepository MemberStatusRepository { get; private set; }        
 
-        public MemberStatusRepository MemberStatusRepository { get; private set; }
-
-        private readonly UnitOfWork _uow;
+        public IDbConnection Connection => _uow.Connection;
+        public IDbTransaction Transaction => _uow.Transaction;
 
         public MemberUnitOfWork(string connectionString)
         {
             _uow = new UnitOfWork(connectionString);
             MemberRepository = new MemberRepository(_uow);
             MemberStatusRepository = new MemberStatusRepository(_uow);
+        }
+
+        public void Commit()
+        {
+            _uow.Commit();
+        }
+
+        public void Rollback()
+        {
+            _uow.Rollback();
+        }
+
+        public void BeginTransaction()
+        {
+            _uow.BeginTransaction();
         }
 
         protected virtual void Dispose(bool disposing)
@@ -43,21 +61,6 @@ namespace Fateor.Application.Organization.Repositories.MySql
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
-        }
-
-        public void Commit()
-        {
-            _uow.Commit();
-        }
-
-        public void Rollback()
-        {
-            _uow.Rollback();
-        }
-
-        public void BeginTransaction()
-        {
-            _uow.BeginTransaction();
         }
     }
 }
