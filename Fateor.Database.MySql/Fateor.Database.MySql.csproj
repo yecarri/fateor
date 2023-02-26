@@ -10,6 +10,7 @@
     <None Remove="Scripts\20230129_MemberFees.sql" />
     <None Remove="Scripts\20230205_vw_org_MemberStatus.sql" />
     <None Remove="Scripts\20230205_vw_qst_answers.sql" />
+    <None Remove="Scripts\20230226_MemberStatus.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +23,9 @@
     <Content Include="Scripts\20230205_vw_qst_answers.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Scripts\20230226_MemberStatus.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -30,12 +34,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MySql.Data" Version="8.0.31" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Scripts\20230226_MemberStatus.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
