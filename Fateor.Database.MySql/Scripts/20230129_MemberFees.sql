@@ -1,5 +1,5 @@
 ﻿/* drop table org_MemberFeeBatch; */
-create table if not exists org_MemberFeeBatch
+create table if not exists `org_memberfeebatch`
 (
 	MemberFeeBatchId int not null auto_increment,
     BatchTitle varchar(200),
@@ -9,10 +9,10 @@ create table if not exists org_MemberFeeBatch
     IsDeleted tinyint default(0),
 	LastModificationUserId int,
     LastModificationDate timestamp,
-    constraint pk_org_MemberFeeBatch primary key (MemberFeeBatchId)
+    constraint `pk_org_memberfeebatch` primary key (MemberFeeBatchId)
 );
 /* drop table org_MemberFee; */
-create table if not exists org_MemberFee 
+create table if not exists `org_memberfee`
 (
 	MemberFeeId int not null auto_increment,
     `Reference` varchar(30) null,
@@ -23,7 +23,7 @@ create table if not exists org_MemberFee
     IsDeleted tinyint default(0),
 	LastModificationUserId int,
     LastModificationDate timestamp,
-    constraint pk_org_MemberFee primary key (MemberFeeId),
-    constraint fk_org_MemberFee_MemberId foreign key (MemberId) references org_Member(MemberId),
-    constraint fk_org_MemberFeeBatch foreign key (MemberFeeBatchId) references org_MemberFeeBatch(MemberFeeBatchId)    
+    constraint pk_org_memberfee primary key (MemberFeeId),
+    constraint fk_org_memberfee_MemberId foreign key (MemberId) references `org_member`(MemberId),
+    constraint fk_org_memberfee_MemberFeeBatchId foreign key (MemberFeeBatchId) references `org_memberfeebatch`(MemberFeeBatchId)    
 );

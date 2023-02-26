@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Fateor.Application.Organization.Dto
 {
-    [Table("org_MemberFee")]
+    [Table("org_memberfee")]
     public class MemberFee
     {
         [ExplicitKey]
@@ -16,10 +16,17 @@ namespace Fateor.Application.Organization.Dto
         public int? MemberFeeBatchId { get; set; }
         public int? MemberId { get; set; }
         public string? FeeReference { get; set; }
+        public DateTime? DateCreated { get; set; }
+        public int? CreatedByUserId { get; set; }
+        public bool IsIssued { get; set; }
+        public DateTime DateIssued { get; set; }
+        public DateTime? DateDue { get; set; }
+        public int? IssuedByUserId { get; set; }
         public decimal Amout { get; set; }
         public decimal AmoutPaid { get; set; }
-        public int PaymentMethodId { get; set; }
+        public int? PaymentMethodId { get; set; }
         public string? PaymentReference { get; set; }
         public DateTime? DatePaid { get; set; }
+        public int? PaymentRegisteredByUserId { get; set; }
     }
 }

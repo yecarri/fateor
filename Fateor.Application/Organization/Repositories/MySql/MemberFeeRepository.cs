@@ -29,7 +29,7 @@ namespace Fateor.Application.Organization.Repositories.MySql
         {
             var parameters = new { MemberFeeBatchId = batchId };
                 return Connection.Query<MemberFee>(@"SELECT mf.*
-                FROM org_MemberFee mf 
+                FROM org_memberfee mf 
                 WHERE mf.MemberFeeBatchId=@MemberFeeBatchId", parameters, Transaction);
         }
     }

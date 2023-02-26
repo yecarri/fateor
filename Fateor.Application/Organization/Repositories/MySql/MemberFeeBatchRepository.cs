@@ -28,7 +28,7 @@ namespace Fateor.Application.Organization.Repositories.MySql
         public MemberFeeBatch Get(int memberFeeBatchId)
         {
             var parameters = new { MemberFeeBatchId  = memberFeeBatchId };
-            return Connection.QueryFirst<MemberFeeBatch>("SELECT * FROM org_MemberFeeBatch WHERE MemberFeeBatchId=@MemberFeeBatchId",
+            return Connection.QueryFirst<MemberFeeBatch>("SELECT * FROM org_memberfeebatch WHERE MemberFeeBatchId=@MemberFeeBatchId",
                                                          parameters,
                                                          Transaction);
         }
@@ -37,7 +37,7 @@ namespace Fateor.Application.Organization.Repositories.MySql
         {
             var parameters = new { DateFrom = dateFrom, DateTo = dateTo };
 
-            var results = Connection.Query<MemberFeeBatch>("SELECT * FROM org_MemberFeeBatch WHERE DateFrom<=@DateFrom and DateTo>=@DateTo",
+            var results = Connection.Query<MemberFeeBatch>("SELECT * FROM org_memberfeebatch WHERE DateFrom<=@DateFrom and DateTo>=@DateTo",
                                                            parameters,
                                                            Transaction,
                                                            commandType: CommandType.Text);

@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE VIEW vw_org_MemberStatus
+﻿CREATE OR REPLACE VIEW vw_org_memberstatus
 AS
     select
            m.MemberId               AS MemberId                   ,

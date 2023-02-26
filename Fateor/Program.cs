@@ -4,6 +4,7 @@ using Fateor.Infrastructure.Services;
 using Fateor.Setup;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -48,7 +49,7 @@ var scriptPath = Path.Combine(binPath ?? throw new Exception("No Bin"), "Scripts
 var dbUpdater = new DBUpdates(builder.Configuration.GetConnectionString("fateor"), scriptPath);
 var dbUpdateLog = dbUpdater.Update();
 
-(app.Services.GetService<ILogger<DBUpdates>>() ?? throw new Exception("no log")).LogInformation(dbUpdateLog) ;
+(app.Services.GetService<ILogger<DBUpdates>>() ?? throw new Exception("no log")).LogInformation(dbUpdateLog);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -58,13 +59,21 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseSession();
 
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseAuthentication();
 

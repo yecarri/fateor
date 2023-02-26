@@ -7,7 +7,7 @@
 <div>@Html.DisplayFor(m=>m.FeeReference)</div>
 <div>@Html.DisplayFor(m=>m.Amout)</div>
 <div style="align-content:flex-start; text-align:left">
-    @Html.CheckBoxFor(m=> m.Paid, htmlAttributes: new { @class="form-check"})
+    @Html.CheckBoxFor(m=> m.IsPaid, htmlAttributes: new { @class="form-check"})
 </div>
 <div style="width:95%">
     @Html.DropDownListFor(
