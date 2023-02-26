@@ -27,9 +27,12 @@ namespace Fateor.Application.Credentials.Services
                               string memberCode,
                               string url)
         {
-            GlobalFontSettings.FontResolver = new MLVCredentialFontResolver();
             const string FontName = "Geosans Light";
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            if (!(GlobalFontSettings.FontResolver is MLVCredentialFontResolver))
+            {
+                GlobalFontSettings.FontResolver = new MLVCredentialFontResolver();
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            }
 
             /* Root document */
             var pdfDocument = new PdfDocument();
@@ -96,12 +99,12 @@ namespace Fateor.Application.Credentials.Services
             path.AddLine(maxx - 1.5f * width - gap, 0, maxx - 0.5f * width, maxy);
             gfx.DrawPath(yellow, path);
 
-            
+
 
 
             using (var imageStream = new MemoryStream(MLVCredential.Logo))
             {
-                XImage image = XImage.FromStream( () => imageStream);
+                XImage image = XImage.FromStream(() => imageStream);
 
                 double logoHeight = 80;
                 double logoWidth = logoHeight * image.PointWidth / image.PointHeight;

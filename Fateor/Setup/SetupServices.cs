@@ -129,7 +129,7 @@ namespace Fateor.Setup
                 s.GetRequiredService<IMapper>()
                 ));
 
-            services.AddScoped<ICredentialService, MLVCredentialService>(s => new MLVCredentialService(
+            services.AddSingleton<ICredentialService, MLVCredentialService>(s => new MLVCredentialService(
                 systemUrl
                 ));
 
