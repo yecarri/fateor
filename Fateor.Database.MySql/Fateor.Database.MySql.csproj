@@ -32,4 +32,10 @@
     <PackageReference Include="MySql.Data" Version="8.0.31" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Scripts\20230226_MemberStatus.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
