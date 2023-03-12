@@ -11,16 +11,16 @@ namespace Fateor.Application.Organization.Entities
         public DateTime? DateCreated { get; set; }
         public int? CreatedByUserId { get; set; }
         public bool IsIssued { get; set; }
-        public DateTime DateIssued { get; set; }
-        public DateTime? DateDue { get; set; }
+        public DateTime? DateIssued { get; set; }
         public int? IssuedByUserId { get; set; }
+        public DateTime? DateDue { get; set; }
         public decimal Amout { get; set; }
-        public decimal AmoutPaid { get; set; }
+        public decimal PaidAmount { get; set; }
         public int? PaymentMethodId { get; set; }
         public string? PaymentReference { get; set; }
         public DateTime? DatePaid { get; set; }
         public int? PaymentRegisteredByUserId { get; set; }
-        public bool IsPaid => (AmoutPaid >= Amout);
+        public bool IsPaid => (PaidAmount >= Amout);
         public string GivenName { get; set; } = "";
         public string Surname { get; set; } = "";
     }

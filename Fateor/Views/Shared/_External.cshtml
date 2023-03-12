@@ -8,19 +8,10 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    @RenderSection("Scripts", false)
+    @RenderSection("Scripts", false)    
 </head>
-<body>
-    <header>
-        <div class="row">
-            <div class="col-sm-12 offset-md-1 col-md-4 offset-lg-2">
-                <img src="~/img/logo-rect.png" style="margin:0; padding:0; max-height:120px;" />
-            </div>
-            <div class="col-sm-12 col-md-4">
-                <h3 class="mt-lg-3">Registro de Miembros del Movimiento Libertario de Venezuela</h3>
-            </div>
-        </div>
-    </header>
+<body>    
+    <partial name="_Header" />
     <main>
         @RenderBody()
     </main>

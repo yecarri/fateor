@@ -31,20 +31,7 @@ namespace Fateor.Controllers
             _notificationService=notificationService;
             _environment=environment;
         }
-
-        [Route("Home")]
-        [Authorize]
-        public ActionResult Index()
-        {
-            var model = new ViewModelBase();
-            if (TempData["messages"] is not null)
-            {
-                model.Messages = (IList<string>)(TempData["messages"]??new List<string>());
-            }
-
-            return View(model);
-        }
-
+       
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -79,7 +66,7 @@ namespace Fateor.Controllers
 
                         HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-                        return (RedirectToAction("Index"));
+                        return (RedirectToAction("Index", "Internal"));
                     }
                     else
                     {

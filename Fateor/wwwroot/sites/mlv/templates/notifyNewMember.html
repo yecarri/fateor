@@ -1,0 +1,41 @@
+﻿<html>
+<head>
+    <style>
+        body, * {
+            font-family: 'Lucida Sans Unicode','Lucida Sans','Sans Serif',sans-serif
+        }
+
+        .table {
+            display: table;
+        }
+
+        .row {
+            display: row;
+        }
+
+        .cell {
+            display: cell;
+        }
+    </style>
+</head>
+<body>
+    <p>Hola {user.Login},</p>
+    <p>Se ha registrado un nuevo postulante en el Sistema de Miembros del MLV.</p>
+    <table>
+        <tr>
+            <td>Nombre:</td>
+            <td>{member.FullName}</td>
+        </tr>
+        <tr>
+            <td>País:</td>
+            <td>{country.CountryName}</td>
+        </tr>
+        <tr>
+            <td>Ciudad:</td>
+            <td>{member.City}</td>
+        </tr>
+    </table>
+    <p><a href='{url}'>{url}</a></p>
+    <p>¡Por la libertad!</p>
+</body>
+</html>

@@ -1,51 +1,53 @@
 ﻿<nav class='navbar navbar-expand-lg navbar-dark bg-dark py-0'>
-    <button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-target='#navbarPrincpal' aria-controls='navbarPrincpal' aria-expanded='false' aria-label='Toggle navigation'>
-        <span class='fas fa-bars'></span>
-    </button>
-    <div class='collapse navbar-collapse' id='navbarPrincpal'>
-        <ul class='navbar-nav ml-auto'>
-            <li class='nav-item dropdown'>
-                <a class='nav-link dropdown-toggle' href='#' data-bs-toggle='dropdown' aria-haspopup='true'>Miembros</a>
-                <div class='dropdown-menu' style='width: 220px' aria-labelledby='miembros'>
-                    <a class='dropdown-item' href='@Url.Action("List","Member")'>Listado</a>
-                    <a class='dropdown-item' href='@Url.Action("Create","Member")'>Crear</a>
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPrincpal" aria-controls="navbarPrincpal" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="fa-solid fa-bars"></span>
+        </button>
+        <div class='collapse navbar-collapse' id='navbarPrincpal'>
+            <ul class='navbar-nav me-auto m-auto'>
+                <li class='nav-item dropdown'>
+                    <a class='nav-link dropdown-toggle' href='#' data-bs-toggle='dropdown' aria-haspopup='true'>Miembros</a>
+                    <div class='dropdown-menu' style='width: 220px' aria-labelledby='miembros'>
+                        <a class='dropdown-item' href='@Url.Action("List","Member")'>Listado</a>
+                        <a class='dropdown-item' href='@Url.Action("Create","Member")'>Crear</a>
 
-                </div>
-            </li>
-            <li class='nav-item dropdown'>
-                <a class='nav-link dropdown-toggle' href='#' id='secciones' data-bs-toggle='dropdown' aria-haspopup='true'>Secciones</a>
-                <div class='dropdown-menu' style='width: 220px' aria-labelledby='secciones'>
-                    <a class='dropdown-item' href='@Url.Action("List","Unit")'>Listado</a>
-                    <a class='dropdown-item' href='@Url.Action("Create","Unit")'>Crear</a>
-                </div>
-            </li>
-            <li class='nav-item dropdown'>
-                <a class='nav-link dropdown-toggle' href='#' id='usuarios' data-bs-toggle='dropdown' aria-haspopup='true'>Usuarios</a>
-                <div class='dropdown-menu' style='width: 220px' aria-labelledby='usuarios'>
-                    <a class='dropdown-item' href='@Url.Action("List","User")'>Listado</a>
-                    <a class='dropdown-item' href='@Url.Action("Create","User")'>Crear</a>
-                </div>
-            </li>
+                    </div>
+                </li>
+                <li class='nav-item dropdown'>
+                    <a class='nav-link dropdown-toggle' href='#' id='secciones' data-bs-toggle='dropdown' aria-haspopup='true'>Secciones</a>
+                    <div class='dropdown-menu' style='width: 220px' aria-labelledby='secciones'>
+                        <a class='dropdown-item' href='@Url.Action("List","Unit")'>Listado</a>
+                        <a class='dropdown-item' href='@Url.Action("Create","Unit")'>Crear</a>
+                    </div>
+                </li>
+                <li class='nav-item dropdown'>
+                    <a class='nav-link dropdown-toggle' href='#' id='usuarios' data-bs-toggle='dropdown' aria-haspopup='true'>Usuarios</a>
+                    <div class='dropdown-menu' style='width: 220px' aria-labelledby='usuarios'>
+                        <a class='dropdown-item' href='@Url.Action("List","User")'>Listado</a>
+                        <a class='dropdown-item' href='@Url.Action("Create","User")'>Crear</a>
+                    </div>
+                </li>
 
-            <li class='nav-item dropdown'>
-                <a class='nav-link dropdown-toggle' href='#' id='cuestionarios' data-bs-toggle='dropdown' aria-haspopup='true'>Cuestionarios</a>
-                <div class='dropdown-menu' style='width: 220px' aria-labelledby='cuestionarios'>
-                    <a class='dropdown-item' href='@Url.Action("List","Questionnaire")'>Listado</a>
-                    <a class='dropdown-item' href='@Url.Content("~/Questionnaire/Create")'>Crear</a>
-                    <a class='dropdown-item' href='@Url.Content("~/response")'>Rellenar</a>
-                    <a class='dropdown-item' href='@Url.Content("~/response/list")'>Respuestas</a>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <div class='collapse navbar-collapse' id='navbarLogout'>
-        <ul class='navbar-nav ml-auto mt-2 mt-lg-0'>
-            <li class='nav-item nav-link'>
-                <div class='nav-link'>@ViewBag.User</div>
-            </li>
-            <li class='nav-item mx-lg-2 mt-lg-2'>
-                <a class='nav-link' href='@Url.Action("Logout","Home")'><span class='fas fa-sign-out-alt'></span> Salir</a>
-            </li>
-        </ul>
+                <li class='nav-item dropdown'>
+                    <a class='nav-link dropdown-toggle' href='#' id='cuestionarios' data-bs-toggle='dropdown' aria-haspopup='true'>Cuestionarios</a>
+                    <div class='dropdown-menu' style='width: 220px' aria-labelledby='cuestionarios'>
+                        <a class='dropdown-item' href='@Url.Action("List","Questionnaire")'>Listado</a>
+                        <a class='dropdown-item' href='@Url.Content("~/Questionnaire/Create")'>Crear</a>
+                        <a class='dropdown-item' href='@Url.Content("~/response")'>Rellenar</a>
+                        <a class='dropdown-item' href='@Url.Content("~/response/list")'>Respuestas</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class='collapse navbar-collapse' id='navbarLogout'>
+            <ul class='navbar-nav mt-lg-0 m-auto'>
+                <li class='nav-item nav-link'>
+                    <div class='nav-link'>@ViewBag.User</div>
+                </li>
+                <li class='nav-item nav-link'>
+                    <a class='nav-link' href='@Url.Action("Logout","Home")'><span class='fas fa-sign-out-alt'></span> Salir</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>

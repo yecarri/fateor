@@ -75,8 +75,36 @@ namespace Fateor.Setup
                     builder.Configuration.GetValue<string>("Fateor:Email:Sender:Email"),
                     builder.Configuration.GetValue<string>("Fateor:Email:Sender:Name")),
                 DisableAllEmails = builder.Configuration.GetValue<bool>("Fateor:Email:DisableAll"),
-                Templates = builder.Configuration.GetSection("Fateor:Email:Templates").Get<EmailTemplate[]>().ToList()
+
             };
+
+
+
+            var templates = builder.Configuration.GetSection("Fateor:Email:Templates").GetChildren().Select(t =>
+            {
+                var name = t.GetValue<string>("TemplateName");
+                var subject = t.GetValue<string>("Subject");
+                var file = t.GetValue<string>("FileName");
+
+                var s = t.GetSection("Sender");
+                EmailAddress? sender = null;
+                if (s!=null)
+                {
+                    sender = GetEmailAddressFromConfiguration(s);
+                }
+
+                var r = t.GetSection("Recipients");
+                List<EmailAddress>? recipients = null;
+                if (r!=null)
+                {
+                    recipients = r.GetChildren().Select(e => GetEmailAddressFromConfiguration(e)).ToList();
+                }
+
+                return new EmailTemplate(sender, recipients, name, file, subject);
+            });
+
+            emailConfiguration.Templates =templates;
+
 
             string systemUrl = builder.Configuration.GetValue<string>("System:Url");
 
@@ -148,5 +176,9 @@ namespace Fateor.Setup
                 ));
         }
 
+        private static EmailAddress GetEmailAddressFromConfiguration(IConfigurationSection s)
+        {
+            return new EmailAddress(s.GetValue<string>("Email"), s.GetValue<string>("Name"));
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace Fateor.Infrastructure.Entities
 {
     public class EmailTemplate
     {
-        public EmailTemplate(EmailAddress sender, IEnumerable<EmailAddress> recipients, string templateName, string fileName, string subject)
+        public EmailTemplate(EmailAddress? sender, IEnumerable<EmailAddress>? recipients, string templateName, string fileName, string subject)
         {
             Sender=sender;
             Recipients=recipients;
@@ -18,8 +18,8 @@ namespace Fateor.Infrastructure.Entities
             Subject=subject;
         }
 
-        public EmailAddress Sender { get; set; }
-        public IEnumerable<EmailAddress> Recipients { get; set; }
+        public EmailAddress? Sender { get; set; }
+        public IEnumerable<EmailAddress>? Recipients { get; set; }
         public string TemplateName { get; set; }
         public string FileName { get; set; }
         public string Subject { get; set; }

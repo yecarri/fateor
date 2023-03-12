@@ -1,0 +1,36 @@
+﻿<html>
+<head>
+    <style>
+        body, * {
+            font-family: 'Lucida Sans Unicode','Lucida Sans','Sans Serif',sans-serif
+        }
+
+        .table {
+            display: table;
+        }
+
+        .row {
+            display: row;
+        }
+
+        .cell {
+            display: cell;
+        }
+    </style>
+</head>
+<body>
+    <p>Hola {user.Login},</p>
+    <p>Se ha registrado un nuevo postulante en el Sistema de Miembros de la AHVIA.</p>
+    <table>
+        <tr>
+            <td>Nombre:</td>
+            <td>{member.FullName}</td>
+        </tr>        
+        <tr>
+            <td>Ciudad:</td>
+            <td>{member.City}</td>
+        </tr>
+    </table>
+    <p><a href='{url}'>{url}</a></p>    
+</body>
+</html>

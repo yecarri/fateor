@@ -8,7 +8,7 @@
             services.AddSingleton<Settings, Settings>(s =>
                 new Settings()
                 {
-                    SystemUrl = builder.Configuration.GetValue<string>("System:SustemUrl"),
+                    SystemUrl = builder.Configuration.GetValue<string>("System:Url"),
                     Site = builder.Configuration.GetValue<string>("System:Site"),
                     InitialQuestionnaire = builder.Configuration.GetValue<string>("Fateor:InitialPoll"),
                     SystemUserId = builder.Configuration.GetValue<int>("Fateor:SystemUserId"),

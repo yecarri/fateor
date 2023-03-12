@@ -7,13 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Karambolo.Extensions.Logging.File" Version="3.3.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Karambolo.Extensions.Logging.File" Version="3.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="oSoft.Data.Annotation" Version="1.2.0" />
     <PackageReference Include="oSoft.Mail" Version="1.0.1" />
     <PackageReference Include="oSoft.Mail.MailerSend" Version="1.0.0" />
@@ -24,11 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Fateor.Application\Fateor.Application.csproj" />
     <ProjectReference Include="..\Fateor.Infrastructure\Fateor.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\sites\ahvia\templates\" />
-    <Folder Include="wwwroot\sites\mlv\templates\" />
   </ItemGroup>
 
 </Project>

@@ -115,7 +115,7 @@ namespace Fateor.Application.Notification
                 throw new ArgumentNullException(nameof(user));
 
             var token = _userService.GetPasswordResetToken(user.UserId.Value);
-            string url = GetUrl($"user/transire/{token}");
+            string url = GetUrl($"user/passwordreset/{token}");
 
             var template = _emailConfiguration.Templates.FirstOrDefault(t => t.TemplateName == "passwordChange");
             if (template == null)

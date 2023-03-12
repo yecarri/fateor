@@ -34,8 +34,8 @@ namespace Fateor.Controllers
 
                 CurrentUser = new User
                 {
-                    Login = identity?.Claims?.First(c => c.Type == ClaimTypes.Name).Value ?? "",
-                    UserId = int.Parse(identity?.Claims?.First(c => c.Type == ClaimTypes.NameIdentifier).Value ?? "")
+                    Login = identity?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? "",
+                    UserId = int.Parse(identity?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "")
                 };
 
                 ViewBag.User = CurrentUser.Login;
