@@ -10,9 +10,6 @@ using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add logger
-builder.Logging.AddLog4Net();
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
