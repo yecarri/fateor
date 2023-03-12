@@ -43,7 +43,7 @@ namespace Fateor.Controllers
                                 IUnitService unitService,
                                 IIdentityDocumentService identityDocumentService,
                                 ICredentialService credentialService,
-                                Settings settings) : base(logger, mapper, encryptionService)
+                                Settings settings) : base(logger, mapper, encryptionService, settings)
         {
             _memberService=memberService;
             _locationService=locationService;

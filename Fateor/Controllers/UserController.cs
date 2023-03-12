@@ -16,11 +16,13 @@ namespace Fateor.Controllers
         private readonly Infrastructure.Services.IEncryptionService _encryptionService;
         private readonly Application.UserAccess.Services.IUserService _userService;
 
-        public UserController(ILogger<HomeController> logger,
-                              Infrastructure.Mappers.IMapper mapper,
-                              Infrastructure.Services.IEncryptionService encryptionService,
-                              Application.UserAccess.Services.IUserService userService)
-            : base(logger, mapper, encryptionService)
+        public UserController(
+            ILogger<HomeController> logger,
+            Infrastructure.Mappers.IMapper mapper,
+            Infrastructure.Services.IEncryptionService encryptionService,
+            Application.UserAccess.Services.IUserService userService,
+            Settings settings)
+            : base(logger, mapper, encryptionService, settings)
         {
             _userService = userService;
             _encryptionService=encryptionService;

@@ -14,8 +14,15 @@ namespace Fateor.Controllers
 
         public ChartController(ILogger logger,
                                IMapper mapper,
-                               IEncryptionService encryptionService) : base(logger, mapper, encryptionService)
+                               IEncryptionService encryptionService,
+                               Settings settings,
+                               IResponseService responseService,
+                               IQuestionnaireService questionnaireService,
+                               IMemberService memberService) : base(logger, mapper, encryptionService, settings)
         {
+            _responseService=responseService;
+            _questionnaireService=questionnaireService;
+            _memberService=memberService;
         }
 
         // GET: Chart

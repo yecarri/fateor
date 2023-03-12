@@ -20,7 +20,8 @@ namespace Fateor.Controllers
                                    IMapper mapper,
                                    IEncryptionService encryptionService,
                                    IStatusService statusService,
-                                   IMemberFeeBatchService memberFeeBatchService) : base(logger, mapper, encryptionService)
+                                   IMemberFeeBatchService memberFeeBatchService,
+                                   Settings settings) : base(logger, mapper, encryptionService, settings)
         {
             _statusService=statusService;
             _memberFeeBatchService=memberFeeBatchService;

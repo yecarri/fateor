@@ -22,7 +22,8 @@ namespace Fateor.Controllers
                                   IBulletinService bulletinService,
                                   IUnitService unitService,
                                   IStatusService statusService,
-                                  ILocationService locationService) : base(logger, mapper, encryptionService)
+                                  ILocationService locationService,
+                                  Settings settings) : base(logger, mapper, encryptionService, settings)
         {
             _bulletinService=bulletinService;
             _unitService=unitService;

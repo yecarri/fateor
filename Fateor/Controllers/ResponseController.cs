@@ -23,7 +23,7 @@ namespace Fateor.Controllers
                                   IQuestionnaireService questionnaireService,
                                   IResponseService responseService,
                                   IMemberService memberService,
-                                  Settings settings) : base(logger, mapper, encryptionService)
+                                  Settings settings) : base(logger, mapper, encryptionService, settings)
         {
             _questionnaireService=questionnaireService;
             _responseService=responseService;

@@ -12,20 +12,22 @@ namespace Fateor.Controllers
     {
         protected readonly ILogger _logger;
         protected readonly IMapper _mapper;
-
+        protected readonly Settings _settings;
         private readonly IEncryptionService _encryptionService;
         protected User? CurrentUser { get; set; }
 
-        public FateorControllerBase(ILogger logger, IMapper mapper, IEncryptionService encryptionService)
+        public FateorControllerBase(ILogger logger, IMapper mapper, IEncryptionService encryptionService, Settings settings)
         {
             _logger=logger;
             _mapper=mapper;
             _encryptionService=encryptionService;
-            CurrentUser = null;
+            _settings=settings; 
+            CurrentUser = null;            
         }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            ViewBag.Site = _settings.Site;
             var url = filterContext.HttpContext.Request.GetDisplayUrl();
             if (User.Identity?.IsAuthenticated ?? false)
             {

@@ -10,7 +10,8 @@ namespace Fateor.Controllers
     {
         public InternalController(ILogger<InternalController> logger,
                                   IMapper mapper,
-                                  IEncryptionService encryptionService) : base(logger, mapper, encryptionService)
+                                  IEncryptionService encryptionService,
+                                  Settings settings) : base(logger, mapper, encryptionService, settings)
         {
         }
 

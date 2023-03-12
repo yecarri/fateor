@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.VisualBasic;
 using Org.BouncyCastle.Asn1.Cms;
 using oSoft.Mail.Services;
@@ -20,18 +21,21 @@ namespace Fateor.Controllers
         private readonly IUserService _userService;
         private readonly INotificationService _notificationService;
         private readonly IWebHostEnvironment _environment;
+        private readonly Settings _settings;
 
         public HomeController(ILogger<HomeController> logger,
                               IUserService userService,
                               INotificationService notificationService,
-                              IWebHostEnvironment environment)
+                              IWebHostEnvironment environment,
+                              Settings settings)
         {
             _logger=logger;
             _userService=userService;
             _notificationService=notificationService;
             _environment=environment;
+            _settings=settings;
         }
-       
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -163,6 +167,12 @@ namespace Fateor.Controllers
             var filePath = Path.Combine(_environment.WebRootPath, $"/App_Data/UserPages/{page}.html");
             model.Content = System.IO.File.ReadAllText(filePath);
             return View(model);
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            ViewBag.Site = _settings.Site;
+            base.OnActionExecuting(filterContext);
         }
     }
 }

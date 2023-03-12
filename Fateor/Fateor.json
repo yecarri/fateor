@@ -1,0 +1,73 @@
+{
+  "System": {
+    "Site": "mlv",
+    "Url": "https://miembros-mlv.osoft.es/"
+  },
+  "Fateor": {
+    "InitialStatusId": 1,
+    "SystemUserId": 1,
+    "InitialPoll": "Test de Nolan",
+    "Credentials": {
+      "Enabled": false,
+      "AssemblyName": "Fateor.Application",
+      "TypeName": "Fateor.Application.Credentials.Services.MLVCredentialService"
+    },
+    "Email": {
+      "DisableAll": false,
+      "Service": {
+        "Provider": "mailgun",
+        "Domain": "mailgun.movimientolibertario.org",
+        "Key": "REDACTED"
+      },
+      "Sender": {
+        "Name": "Sistema de Miembros del MLV",
+        "Email": "miembros@movimientolibertario.org"
+      },
+      "Templates": [
+        {
+          "TemplateName": "welcome",
+          "Subject": "Bienvenido al MLV",
+          "FileName": "welcome.html"
+        },
+        {
+          "TemplateName": "notifyNewMember",
+          "Subject": "Se ha registrado un nuevo miembro",
+          "FileName": "notifyNewMember.html"
+        },
+        {
+          "TemplateName": "passwordChange",
+          "Subject": "Cambio de Password",
+          "FileName": "passwordChange.html"
+        },
+        {
+          "TemplateName": "test",
+          "Subject": "Test",
+          "FileName": "test.html",
+          "Sender": {
+            "Email": "yecarri@gmail.com",
+            "Name": "Yván Ecarri"
+          },
+          "Recipients": [
+
+            {
+              "Email": "yecarri@gmail.com",
+              "Name": "Yván Ecarri"
+            },
+            {
+              "Email": "yecarri@gmail.com",
+              "Name": "Yván Ecarri"
+            }
+          ]
+        }
+      ]
+    },
+    "UnitSelector": {
+      "DefaultUnitId": 1,
+      "AssemblyName": "Fateor.Application.Organization.Service",
+      "TypeName": "Fateor.Application.Organization.Service.MLVUnitSelector"
+    },
+    "ExternalUsersSystem": {
+      "CreateUser": false
+    }
+  }
+}

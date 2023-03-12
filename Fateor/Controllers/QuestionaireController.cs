@@ -16,7 +16,8 @@ namespace Fateor.Controllers
         public QuestionnaireController(ILogger<QuestionnaireController> logger,
                                        IMapper mapper,
                                        IEncryptionService encryptionService,
-                                       IQuestionnaireService questionnaireService) : base(logger, mapper, encryptionService)
+                                       IQuestionnaireService questionnaireService,
+                                       Settings settings) : base(logger, mapper, encryptionService, settings)
         {
             _questionnaireService=questionnaireService;
         }

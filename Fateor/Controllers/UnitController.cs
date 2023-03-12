@@ -20,7 +20,8 @@ namespace Fateor.Controllers
                               IMapper mapper,
                               IEncryptionService encryptionService,
                               IMemberService memberService,
-                              IUnitService unitService) : base(logger, mapper, encryptionService)
+                              IUnitService unitService,
+                              Settings settings) : base(logger, mapper, encryptionService, settings)
         {
             _memberService=memberService;
             _unitService=unitService;
