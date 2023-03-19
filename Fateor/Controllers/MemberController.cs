@@ -31,7 +31,6 @@ namespace Fateor.Controllers
         private readonly IIdentityDocumentService _identityDocumentService;
         private readonly ICredentialService _credentialService;
         private readonly IGdprService _gdprService;
-        private readonly Settings _settings;
         public MemberController(ILogger<MemberController> logger,
                                 IMapper mapper,
                                 IEncryptionService encryptionService,
@@ -60,7 +59,6 @@ namespace Fateor.Controllers
             _unitService=unitService;
             _identityDocumentService=identityDocumentService;
             _credentialService=credentialService;
-            _settings = settings;
             _gdprService=gdprService;
         }
 
