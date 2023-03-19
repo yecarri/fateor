@@ -23,6 +23,9 @@ namespace Fateor.Models
         [DisplayName("Incluir miembros borrados")]
         public bool IncludeDeleted { get; set; }
 
+        [DisplayName("Nombre / Apellido")]
+        public string? Name { get; set; }
+
         public List<Application.Organization.Entities.Member> Members { get; set; } = new List<Application.Organization.Entities.Member>();
 
         public List<Application.Location.Entities.Country> Countries { get; set; } = new List<Application.Location.Entities.Country>();

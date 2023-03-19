@@ -3,7 +3,7 @@
     ViewBag.Title = "Listado de Miembros";
 }
 @section Scripts
-    {    
+    {
     <link href='@Url.Content("~/lib/datatables/datatables.css")' rel="stylesheet" />
     <script type="text/javascript" src='@Url.Content("~/lib/datatables/datatables.js")'></script>
     <script type="text/javascript">
@@ -13,7 +13,7 @@
                 columns = [null, null, { visible: false }, { visible: false }, { visible: false }, { visible: false }, { visible: false }, { visible: false }, null];
             }
             else if (window.innerWidth <= 1024) {
-                columns = [null, {width: "30%"}, {"width": "12%" }, { visible: false }, { visible: false }, { visible: false }, { visible: false }, { visible: false }, null];
+                columns = [null, { width: "30%" }, { "width": "12%" }, { visible: false }, { visible: false }, { visible: false }, { visible: false }, { visible: false }, null];
             }
             else if (window.innerWidth <= 1280) {
                 columns = [null, { width: "20%" }, { "width": "20%" }, null, { visible: false }, { visible: false }, { visible: false }, { visible: false }, null];
@@ -26,25 +26,25 @@
             }
 
             var tbl = $("#membersTable");
-            
+
             if (typeof tbl.DataTable().destroy === "function")
                 tbl.DataTable().destroy();
 
             var table = tbl.DataTable(
-            {
-                language: {
-                    url: '@Url.Content("~/lib/DataTables/languages/Spanish.json")'
-                },
-                columns: columns,
-                fixedColumns: {
-                    heightMatch: 'none'
-                }
+                {
+                    language: {
+                        url: '@Url.Content("~/lib/DataTables/languages/Spanish.json")'
+                    },
+                    columns: columns,
+                    fixedColumns: {
+                        heightMatch: 'none'
+                    }
 
-            });
+                });
 
             $("#membersTable").on('click', 'tr', function () {
                 var data = table.row(this).data();
-                document.location.href = '@Url.Content("~/Member")/'+data[0];
+                document.location.href = '@Url.Content("~/Member")/' + data[0];
             });
         }
 
@@ -60,14 +60,19 @@
         }
     </style>
 }
+@if(Model.Command == "export")
+{
+    <iframe style="display:none" src="@Url.Content($"Member/Download?countryId={Model.CountryId}&regionId={Model.RegionId}&unitId={Model.UnitId}&statusId={Model.StatusId}&name={Model.Name}&includeDeleted={Model.IncludeDeleted}")"></iframe>
+}
 <div class="py-2 m-auto" style="width:85%;">
     <div class="card">
         <div class="card-header"><h3>Listado de Miembros</h3></div>
         @using (Html.BeginForm(FormMethod.Post))
         {
+            @Html.HiddenFor(m=> m.Command)
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-4 form-group">
+                    <div class="col col-md-4 form-group">
                         @Html.LabelFor(m => m.CountryId, htmlAttributes: new { @class = "control-label" })
                         @Html.DropDownListFor(m => m.CountryId, new SelectList(Model.Countries, "CountryId", "CountryName"), new { @class = "form-control" })
                     </div>
@@ -75,96 +80,103 @@
                         @Html.LabelFor(m => m.RegionId, htmlAttributes: new { @class = "control-label" })
                         @Html.DropDownListFor(m => m.RegionId, new SelectList(Model.Regions, "RegionId", "RegionFullName"), new { @class = "form-control" })
                     </div>
-                    <div class="col-md-4 form-group">
+                    <div class="col col-md-4 form-group">
                         @Html.LabelFor(m => m.UnitId, htmlAttributes: new { @class = "control-label" })
                         @Html.DropDownListFor(m => m.UnitId, new SelectList(Model.Units, "UnitId", "UnitName"), new { @class = "form-control" })
                     </div>
-                    <div class="col-md-4 form-group">
+                    <div class="col col-md-4 form-group">
                         @Html.LabelFor(m => m.StatusId, htmlAttributes: new { @class = "control-label" })
                         @Html.DropDownListFor(m => m.StatusId, new SelectList(Model.Statuses, "StatusId", "StatusDescription"), new { @class = "form-control" })
                     </div>
-                    <div class="col-md-4 form-group">
+                    <div class="col col-md-4 form-group">
+                        @Html.LabelFor(m => m.Name, htmlAttributes: new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                    </div>
+                    <div class="col col-md-4 form-group">
                         <div class="mt-4">
                             @Html.CheckBoxFor(m => m.IncludeDeleted)
                             @Html.LabelFor(m => m.IncludeDeleted)
                         </div>
                     </div>
-                    <div class="col-md-4 form-group">
-                        <div class="mt-4">
-                            <input type="submit" value="Filtrar" class="btn btn-secondary" />
-                        </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col d-flex justify-content-end">
+                        <button class="btn btn-secondary me-1" type="button" onclick="$('Input[name=Command]').val('export'); form.submit();">Exportar&nbsp;&nbsp;<span style="background-color:white; color:green"class="fa fa-file-excel"></span></button>
+                        <button class="btn btn-secondary me-1" type="button" onclick="$('Input[name=Command]').val(''); form.submit();">Filtrar</button>                        
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-2">
                     <div class="col">
-                        <table id="membersTable" class="table">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Id
-                                    </th>
-                                    <th>
-                                        Nombre
-                                    </th>
-
-                                    <th>
-                                        Email
-                                    </th>
-                                    <th>
-                                        Identificación
-                                    </th>
-                                    <th>
-                                        País
-                                    </th>
-                                    <th>
-                                        Estado/Provincia
-                                    </th>
-                                    <th>
-                                        Sección
-                                    </th>
-                                    <th>
-                                        Estatus
-                                    </th>
-                                    <th>
-                                        Borrado
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.Members)
-                                {
+                        <div style="border-top:inset; border-left:inset; border-right:inset; border-bottom:1px solid lightgray; width: 100%; padding:5px;">
+                            <table id="membersTable" class="table">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.MemberId)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.FullName)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Email)
-                                        </td>
-                                        <td class="text-right">
-                                            @Html.DisplayFor(modelItem => item.IdentityDocumentNumber)
-                                        </td>
-                                        <td>
-                                            @(Model.Countries.FirstOrDefault(c => c.CountryId == item.CountryId)?.CountryName)
-                                        </td>
-                                        <td>
-                                            @(Model.Regions.FirstOrDefault(c => c.RegionId == item.RegionId)?.RegionName)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.LastStatus.UnitName)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.LastStatus.StatusDescription)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.IsDeleted)
-                                        </td>
+                                        <th>
+                                            Id
+                                        </th>
+                                        <th>
+                                            Nombre
+                                        </th>
+
+                                        <th>
+                                            Email
+                                        </th>
+                                        <th>
+                                            Identificación
+                                        </th>
+                                        <th>
+                                            País
+                                        </th>
+                                        <th>
+                                            Estado/Provincia
+                                        </th>
+                                        <th>
+                                            Sección
+                                        </th>
+                                        <th>
+                                            Estatus
+                                        </th>
+                                        <th>
+                                            Borrado
+                                        </th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Members)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.MemberId)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.FullName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Email)
+                                            </td>
+                                            <td class="text-right">
+                                                @Html.DisplayFor(modelItem => item.IdentityDocumentNumber)
+                                            </td>
+                                            <td>
+                                                @(Model.Countries.FirstOrDefault(c => c.CountryId == item.CountryId)?.CountryName)
+                                            </td>
+                                            <td>
+                                                @(Model.Regions.FirstOrDefault(c => c.RegionId == item.RegionId)?.RegionName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.LastStatus.UnitName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.LastStatus.StatusDescription)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.IsDeleted)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

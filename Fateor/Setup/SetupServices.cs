@@ -1,5 +1,7 @@
 ﻿using Fateor.Application.Credentials.Services;
 using Fateor.Application.External;
+using Fateor.Application.Gdpr.Repositories.Interfaces;
+using Fateor.Application.Gdpr.Services;
 using Fateor.Application.Location.Repositories.Interfaces;
 using Fateor.Application.Location.Services;
 using Fateor.Application.Notification;
@@ -170,9 +172,15 @@ namespace Fateor.Setup
                 ));
 
             services.AddScoped<IMemberFeeBatchService, MemberFeeBatchService>(s => new MemberFeeBatchService(
-                s.GetRequiredService<IMapper>(),
-                s.GetRequiredService<ILogger<MemberFeeBatchService>>(),
                 s.GetRequiredService<IMemberFeeUnitOfWork>()
+,
+                s.GetRequiredService<IMapper>(),
+                s.GetRequiredService<ILogger<MemberFeeBatchService>>()));
+
+            services.AddScoped<IGdprService, GdprService>(s => new GdprService(
+                s.GetRequiredService<IGdprUnitOfWork>(),
+                s.GetRequiredService<IMapper>(),
+                s.GetRequiredService<ILogger<MemberFeeBatchService>>()
                 ));
         }
 

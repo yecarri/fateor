@@ -15,9 +15,9 @@ namespace Fateor.Application.Organization.Service
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public MemberFeeBatchService(IMapper mapper,
-                                     ILogger<MemberFeeBatchService> logger,
-                                     IMemberFeeUnitOfWork memberFeeUnitOfWork)
+        public MemberFeeBatchService(IMemberFeeUnitOfWork memberFeeUnitOfWork,
+                                     IMapper mapper,
+                                     ILogger<MemberFeeBatchService> logger)
         {
             _mapper=mapper;
             _logger=logger;
@@ -78,7 +78,7 @@ namespace Fateor.Application.Organization.Service
 
                 x.Amout = batch.Amount;
                 var matches = re.Matches(batch.ReferencePattern);
-                string rep;
+                string textToreplace;
 
                 foreach (Match match in matches)
                 {
@@ -90,12 +90,12 @@ namespace Fateor.Application.Organization.Service
                         case "FD":
                             format = match.Groups["format"];
                             s= format.Value.ToUpper();
-                            rep=FormatDatePart(DateTime.Now, s);
+                            textToreplace=FormatDatePart(batch.DateFrom, s);
                             break;
                         case "FH":
                             format = match.Groups["format"];
                             s= format.Value.ToUpper();
-                            rep=FormatDatePart(DateTime.Now, s);
+                            textToreplace=FormatDatePart(batch.DateTo, s);
                             break;
                         case "U":
                             var element = match.Groups["element"];
@@ -103,30 +103,30 @@ namespace Fateor.Application.Organization.Service
                             switch(element.Value.ToUpper())
                             {
                                 case "ID":
-                                    rep = m.MemberId.ToString();
+                                    textToreplace = m.MemberId.ToString();
                                     break;
                                 case "N":
-                                    rep = m.GivenName;
+                                    textToreplace = m.GivenName;
                                     break;
                                 case "A":
-                                    rep = m.Surname;
+                                    textToreplace = m.Surname;
                                     break;
                                 default:
-                                    rep = token.Value;
+                                    textToreplace = token.Value;
                                     break;
                             }
                             if (length != null)
                             {
                                 int l = int.Parse(length.Value);
-                                rep = (new string('0',l-rep.Length) + rep);
+                                textToreplace = (new string('0',l-textToreplace.Length) + textToreplace);
                             }
                             break;
                         default:
-                            rep = token.Value;
+                            textToreplace = token.Value;
                             break;
                     }
                     
-                    sb.Replace(match.Value, rep);
+                    sb.Replace(match.Value, textToreplace);
                 }
                 x.FeeReference = sb.ToString();
                 return x;

@@ -11,6 +11,7 @@
     <None Remove="Scripts\20230205_vw_org_MemberStatus.sql" />
     <None Remove="Scripts\20230205_vw_qst_answers.sql" />
     <None Remove="Scripts\20230226_MemberStatus.sql" />
+    <None Remove="Scripts\20230318_GDPR.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +25,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Scripts\20230226_MemberStatus.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scripts\20230318_GDPR.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

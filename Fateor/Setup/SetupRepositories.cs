@@ -12,6 +12,8 @@ using Fateor.Application.Questionnaires.Repositories.Interfaces;
 using Fateor.Application.Questionnaires.Repositories.MySql;
 using Fateor.Application.Location.Repositories.Interfaces;
 using Fateor.Application.Location.Repositories.MySql;
+using Fateor.Application.Gdpr.Repositories.Interfaces;
+using Fateor.Application.Gdpr.Repositories.MySql;
 
 namespace Fateor.Setup
 {
@@ -38,6 +40,7 @@ namespace Fateor.Setup
             builder.Services.AddScoped<IResponseUnitOfWork, ResponseUnitOfWork>(s => new ResponseUnitOfWork(builder.Configuration.GetConnectionString("fateor")));
             builder.Services.AddScoped<IQuestionnaireUnitOfWork, QuestionnaireUnitOfWork>(s => new QuestionnaireUnitOfWork(builder.Configuration.GetConnectionString("fateor")));
             builder.Services.AddScoped<IMemberFeeUnitOfWork, MemberFeeUnitOfWork>(s => new MemberFeeUnitOfWork(builder.Configuration.GetConnectionString("fateor")));
+            builder.Services.AddScoped<IGdprUnitOfWork, GdprUnitOfWork>(s => new GdprUnitOfWork(builder.Configuration.GetConnectionString("fateor")));            
         }
     }
 }

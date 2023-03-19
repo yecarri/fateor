@@ -1,5 +1,7 @@
-﻿using Fateor.Application.Credentials.Services;
+﻿using DocumentFormat.OpenXml.EMMA;
+using Fateor.Application.Credentials.Services;
 using Fateor.Application.External;
+using Fateor.Application.Gdpr.Services;
 using Fateor.Application.Location.Entities;
 using Fateor.Application.Location.Services;
 using Fateor.Application.Notification;
@@ -28,6 +30,7 @@ namespace Fateor.Controllers
         private readonly IUnitService _unitService;
         private readonly IIdentityDocumentService _identityDocumentService;
         private readonly ICredentialService _credentialService;
+        private readonly IGdprService _gdprService;
         private readonly Settings _settings;
         public MemberController(ILogger<MemberController> logger,
                                 IMapper mapper,
@@ -43,6 +46,7 @@ namespace Fateor.Controllers
                                 IUnitService unitService,
                                 IIdentityDocumentService identityDocumentService,
                                 ICredentialService credentialService,
+                                IGdprService gdprService,
                                 Settings settings) : base(logger, mapper, encryptionService, settings)
         {
             _memberService=memberService;
@@ -57,6 +61,7 @@ namespace Fateor.Controllers
             _identityDocumentService=identityDocumentService;
             _credentialService=credentialService;
             _settings = settings;
+            _gdprService=gdprService;
         }
 
         [HttpGet]
@@ -73,8 +78,60 @@ namespace Fateor.Controllers
         public ActionResult List(MemberListViewModel model)
         {
             LoadMemberListAggregations(model);
-
             return View(model);
+        }
+
+        [HttpGet]
+        [Route("Member/Download")]
+        public FileResult Download(
+            [FromQuery] string? name = null,
+            [FromQuery] int countryId = -1,
+            [FromQuery] int regionId = -1,
+            [FromQuery] int unitId = -1,
+            [FromQuery] int statusId = -1,
+            [FromQuery] bool includeDeleted = false)
+        {
+            if (CurrentUser != null && CurrentUser.UserId != null)
+            {
+                var ms = new MemoryStream();
+                var wb = new ClosedXML.Excel.XLWorkbook();
+                var ws = wb.Worksheets.Add("Miembros");
+                var countries = _locationService.GetCountries();
+                var regions = _locationService.GetRegions();
+
+                var members = GetMembers(name, countryId, regionId, unitId, statusId, includeDeleted);
+                
+                var data = members
+                    .Join(countries, m => m.CountryId, c => c.CountryId, (Member, Country) => new { Member, Country })
+                    .Join(regions, m => m.Member.RegionId, r => r.RegionId, (x, Region) => new { x.Member, x.Country, Region })
+                    .Select(m => new
+                    {
+                        m.Member.MemberId,
+                        m.Member.GivenName,
+                        m.Member.Surname,
+                        m.Member.Email,
+                        IdentityDocumentType = m.Member.IdentityDocumentTypeId switch { 1 => "Cédula", _ => "Otro" },
+                        m.Member.BirthDate,
+                        m.Member.Phone,
+                        m.Member.Address1,
+                        m.Member.Address2,
+                        Country = m.Country.CountryName,
+                        Region = m.Region.RegionName,
+                        m.Member.City,
+                        m.Member.PostCode,
+                        m.Member.MemberCode,
+                        Unit = m.Member.LastStatus?.UnitName,
+                        Status = m.Member.LastStatus?.StatusDescription
+                    });
+                ws.Cell(1, 1).InsertTable(data);
+                wb.SaveAs(ms);
+                _gdprService.Save(CurrentUser.UserId.Value, members, true);
+                return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Members-{DateTime.Now:yyMMdd-HHmmss}.xlsx");
+            }
+            else
+            {
+                throw new NullReferenceException(nameof(CurrentUser));
+            }
         }
 
         [HttpGet]
@@ -247,8 +304,8 @@ namespace Fateor.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]        
-        [Route("")]        
+        [AllowAnonymous]
+        [Route("")]
         [Route("Registration")]
         public ActionResult Registration()
         {
@@ -330,7 +387,7 @@ namespace Fateor.Controllers
                 return Redirect(Url.Content($"~/RegistrationOK"));
             }
         }
-        
+
         [AllowAnonymous]
         [Route("RegistrationOk")]
         public ActionResult RegistrationOk()
@@ -340,40 +397,53 @@ namespace Fateor.Controllers
 
         private void LoadMemberListAggregations(MemberListViewModel model)
         {
-            model.Members = _memberService.GetAllMembers().ToList();
-            model.Countries = _locationService.GetCountries()
-                .Where(c => model.Members.Any(m => m.CountryId == c.CountryId))
-                .OrderBy(c => c.CountryName)
-                .ToList();
+            if (CurrentUser != null && CurrentUser.UserId != null)
+            {
+                model.Members = _memberService.GetAllMembers().ToList();
+                model.Countries = _locationService.GetCountries()
+                    .Where(c => model.Members.Any(m => m.CountryId == c.CountryId))
+                    .OrderBy(c => c.CountryName)
+                    .ToList();
 
-            model.Countries.Insert(0, new Application.Location.Entities.Country() { CountryId = -1, CountryName = "- Todos -" });
+                model.Countries.Insert(0, new Application.Location.Entities.Country() { CountryId = -1, CountryName = "- Todos -" });
 
-            model.Regions = model.Countries.SelectMany(c => _locationService.GetRegionsByCountryId(c.CountryId))
-                .Where(l => model.Members.Any(m => m.RegionId == l.RegionId))
-                .OrderBy(r => r.CountryName)
-                .ThenBy(r => r.RegionName)
-                .ToList();
+                model.Regions = model.Countries.SelectMany(c => _locationService.GetRegionsByCountryId(c.CountryId))
+                    .Where(l => model.Members.Any(m => m.RegionId == l.RegionId))
+                    .OrderBy(r => r.CountryName)
+                    .ThenBy(r => r.RegionName)
+                    .ToList();
 
-            model.Regions.Insert(0, new Application.Location.Entities.Region() { RegionId = -1, RegionName = "- Todos -" });
+                model.Regions.Insert(0, new Application.Location.Entities.Region() { RegionId = -1, RegionName = "- Todos -" });
 
-            model.Statuses =_statusService.GetStatuses()
-                .Where(s => !s.IsDeleted)
-                .ToList();
+                model.Statuses =_statusService.GetStatuses()
+                    .Where(s => !s.IsDeleted)
+                    .ToList();
 
-            model.Statuses.Insert(0, new Status() { StatusId = -1, StatusDescription = "- Todos -" });
+                model.Statuses.Insert(0, new Status() { StatusId = -1, StatusDescription = "- Todos -" });
 
-            model.Units = _unitService.GetUnits().Where(u => !u.IsDeleted).ToList();
-            model.Units.Insert(0, new Unit() { UnitId = -1, UnitName = "- Todas -" });
+                model.Units = _unitService.GetUnits().Where(u => !u.IsDeleted).ToList();
+                model.Units.Insert(0, new Unit() { UnitId = -1, UnitName = "- Todas -" });
+                model.Members = GetMembers(model.Name, model.CountryId, model.RegionId, model.UnitId, model.StatusId, model.IncludeDeleted);
 
-            model.Members = model.Members.Where(m =>
-                (model.CountryId == -1 || m.CountryId == model.CountryId) &&
-                (model.RegionId == -1 || m.RegionId == model.RegionId) &&
-                (model.UnitId == -1 || m.LastStatus?.UnitId == model.UnitId) &&
-                (model.StatusId == -1 || m.LastStatus?.StatusId == model.StatusId) &&
-                (model.IncludeDeleted || !m.IsDeleted)
+                _gdprService.Save(CurrentUser.UserId.Value, model.Members);
+                _logger.LogInformation("OK");
+            }
+            else
+            {
+                throw new NullReferenceException(nameof(CurrentUser));
+            }
+        }
+
+        private List<Member> GetMembers(string? name, int countryId, int regionId, int unitId, int statusId, bool includeDeleted)
+        {
+            return _memberService.GetAllMembers().ToList().Where(m =>
+                (countryId == -1 || m.CountryId == countryId) &&
+                (regionId == -1 || m.RegionId == regionId) &&
+                (unitId == -1 || m.LastStatus?.UnitId == unitId) &&
+                (statusId == -1 || m.LastStatus?.StatusId == statusId) &&
+                (name == null || m.FullName.ToLower().Contains(name.ToLower())) &&
+                (includeDeleted || !m.IsDeleted)
             ).ToList();
-
-            _logger.LogInformation("OK");
         }
 
         private void LoadMeberAggregations(MemberViewModel model)
