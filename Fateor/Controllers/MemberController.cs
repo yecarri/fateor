@@ -96,19 +96,22 @@ namespace Fateor.Controllers
                 var ws = wb.Worksheets.Add("Miembros");
                 var countries = _locationService.GetCountries();
                 var regions = _locationService.GetRegions();
+                var documents = _identityDocumentService.GetDocumentTypes();
 
                 var members = GetMembers(name, countryId, regionId, unitId, statusId, includeDeleted);
                 
                 var data = members
                     .Join(countries, m => m.CountryId, c => c.CountryId, (Member, Country) => new { Member, Country })
                     .Join(regions, m => m.Member.RegionId, r => r.RegionId, (x, Region) => new { x.Member, x.Country, Region })
+                    .Join(documents, m=> m.Member.IdentityDocumentTypeId, d=> d.IdentityDocumentTypeId, (x, Document) => new { x.Member, x.Country, x.Region, Document})
                     .Select(m => new
                     {
                         m.Member.MemberId,
                         m.Member.GivenName,
                         m.Member.Surname,
                         m.Member.Email,
-                        IdentityDocumentType = m.Member.IdentityDocumentTypeId switch { 1 => "Cédula", _ => "Otro" },
+                        m.Document.IdentityDocument,
+                        m.Member.IdentityDocumentNumber,
                         m.Member.BirthDate,
                         m.Member.Phone,
                         m.Member.Address1,
