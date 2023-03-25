@@ -8,34 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\lib\bootstrap\**" />
+    <Compile Remove="wwwroot\lib\smartmenus\**" />
     <Content Remove="wwwroot\lib\bootstrap\**" />
+    <Content Remove="wwwroot\lib\smartmenus\**" />
     <EmbeddedResource Remove="wwwroot\lib\bootstrap\**" />
+    <EmbeddedResource Remove="wwwroot\lib\smartmenus\**" />
     <None Remove="wwwroot\lib\bootstrap\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\lib\smartmenus\css\sm-blue\mixins\_round-corners-last-item.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-blue\mixins\_sub-items-indentation.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-blue\sm-blue.css.map" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-blue\sm-blue.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-blue\_mixins.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-blue\_sm-blue-theme.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-clean\mixins\_round-corners-last-item.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-clean\mixins\_sub-items-indentation.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-clean\sm-clean.css.map" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-clean\sm-clean.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-clean\_mixins.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-clean\_sm-clean-theme.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-mint\mixins\_sub-items-indentation.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-mint\sm-mint.css.map" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-mint\sm-mint.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-mint\_mixins.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-mint\_sm-mint-theme.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-simple\mixins\_sub-items-indentation.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-simple\sm-simple.css.map" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-simple\sm-simple.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-simple\_mixins.scss" />
-    <None Include="wwwroot\lib\smartmenus\css\sm-simple\_sm-simple-theme.scss" />
+    <None Remove="wwwroot\lib\smartmenus\**" />
   </ItemGroup>
 
   <ItemGroup>
