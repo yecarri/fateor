@@ -27,42 +27,65 @@ body {
     font-size: 1rem;
 }
 
-
-input,
-textarea,
-select {
+.form-field input,
+.form-field textarea,
+.form-field select {
     font-family: var(--o-font-family);
     font-weight: 300;
     font-size: 1rem;
     border: 1px inset;
 }
 
-input, select {
+.form-field input,
+.form-field select {
     border-radius: 5px 5px 5px 5px;
     padding: 3px 7px 3px 7px;
     color: #505050;
 }
 
-    input[type=text],
-    input[type=tel],
-    input[type=email],
-    input[type=number],
-    input[type=password],
-    input[type=range],
-    input[type=url],
-    text, textarea {
+    .form-field input[type=text],
+    .form-field input[type=tel],
+    .form-field input[type=email],
+    .form-field input[type=number],
+    .form-field input[type=password],
+    .form-field input[type=range],
+    .form-field input[type=url],
+    .form-field text, textarea {
         width: 15em;
     }
 
-    input[type=select], select {
+    .form-field input[type=select],
+    .form-field select {
         width: 16em;
     }
 
-    input[type=checkbox] {
-        display: inline;
+.form-checkbox input[type=checkbox] {
+    display: inline;
+}
+
+table.form-table{
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+    
+}
+
+    table.form-table th,
+    table.form-table td {
+        border: 1px solid #c5c5c5;
+        border-collapse: collapse;
+        padding: 10px;
     }
 
-    button, input[type=button], input[type=submit] {
+    table.form-table th {
+        background-color: #f6f6f6;
+        text-align: left;
+        color: black;
+    }
+    button.form-button,
+    input[type=button].form-button,
+    input[type=submit].form-button,
+    input[type=reset].form-button {
         font-size: 0.9rem;
         font-family: Roboto;
         font-weight: 300;
@@ -76,9 +99,12 @@ input, select {
         background-image: linear-gradient(var(--o-button-background-color) 85%, var(--o-button-background-color-darker));
     }
 
-        button:active, input[type=button]:active, input[type=submit]:active {
-            background-image: linear-gradient(var(--o-button-background-color-darker) 15%, var(--o-button-background-color)) !important;
-        }
+button:active.form-button,
+input[type=button]:active.form-button,
+input[type=submit]:active.form-button,
+input[type=reset]:active.form-button {
+    background-image: linear-gradient(var(--o-button-background-color-darker) 15%, var(--o-button-background-color)) !important;
+}
 
 
 h1 {
@@ -94,20 +120,18 @@ h2 {
 h3 {
     font-size: 1.5em;
     font-weight: 700;
-    margin-bottom: 0;
 }
 
 h4 {
     font-size: 1.25em;
     font-weight: 700;
-    margin-bottom: 0;
 }
 
 h5 {
     font-size: 1em;
     font-weight: 700;
     margin-top: 1em;
-    margin-bottom: 0;
+    margin-bottom: 1em;
 }
 
 h6 {
@@ -138,8 +162,8 @@ footer {
     color: var(--o-header-color);
     text-align: center;
     min-height: 60px;
-    display:block;
-    border: 1px solid red;
+    display: block;
+    padding-top: 1em;
 }
 
 .modal {
@@ -169,9 +193,9 @@ footer {
     line-height: 2em;
 }
 
-.text ul {
-    padding-left: 1em;
-}
+    .text ul {
+        padding-left: 1em;
+    }
 
 .bold {
     font-weight: 700;

@@ -5,7 +5,7 @@
 }
 @section Scripts
     {
-    <script src="~/Scripts/regions.js"></script>
+    <script src="~/js/regions.js"></script>
     <script type="text/javascript">
         function submitForm(command) {
             $("#@Html.IdFor(m=>m.Command)").val(command);
@@ -15,118 +15,104 @@
         function onCountryChanged() {
             var url = '@Url.Content("~/api/country")';
             setRegions(url, '#@Html.IdFor(m=> Model.CountryId)', '#@Html.IdFor(m=> Model.RegionId)');
-        }
+        }        
     </script>
 }
-    <div class="container py-2">
-        <div class="card">
-        @using (Model.New ? Html.BeginForm("Create", "Member", FormMethod.Post) : Html.BeginForm("Edit", "Member", FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(m => m.Command)            
-            <div class="card-header">
-                <h3>@(Model.New ? "Nuevo Registro" : $"{Model.GivenName} {Model.Surname}")</h3>
+<div class="container">
+    @using (Model.New ? Html.BeginForm("Create", "Member", FormMethod.Post) : Html.BeginForm("Edit", "Member", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Command)
+        <h3>@(Model.New ? "Nuevo Registro" : $"{Model.GivenName} {Model.Surname}")</h3>
+
+        @Html.HiddenFor(model => model.MemberId)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <partial name="Member"></partial>
+        <div class="form-section">
+            <div class="form-field">
+                @{
+                    bool hasCredential = !string.IsNullOrWhiteSpace(Model.MemberCode);
+                    object memberCodeHtmlAttributes = hasCredential ?
+                    (object)(new { @class = "form-control", @readonly = "true" }) :
+                    (object)(new { @class = "form-control" });
+                }
+                @Html.LabelFor(model => model.MemberCode, htmlAttributes: new { @class = "control-label" })
+                @Html.TextBoxFor(model => model.MemberCode, memberCodeHtmlAttributes)
+                @Html.ValidationMessageFor(model => model.MemberCode, "", new { @class = "text-danger" })
             </div>
-            <div class="card-body">
-                @Html.HiddenFor(model => model.MemberId)
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <partial name="Member"></partial>                
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        @{
-                            bool hasCredential = !string.IsNullOrWhiteSpace(Model.MemberCode);
-                            object memberCodeHtmlAttributes = hasCredential ? 
-                                (object) (new { @class = "form-control", @readonly = "true" }) : 
-                                (object) (new { @class = "form-control" });
+            <div class="form-field">
+                @if (hasCredential)
+                {
+                    <input type="button" class="form-button" style="margin-top: 1rem;" onclick="submitForm('PrintCredential')" value="Imprimir Credencial" />
+                }
+                else
+                {
+                    <input type="button" class="form-button" style="margin-top: 1rem;" onclick="submitForm('AssignMemberCode')" value="Asignar Credencial" />
+                }
+            </div>
+            <div class="form-field form-checkbox">
+                @Html.CheckBoxFor(model => model.IsDeleted)
+                @Html.LabelFor(model => model.IsDeleted)
+            </div>
+        </div>
+        <div>
+            <h5>Historial</h5>
+            <table id="status" class="form-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Sección</th>
+                        <th>Estatus</th>
+                        <th>Actualizado por</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.MemberStatuses != null)
+                    {
+                        for (int i = 0; i < Model.MemberStatuses.Count; i++)
+                        {
+                            @Html.EditorFor(m => Model.MemberStatuses[i])
                         }
-                        @Html.LabelFor(model => model.MemberCode, htmlAttributes: new { @class = "control-label" })
-                        @Html.TextBoxFor(model => model.MemberCode, memberCodeHtmlAttributes)
-                        @Html.ValidationMessageFor(model => model.MemberCode, "", new { @class = "text-danger" })
-                </div>
-                <div class="col-md-4">
-                    @if (hasCredential)
-                    {
-                                        <input type="button" class="btn btn-secondary" style="margin-top: 1.7rem;" onclick="submitForm('PrintCredential')" value="Imprimir Credencial" />
                     }
-                    else
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h5>Cuestionarios</h5>
+            <table id="polls" class="form-table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Cuestionario</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Responses != null)
                     {
-                                        <input type="button" class="btn btn-secondary" style="margin-top: 1.7rem;" onclick="submitForm('AssignMemberCode')" value="Asignar Credencial" />
+                        for (int i = 0; i < Model.Responses.Count; i++)
+                        {
+                            @Html.EditorFor(m => Model.Responses[i])
+                        }
                     }
-                </div>
-                <div class="form-group col-md-4">
-                    <div style="padding-top:2.5rem;">
-                        @Html.CheckBoxFor(model => model.IsDeleted, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.LabelFor(model => model.IsDeleted, htmlAttributes: new { @class = "control-label" })
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="col-12">
-                    <h5>Historial</h5>
-                    <table id="status" class="table">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Sección</th>
-                                <th>Estatus</th>
-                                <th>Actualizado por</th>
-                                <th>Fecha</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.MemberStatuses != null)
-                            {
-                                for (int i = 0; i < Model.MemberStatuses.Count; i++)
-                                {
-                                                        @Html.EditorFor(m => Model.MemberStatuses[i])
-                                }
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="col-12">
-                    <h5>Cuestionarios</h5>
-                    <table id="status" class="table">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Cuestionario</th>
-                                <th>Fecha</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.Responses != null)
-                            {
-                                for (int i = 0; i < Model.Responses.Count; i++)
-                                {
-                                                        @Html.EditorFor(m => Model.Responses[i])
-                                }
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                </tbody>
+            </table>
+
         </div>
         <input type="hidden" value="@Model.MemberId" name="id" />
-        <div class="card-footer">
-            <div class="col-md-4 offset-md-8">
-                <input type="button" value="Volver" class="btn btn-secondary" onclick="document.location.href = '@Url.Action("List")';" />
-                <input type="button" value="Cambiar Estatus" class="btn btn-secondary" onclick="document.location.href = '@Url.Content("~/Member/UpdateStatus")/@Model.MemberId';" />
-                <input type="button" value="Guardar" class="btn btn-primary" onclick="submitForm('Save');" />
-            </div>
+        <div class="form-section">
+            <input type="button" class="form-button" value="Volver" onclick="document.location.href = '@Url.Action("List")';" />
+            <input type="button" class="form-button" value="Cambiar Estatus" onclick="document.location.href = '@Url.Content("~/Member/UpdateStatus")/@Model.MemberId';" />
+            <input type="button" class="form-button" value="Guardar" onclick="submitForm('Save');" />
         </div>
-        }
-    </div>
-    @if (Model.Messages?.Count > 0)
-    {
-    <div class="card bg-warning mt-2">
-
-        <div class="container">
-            <partial name="_Error" model="Model.Messages">            
-        </div>
-
-    </div>
     }
 </div>
+@if (Model.Messages?.Count > 0)
+{
+    <div class="card bg-warning mt-2">
+        <div class="container">
+            <partial name="_Error" model="Model.Messages">
+        </div>
+    </div>
+}

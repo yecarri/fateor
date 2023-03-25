@@ -2,11 +2,7 @@
 @{
     ViewBag.Title = "Registro de Miembro";
 }
-<div class="form-section">
-    <div class="col">
-        <h5>Datos Personales</h5>
-    </div>
-</div>
+<h5>Datos Personales</h5>
 <div class="form-section">
     <div class="form-field">
         @Html.LabelFor(model => model.GivenName)
@@ -24,8 +20,8 @@
     <div class="form-field">
         @Html.LabelFor(model => model.IdentityDocumentTypeId)
         @Html.DropDownListFor(model => model.IdentityDocumentTypeId,
-            new SelectList(Model.DocumentTypes, "IdentityDocumentTypeId", "IdentityDocument"),
-            new { @class = "form-control" })
+        new SelectList(Model.DocumentTypes, "IdentityDocumentTypeId", "IdentityDocument"),
+        new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.IdentityDocumentTypeId, "", new { @class = "text-danger" })
 
     </div>
@@ -37,18 +33,14 @@
     <div class="form-field">
         @Html.LabelFor(model => model.BirthDate)
         @Html.TextBoxFor(model => model.BirthDate, "{0:yyyy-MM-dd}",
-           new
-           {
-               @type = "date"
-           })
+        new
+        {
+        @type = "date"
+        })
         @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
     </div>
 </div>
-<div class="row mt-3">
-    <div class="col">
-        <h5>Datos de Contacto</h5>
-    </div>
-</div>
+<h5>Datos de Contacto</h5>
 <div class="form-section">
     <div class="form-field">
         @Html.LabelFor(model => model.Email)
@@ -72,34 +64,28 @@
         <label style="font-size:.66rem;">Dirección (2ª línea)</label>
         @Html.EditorFor(model => model.Address2)
         @Html.ValidationMessageFor(model => model.Address2, "", new { @class = "text-danger" })
-
+    </div>   
+    <div class="form-field">
+        @Html.LabelFor(model => model.CountryId)
+        @Html.DropDownListFor(model => model.CountryId, new SelectList(Model.Countries, "CountryId", "CountryName"),
+        new { @class = "form-control", @onchange = "onCountryChanged();" })
+        @Html.ValidationMessageFor(model => model.CountryId, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-field">
+        @Html.LabelFor(model => model.RegionId)
+        @Html.DropDownListFor(model => model.RegionId, new SelectList(Model.Regions, "RegionId", "RegionName"),
+        new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.RegionId, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-field">
+        @Html.LabelFor(model => model.City)
+        @Html.EditorFor(model => model.City)
+        @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
     </div>
     <div class="form-field">
         @Html.LabelFor(m => Model.PostCode)
         @Html.EditorFor(model => model.PostCode)
         @Html.ValidationMessageFor(model => model.PostCode, "", new { @class = "text-danger" })
     </div>
-    <div class="col-md-4">
-    </div>
-</div>
-<div class="form-section">
-    <div class="form-field">
-        @Html.LabelFor(model => model.City)
-        @Html.EditorFor(model => model.City)
-        @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
-    </div>
 
-    <div class="form-field">
-        @Html.LabelFor(model => model.RegionId)
-        @Html.DropDownListFor(model => model.RegionId, new SelectList(Model.Regions, "RegionId", "RegionName"),
-            new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.RegionId, "", new { @class = "text-danger" })
-    </div>
-
-    <div class="form-field">
-        @Html.LabelFor(model => model.CountryId)
-        @Html.DropDownListFor(model => model.CountryId, new SelectList(Model.Countries, "CountryId", "CountryName"),
-            new { @class = "form-control", @onchange = "onCountryChanged();" })
-        @Html.ValidationMessageFor(model => model.CountryId, "", new { @class = "text-danger" })
-    </div>
 </div>
