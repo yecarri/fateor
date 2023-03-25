@@ -15,12 +15,12 @@
         @Html.HiddenFor(m => Model.StatusId)
         @Html.HiddenFor(m => Model.IsActiveMember)
     </td>
-    <td>
+    <td class="hide-in-small">
         @Html.DisplayFor(m => Model.LastModificationUser)
         @Html.HiddenFor(m => Model.LastModificationUser)
         @Html.HiddenFor(m => Model.LastModificationUserId)
     </td>
-    <td>
+    <td class="hide-in-small">
         @Model.LastModificationDate.ToString("yyyy-MM-dd HH:mm:ss")
         @Html.HiddenFor(m => Model.LastModificationDate)
     </td>

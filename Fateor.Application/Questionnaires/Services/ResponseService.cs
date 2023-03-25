@@ -84,47 +84,48 @@ namespace Fateor.Application.Questionnaires.Services
             return null;
         }
 
-        public IEnumerable<Entities.Response> GetAll(bool includeQuestionnaireName)
-        {
-            var ents = GetAll();
-            if (includeQuestionnaireName)
-                GetQuestionnaireNames(ents);
-            return ents;
-        }
-
         public IEnumerable<Entities.Response> GetAll()
         {
-            var dtos = _uow.ResponseRepository.GetAll();
-            var ents = dtos.Select(r => _mapper.Map<Dto.Response, Entities.Response>(r));
-            return ents.ToList();
+            return GetAll(false);
+        }
+
+        public IEnumerable<Entities.Response> GetAll(bool includeQuestionnaireNames)
+        {
+            var dtos = _uow.ResponseRepository.GetAll();            
+            return MapResponses(dtos, includeQuestionnaireNames);
         }
 
         public IEnumerable<Entities.Response> GetResponsesByMember(int memberId, bool includeQuestionnaireNames)
         {
             var dtos = _uow.ResponseRepository.GetResponseListByMember(memberId);
-            var ents = dtos.Select(r => _mapper.Map<Dto.Response, Entities.Response>(r));
-
-            if (includeQuestionnaireNames)
-            {
-                GetQuestionnaireNames(ents);
-            }
-
-            return ents.ToList();
+            return MapResponses(dtos, includeQuestionnaireNames);            
         }
 
         public IEnumerable<Entities.Response> GetResponsesByQuestionnaireId(int questionaireId)
         {
             var dtos = _uow.ResponseRepository.GetResponsesByQuestionaireId(questionaireId);
-            var ents = dtos.Select(r => _mapper.Map<Dto.Response, Entities.Response>(r));
-            return ents.ToList();
+            return MapResponses(dtos, true);
         }
 
-        private void GetQuestionnaireNames(IEnumerable<Entities.Response> ents)
+        private IEnumerable<Entities.Response> MapResponses(IEnumerable<Dto.Response> dtos, bool includeQuestionnaireNames = false)
         {
-            foreach (var e in ents)
+            IEnumerable<Dto.Questionnaire>? questionnaires = null;
+
+            if (includeQuestionnaireNames)
+                questionnaires= dtos.Select(r => r.QuestionaireId).Distinct()
+                    .Select(q => _uow.QuestionnaireRepository.Get(q))
+                    .ToList();
+
+            var ents = dtos.Select(r =>
             {
-                e.Questionnaire = _uow.QuestionnaireRepository.Get(e.QuestionnaireId)?.QuestionaireName ?? "";
-            }
+                var e = _mapper.Map<Dto.Response, Entities.Response>(r);
+
+                if(includeQuestionnaireNames && questionnaires != null)
+                    e.Questionnaire = questionnaires.First(q => q.QuestionaireId==r.QuestionaireId).QuestionaireName;
+
+                return e;
+            });
+            return ents.ToList();
         }
 
         public (bool ok, IList<string> messages) Save(Entities.Response response, int userId)

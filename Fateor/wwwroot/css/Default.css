@@ -166,10 +166,6 @@ footer {
     padding-top: 1em;
 }
 
-.modal {
-    display: none;
-}
-
 .dataTables_wrapper label {
     font-family: var(--o-font-family);
     font-weight: 300;
@@ -374,4 +370,9 @@ footer {
         display: none;
         list-style: none;
     }
+
+    .hide-in-small {
+        display: none;
+    }
+
 }
