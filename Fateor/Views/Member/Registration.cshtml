@@ -127,8 +127,8 @@
                 <li>Desempeñar las funciones para las cuales resulen electos o sean desigandos</li>
             </ul>
             <div style="display:block; margin:auto; width:40em; text-align:center; align-content:center;">
-                <input type="button" value="No acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedMembershipConditions)').attr('checked', false); $('#intro').dialog('close')" />
-                <input type="button" value="Acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedMembershipConditions)').attr('checked', true); $('#intro').dialog('close')" />
+                <input type="button" class="form-button" value="No acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedMembershipConditions)').attr('checked', false); $('#intro').dialog('close')" />
+                <input type="button" class="form-button" value="Acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedMembershipConditions)').attr('checked', true); $('#intro').dialog('close')" />
             </div>
         </div>
         <div id="gdpr" class="text" tabindex="-1" role="dialog" title="Política de Protección de Datos">
@@ -166,8 +166,8 @@
             </p>
 
             <div style="display:block; margin:auto; width:40em; text-align:center; align-content:center;">
-                <input type="button" value="No acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedGDPR)').attr('checked', false); $('#gdpr').dialog('close')" />
-                <input type="button" value="Acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedGDPR)').attr('checked', true); $('#gdpr').dialog('close')" />
+                <input type="button" class="form-button" value="No acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedGDPR)').attr('checked', false); $('#gdpr').dialog('close')" />
+                <input type="button" class="form-button" value="Acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedGDPR)').attr('checked', true); $('#gdpr').dialog('close')" />
             </div>
 
         </div>
@@ -222,27 +222,27 @@
             </div>
         </div>
         <div class="form-section">
-            <div>
+            <div style="display:flex; width:100%;">
                 <div class="form-checkbox" style="width:50%">
                     @Html.CheckBoxFor(model => model.AcceptedMembershipConditions, new { @class = "form-check-input", @disabled = "disabled" })
                     @Html.LabelFor(model => model.AcceptedMembershipConditions, "Acepto cumplir los estatutos y reglamentos")
                     @Html.ValidationMessageFor(model => model.AcceptedMembershipConditions)
                 </div>
-                <input type="button" value="Leer para aceptar" onclick="$('#intro').dialog('open')" />
+                <input type="button" class="form-button" value="Leer para aceptar" onclick="$('#intro').dialog('open')" />
             </div>
         </div>
         <div class="form-section">
-            <div>
+            <div style="display:flex; width:100%;">
                 <div class="form-checkbox" style="width:50%">
                     @Html.CheckBoxFor(model => model.AcceptedGDPR, new { @class = "form-check-input", @disabled = "disabled" })
                     @Html.LabelFor(model => model.AcceptedGDPR, "Acepto la política de protección de datos")
                     @Html.ValidationMessageFor(model => model.AcceptedGDPR)
                 </div>
-                <input type="button" value="Leer para aceptar" onclick="$('#gdpr').dialog('open')" />
+                <input type="button" class="form-button" value="Leer para aceptar" onclick="$('#gdpr').dialog('open')" />
             </div>
         </div>
         <div>
-            <input type="submit" value="Guardar" style="float:right" />
+            <input type="submit" class="form-button" value="Guardar" style="float:right" />
         </div>
     }
 

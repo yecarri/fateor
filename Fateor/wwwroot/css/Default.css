@@ -36,6 +36,16 @@ body {
     border: 1px inset;
 }
 
+.form-field textarea {
+    top: 1.5em;
+    position: relative;
+    width: 31em;
+    height: 3rem;
+    margin-bottom: 1em;
+    border-radius: 5px 5px 5px 5px;
+    padding: 3px 7px 3px 7px;
+}
+
 .form-field input,
 .form-field select {
     border-radius: 5px 5px 5px 5px;
@@ -50,7 +60,7 @@ body {
     .form-field input[type=password],
     .form-field input[type=range],
     .form-field input[type=url],
-    .form-field text, textarea {
+    .form-field text {
         width: 15em;
     }
 
@@ -59,15 +69,10 @@ body {
         width: 16em;
     }
 
-.form-checkbox input[type=checkbox] {
-    display: inline;
-}
-
-table.form-table{
+table.form-table {
     border: none;
     border-collapse: collapse;
     width: 100%;
-    
 }
 
     table.form-table th,
@@ -82,22 +87,23 @@ table.form-table{
         text-align: left;
         color: black;
     }
-    button.form-button,
-    input[type=button].form-button,
-    input[type=submit].form-button,
-    input[type=reset].form-button {
-        font-size: 0.9rem;
-        font-family: Roboto;
-        font-weight: 300;
-        border: 1px solid gray;
-        border-radius: 1em;
-        padding: 5px 7px 5px 7px;
-        margin-bottom: 2px;
-        margin-right: 2px;
-        cursor: pointer;
-        min-width: 7em;
-        background-image: linear-gradient(var(--o-button-background-color) 85%, var(--o-button-background-color-darker));
-    }
+
+button.form-button,
+input[type=button].form-button,
+input[type=submit].form-button,
+input[type=reset].form-button {
+    font-size: 0.9rem;
+    font-family: Roboto;
+    font-weight: 300;
+    border: 1px solid gray;
+    border-radius: 1em;
+    padding: 5px 7px 5px 7px;
+    margin-bottom: 2px;
+    margin-right: 2px;
+    cursor: pointer;
+    min-width: 7em;
+    background-image: linear-gradient(var(--o-button-background-color) 85%, var(--o-button-background-color-darker));
+}
 
 button:active.form-button,
 input[type=button]:active.form-button,
@@ -185,18 +191,34 @@ footer {
     color: var(--o-error-color);
 }
 
-.text {
-    line-height: 2em;
+.validation-summary-errors {
+    display: block;
+    position: relative;
+    padding-top: 5px;
+    margin-bottom: 1em;
+    font-size: 0.75em;
+    color: var(--o-error-color);
 }
 
-    .text ul {
-        padding-left: 1em;
-    }
+.text ul {
+    padding-left: 1em;
+}
 
+/* Ad-hoc formatting */
 .bold {
     font-weight: 700;
 }
 
+.float-right {
+    float: right;
+}
+
+.text {
+    line-height: 2em;
+}
+
+
+/* Form */
 .container {
     max-width: min(80%,960px);
     margin: auto;
@@ -216,6 +238,7 @@ footer {
 
 .form-field {
     padding-right: 1em;
+    margin-bottom: 1em;
 }
 
     .form-field input[type=text],
@@ -237,10 +260,13 @@ footer {
     }
 
 .form-checkbox {
-    display: inline;
-    width: 15em;
-    margin-top: 1.5em;
+    width: 15em;    
 }
+
+
+    .form-checkbox input[type=checkbox] {
+        
+    }
 
 .nav-main {
     background-color: black;
@@ -374,5 +400,4 @@ footer {
     .hide-in-small {
         display: none;
     }
-
 }

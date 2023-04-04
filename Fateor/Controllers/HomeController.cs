@@ -138,25 +138,32 @@ namespace Fateor.Controllers
         [Route("user/resetpassword")]
         public ActionResult RequestPasswordChange()
         {
-            return View(new UserViewModel());
+            return View(new RequestPasswordResetViewModel());
         }
 
         [HttpPost]
         [Route("user/resetpassword")]
-        public ActionResult RequestPasswordChange(UserViewModel model)
+        public ActionResult RequestPasswordChange(RequestPasswordResetViewModel model)
         {
-            var user = _userService.GetUser(model.Login, model.Email);
-            if (user != null && string.Compare(model.Login, user.Login, true) == 0)
+            if (ModelState.IsValid)
             {
-                _notificationService.NotifyPasswordChangeRequest(user);
+                var user = _userService.GetUser(model.Login, model.Email);
+                if (user != null && string.Compare(model.Login, user.Login, true) == 0)
+                {
+                    _notificationService.NotifyPasswordChangeRequest(user);
+                    TempData["messages"] = new List<string>() { "Se ha enviado el correo para restablecer el password" };
+                    return RedirectToAction("Login");
+                }
+                else
+                {
+                    model.Messages = new List<string>() { "El usuario no existe" };
+                    return View(model);
+                }
             }
             else
             {
-                model.Messages = new List<string>() { "El usuario no existe" };
                 return View(model);
             }
-            TempData["messages"] = new List<string>() { "Se ha enviado el correo para restablecer el password" };
-            return RedirectToAction("Login");
         }
 
         [HttpGet]

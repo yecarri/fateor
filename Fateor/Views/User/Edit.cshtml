@@ -22,133 +22,105 @@
             var status = jqXHR.status;
             var error = jqXHR.message;
             $('#dialogText').html("Se envió un email para cambiar el password");
-            $("#popup").modal();
+            $('#pwdResetOk').dialog('open');
         }
 
         var passwordResetFail = function (jqXHR) {
             var status = jqXHR.status;
             var error = jqXHR.message;
-            $('#dialogText').html("Ha ocurrido un error al tratar de restablecer el password.<br/>Status: " + status + "<br>" + error);
-            $("#popup").modal();
+            $('#pwdResetStatus').html(status);
+            $('#pwdResetMessage').html(error);
+            $('#pwdResetFailed').dialog('open');
         }
+
+        $(document).ready(function () {
+            $('#pwdResetOk').dialog({ autoOpen: false, autoResize: true });
+            $('#pwdResetFailed').dialog({ autoOpen: false, autoResize: true });
+        });
     </script>
 
 }
-    <div class="container py-2">
-        <div class="card">
+<div class="container">
+    @using (Model.UserId.HasValue ? Html.BeginForm("Edit", "User", FormMethod.Post) : Html.BeginForm("Create", "User", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.UserId)
 
-        @using (Model.UserId.HasValue ? Html.BeginForm("Edit", "User", FormMethod.Post) : Html.BeginForm("Create", "User", FormMethod.Post))
+        <h3>@(Model.UserId.HasValue ? "Editar Usuario" : "Nuevo Usuario")</h3>
+
+        @Html.ValidationSummary(true, "")
+
+        <div class="form-field">
+            @Html.LabelFor(model => model.Login)
+            @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Login, "")
+        </div>
+
+        <div class="form-field">
+            @Html.LabelFor(model => model.Email)
+            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Email, "")
+        </div>
+
+        <div class="form-checkbox" style="margin-top:1em; margin-bottom:1em;">
+            @Html.EditorFor(model => model.IsExternal)
+            @Html.LabelFor(model => model.IsExternal)
+            @Html.ValidationMessageFor(model => model.IsExternal, "")
+        </div>
+        @if (Model.UserId.HasValue)
         {
-            @Html.AntiForgeryToken()
-            <div class="card-header">
-                <h3>@(Model.UserId.HasValue ? Model.Login : "Nuevo Usuario")</h3>
+            <div class="form-checkbox" style="margin-top:1em; margin-bottom:1em;">
+                @Html.EditorFor(model => model.IsDeleted)
+                @Html.LabelFor(model => model.IsDeleted)
+                @Html.ValidationMessageFor(model => model.IsDeleted, "")
             </div>
-            <div class="card-body">
-                @Html.HiddenFor(model => model.UserId)
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        @Html.LabelFor(model => model.Login, htmlAttributes: new { @class = "control-label " })
-                        <div class="">
-                            @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label " })
-                        <div class="">
-                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        @Html.LabelFor(model => model.IsExternal, htmlAttributes: new { @class = "control-label " })
-                        <div class="">
-                            <div class="checkbox">
-                                @Html.EditorFor(model => model.IsExternal)
-                                @Html.ValidationMessageFor(model => model.IsExternal, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    @if (Model.UserId.HasValue)
-                    {
-                        <div class="form-group col-md-4">
-                            @Html.LabelFor(model => model.IsDeleted, htmlAttributes: new { @class = "control-label " })
-                            <div class="">
-                                <div class="checkbox">
-                                    @Html.EditorFor(model => model.IsDeleted)
-                                    @Html.ValidationMessageFor(model => model.IsDeleted, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="form-group col-md-4">
-                            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label " })
-                            <div class="">
-                                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-            <div class="card-footer">
-                <div class="form-row">
-                    @if (Model.UserId.HasValue)
-                    {
-                        <div class="col">
-                            <input type="submit" value="Guardar" class="btn btn-primary float-right mx-1" />
-                            <input type="button" value="Restablecer Contraseña" class="btn btn-secondary float-right mx-1" onclick="doPasswordReset();" />
-                            <input type="button" value="Volver" class="btn btn-secondary float-right mx-1" onclick="document.location.href='@Url.Action("List")'" />
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="col">
-                            <input type="submit" value="Guardar" class="btn btn-primary float-right mx-1" />
-                            <input type="button" value="Volver" class="btn btn-secondary float-right mx-1" onclick="document.location.href='@Url.Action("List")'" />
-                        </div>
-                    }
+        }
+        else
+        {
+            <div class="form-field">
+                @Html.LabelFor(model => model.Password)
+                <div class="">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password, "")
                 </div>
             </div>
         }
-    </div>
-    @if (Model.Messages?.Count > 0)
-    {
-        <div class="card bg-warning mt-2">
-            <div class="container">
-                <partial name="Error" model="Model.Messages"/>
-            </div>
+        <div>
+            @if (Model.UserId.HasValue)
+            {
+
+                <input type="submit" value="Guardar" class="form-button" />
+                <input type="button" value="Restablecer Contraseña" class="form-button" onclick="doPasswordReset();" />
+                <input type="button" value="Volver" class="form-button" onclick="document.location.href='@Url.Action("List")'" />
+
+            }
+            else
+            {
+                <input type="submit" value="Guardar" class="form-button" />
+                <input type="button" value="Volver" class="form-button" onclick="document.location.href='@Url.Action("List")'" />
+            }
         </div>
     }
-
-    <div id="popup" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h3 id="dialogHeader">Contraseña</h3>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <p id="dialogText"></p>
-                </div>
-                <div class="modal-footer">
-                    <div class="row">
-                        <div class="col text-center">
-                            <input type="button" class="btn btn-secondary" data-toggle="modal" data-target="#popup" value="Ok" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+</div>
+@if (Model.Messages?.Count > 0)
+{
+    <div class="container">
+        <partial name="Error" model="Model.Messages" />
     </div>
+}
+
+<script type="text/javascript">
+    $("#intro").dialog({ autoOpen: false, width: window.innerWidth * 0.8, height: 'auto', autoResize: true });
+    $("#gdpr").dialog({ autoOpen: false, width: window.innerWidth * 0.8, height: 'auto', autoResize: true });
+</script>
+
+<div id="pwdResetOk" title="Contraseña">
+    <p>Se envió un email para cambiar la contraseña</p>
+</div>
+<div id="pwdResetFailed" title="Contraseña">
+    <p>
+        Ha ocurrido un error al tratar de restablecer la contraseña.<br />
+        Status: <span id="pwdResetStatus"></span><br />
+        Message: <span id="pwdResetStatus"></span>
+    </p>
 </div>
