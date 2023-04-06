@@ -5,13 +5,6 @@
 }
 @section Scripts
     {
-    <link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
-    <script type="text/javascript" src="~/lib/jquery-ui/jquery-ui.js"></script>
-    <style type="text/css">
-        .ui-menu-item {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-        }
-    </style>
     <script type="text/javascript">
         function submitForm(command) {
             $("input").removeAttr("disabled");
@@ -20,8 +13,7 @@
             document.forms[0].submit();
         }
 
-        $(document).ready(function ()
-        {
+        $(document).ready(function () {
             $("#@Html.IdFor(m=>m.Member)").autocomplete(
                 {
                     minLength: 1,
@@ -40,7 +32,7 @@
                     select: function (event, ui) {
                         $("#@Html.IdFor(m=>m.Member)").val(ui.item.label);
                         $("#@Html.IdFor(m=>m.MemberId)").val(ui.item.key);
-                        $("#form")[0].submit('send','');
+                        $("#form")[0].submit('send', '');
                         return false;
                     },
                     change: function (event, ui) {
@@ -48,129 +40,105 @@
                             event.currentTarget.value = '';
                             event.currentTarget.focus();
                         }
-                }
-            })
-            .autocomplete("instance")._renderItem = function (ul, item) {
-                return $("<li>")
-                    .append(item.label)
-                    .appendTo(ul);
-            };
+                    }
+                })
+                .autocomplete("instance")._renderItem = function (ul, item) {
+                    return $("<li>")
+                        .append(item.label)
+                        .appendTo(ul);
+                };
         });
     </script>
 }
-    <div class="container py-2">
-        <div class="card">
-        @using (Html.BeginForm("Index", "Response", FormMethod.Post, new { id = "form" }))
+<div class="container">
+    @using (Html.BeginForm("Index", "Response", FormMethod.Post, new { id = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Command)
+        @Html.HiddenFor(m => m.ResponseId)
+        <h3>Cuestionario</h3>
+        <div class="form-field">
+            @Html.LabelFor(m => m.QuestionnaireId, new { @class = "form-label" })
+            @Html.DropDownListFor(m => m.QuestionnaireId,
+        new SelectList(Model.Questionnaires, "QuestionnaireId", "QuestionnaireName", Model.QuestionnaireId),
+        Model.Locked ?
+        (object)new { @class = "form-control disabled", @disabled = true } :
+        (object)new { @class = "form-control", @onchange = "submit('','');" })
+            @Html.ValidationMessageFor(m => m.QuestionnaireId)
+        </div>
+        <div class="form-field">
+            @Html.LabelFor(m => m.MemberId, new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.Member, Model.Locked ?
+        (object)new { @class = "form-control disabled", @disabled = true } :
+        (object)new { @class = "form-control" })
+            @Html.HiddenFor(m => m.MemberId)
+            @Html.ValidationMessageFor(m => m.MemberId)
+        </div>
+
+        @if (Model.Answers != null)
         {
-            <div class="card-header">
-                @Html.AntiForgeryToken()
-                @Html.HiddenFor(m => m.Command)
-                @Html.HiddenFor(m => m.ResponseId)
-                <h3>Cuestionario</h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        @Html.LabelFor(m => m.QuestionnaireId, new { @class = "form-label" })
-                        @Html.DropDownListFor(m => m.QuestionnaireId,
-                    new SelectList(Model.Questionnaires, "QuestionnaireId", "QuestionnaireName", Model.QuestionnaireId),
-                    Model.Locked ?
-                    (object)new { @class = "form-control disabled", @disabled = true } :
-                    (object)new { @class = "form-control", @onchange = "submit('','');" })
-                        @Html.ValidationMessageFor(m => m.QuestionnaireId)
-                    </div>
-                    <div class="col">
-                        @Html.LabelFor(m => m.MemberId, new { @class = "form-label" })
-                        @Html.TextBoxFor(m => m.Member, Model.Locked ?
-                    (object)new { @class = "form-control disabled", @disabled = true } :
-                    (object)new { @class = "form-control" })
-                        @Html.HiddenFor(m => m.MemberId)
-                        @Html.ValidationMessageFor(m => m.MemberId)
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        @if (Model.Answers != null)
-                        {
-                            for (int i = 0; i < Model.Answers.Count; i++)
+            for (int i = 0; i < Model.Answers.Count; i++)
+            {
+                var q = Model.Answers[i];
+
+                <div style="width:100%; border:1px inset; margin-top: 1em; padding: 1em;">
+                    @Html.HiddenFor(m => Model.Answers[i].AnswerId)
+                    @Html.HiddenFor(m => Model.Answers[i].QuestionnaireId)
+                    @Html.HiddenFor(m => Model.Answers[i].QuestionId)
+                    @Html.HiddenFor(m => Model.Answers[i].QuestionTypeId)
+                    @Html.HiddenFor(m => Model.Answers[i].Ord)
+                    @Html.DisplayFor(m => Model.Answers[i].QuestionText)
+
+                    <div class="form-section" id="question-@Model.Answers[i].QuestionId">
+                        @{
+                            if (Model.Answers[i].Options != null)
                             {
-                                var q = Model.Answers[i];
+                                if ((Model.Answers[i].QuestionTypeId & 2) > 0)
+                                {
+                                    for (int j = 0; j < Model.Answers[i].Options.Count; j++)
+                                    {
 
-                                <div class="card mt-2">
-                                    <div class="card-header" id="question-@Model.Answers[i].QuestionId">
-                                        @Html.HiddenFor(m => Model.Answers[i].AnswerId)
-                                        @Html.HiddenFor(m => Model.Answers[i].QuestionnaireId)
-                                        @Html.HiddenFor(m => Model.Answers[i].QuestionId)
-                                        @Html.HiddenFor(m => Model.Answers[i].QuestionTypeId)
-                                        @Html.HiddenFor(m => Model.Answers[i].Ord)
-                                        @Html.DisplayFor(m => Model.Answers[i].QuestionText)
-                                    </div>
-                                    <div class="card-body" id="question-@Model.Answers[i].QuestionId">
-                                        @{
-                                            if (Model.Answers[i].Options != null)
-                                            {
-                                                if ((Model.Answers[i].QuestionTypeId & 2) > 0)
-                                                {
-                                                    for (int j = 0; j < Model.Answers[i].Options.Count; j++)
-                                                    {
+                                        <div class="form-section">
+                                            @Html.HiddenFor(m => Model.Answers[i].Options[j].OptionId)
+                                            @Html.HiddenFor(m => Model.Answers[i].Options[j].AnswerId)
+                                            @Html.CheckBoxFor(m => Model.Answers[i].Options[j].Selected, new { @class = "form-check-input" })
+                                            <label class="form-check-label" for="@Html.IdFor(m => Model.Answers[i].Options[j].OptionId)">&nbsp;
+                                                @Model.Answers[i].Options[j].OptionText
+                                            </label>
+                                        </div>
+                                    }
+                                }
+                                else if ((Model.Answers[i].QuestionTypeId & 1) > 0)
+                                {
+                                    for (int j = 0; j < Model.Answers[i].Options.Count; j++)
+                                    {
+                                        <div class="form-section">
+                                            @Html.HiddenFor(m => Model.Answers[i].Options[j].OptionId)
+                                            @Html.HiddenFor(m => Model.Answers[i].Options[j].AnswerId)
+                                            @Html.RadioButtonFor(m => Model.Answers[i].OptionId, Model.Answers[i].Options[j].OptionId, new { @class = "form-check-input" })
+                                            <label for="@Html.IdFor(m => Model.Answers[i].Options[j].OptionId)">
+                                                &nbsp;
+                                                @Model.Answers[i].Options[j].OptionText
+                                            </label>
+                                        </div>
+                                    }
+                                }
+                            }
 
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-check">
-                                                                    @Html.HiddenFor(m => Model.Answers[i].Options[j].OptionId)
-                                                                    @Html.HiddenFor(m => Model.Answers[i].Options[j].AnswerId)
-                                                                    @Html.CheckBoxFor(m => Model.Answers[i].Options[j].Selected, new { @class = "form-check-input" })
-                                                                    <label class="form-check-label" for="@Html.IdFor(m => Model.Answers[i].Options[j].OptionId)">
-                                                                        @Model.Answers[i].Options[j].OptionText
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                }
-                                                else if ((Model.Answers[i].QuestionTypeId & 1) > 0)
-                                                {
-                                                    for (int j = 0; j < Model.Answers[i].Options.Count; j++)
-                                                    {
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <div class="form-check">
-                                                                    @Html.HiddenFor(m => Model.Answers[i].Options[j].OptionId)
-                                                                    @Html.HiddenFor(m => Model.Answers[i].Options[j].AnswerId)
-                                                                    @Html.RadioButtonFor(m => Model.Answers[i].OptionId, Model.Answers[i].Options[j].OptionId, new { @class = "form-check-input" })
-                                                                    <label class="form-check-label" for="@Html.IdFor(m => Model.Answers[i].Options[j].OptionId)">
-                                                                        @Model.Answers[i].Options[j].OptionText
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                }
-                                            }
-
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    @if ((Model.Answers[i].QuestionTypeId & 4) > 0)
-                                                    {
-                                                        @Html.TextAreaFor(m => Model.Answers[i].Text, new { @class = "form-control w-100", @cols = "100", @style = "max-width:unset !important;" })
-                                                    }
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
+                            if ((Model.Answers[i].QuestionTypeId & 4) > 0)
+                            {                                
+                                <div class="form-field">
+                                    @Html.TextAreaFor(m => Model.Answers[i].Text, new { @class = "form-control w-100", @cols = "100", @style = "max-width:unset !important;" })
                                 </div>
                             }
                         }
                     </div>
                 </div>
-            </div>
-            <div class="card-footer">
-                <div class="row">
-                    <div class="col-2 offset-10">
-                        <input type="button" value="Guardar" class="btn btn-primary float-right mx-1" onclick="submitForm('save');" />
-                    </div>
-                </div>
-            </div>
+            }
         }
-    </div>
+
+        <div style="display:block;">
+            <input type="button" value="Guardar" class="form-button" style="float:right" onclick="submitForm('save');" />
+        </div>
+    }
 </div>
