@@ -12,7 +12,7 @@ namespace Fateor.Controllers
         private readonly IQuestionnaireService _questionnaireService;
         private readonly IMemberService _memberService;
 
-        public ChartController(ILogger logger,
+        public ChartController(ILogger<ChartController> logger,
                                IMapper mapper,
                                IEncryptionService encryptionService,
                                Settings settings,

@@ -95,47 +95,27 @@
     </script>
 }
 
-    <div class="container py-2">
-        <div class="card">
-            <div class="card-header"><h3>Gráfico de Nolan de @Html.DisplayFor(m => m.Member)</h3></div>
+<div class="container" style="text-align: center;">
+    <h3 style="margin:auto">Gráfico de Nolan de @Html.DisplayFor(m => m.Member)</h3>
 
-            <div class="card-body">
-                <div class="row">
-                    <div style="width:500px; height:500px; margin:auto; display:block">
-                        <canvas id="chart" width="500" height="500">
-                        </canvas>
-                    </div>
-                </div>
-
-            @if (Model.External)
-            {
-                <div class="row">
-                    <div class="col">
-                        <p>
-                            Muchas gracias por dejar tus opiniones. Esta gráfica muestra tu posición política en
-                            relación con los ejes social y económico. La zona en amarillo muestra aproximadamente
-                            las posiciones de otros miembros del Movimiento Libertario de Venezuela.
-                        </p>
-                        <p>
-                            Pronto te contactará uno de nuestros coordinadores.
-                        </p>
-                    </div>
-                </div>
-            }
-        </div>
-        <div class="card-footer">
-            @if (Model.External)
-            {
-                <span>&nbsp;</span>
-            }
-            else
-            {
-                <div class="row">
-                    <div class="col-1 offset-11">
-                        <button type="button" class="btn btn-primary" onclick='document.location.href = "@Url.Content("~/response/list")"'>Volver</button>
-                    </div>
-                </div>
-            }
-        </div>
+    <div style="width:500px; height:500px; margin:auto; display:block">
+        <canvas id="chart" width="500" height="500">
+        </canvas>
     </div>
+
+    @if (Model.External)
+    {
+        <p>
+            Muchas gracias por dejar tus opiniones. Esta gráfica muestra tu posición política en
+            relación con los ejes social y económico. La zona en amarillo muestra aproximadamente
+            las posiciones de otros miembros del Movimiento Libertario de Venezuela.
+        </p>
+        <p>
+            Pronto te contactará uno de nuestros coordinadores.
+        </p>
+    }
+    else
+    {
+        <button type="button" style="margin:auto"class="form-button" onclick='document.location.href = "@Url.Content("~/response/list")"'>Volver</button>
+    }
 </div>

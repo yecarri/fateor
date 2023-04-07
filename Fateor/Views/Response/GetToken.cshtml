@@ -5,8 +5,6 @@
 }
 @section Scripts
     {
-    <link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
-    <script type="text/javascript" src="~/lib/jquery-ui/jquery-ui.js"></script>    
     <script type="text/javascript">
         function submitForm(command) {
             $("#@Html.IdFor(m=>m.Command)").val(command);
@@ -50,44 +48,37 @@
         });
     </script>
 }
-    <div class="py-2 m-auto container">
-        <div class="card">
-        @using (Html.BeginForm("gettoken", "response", FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(m => m.Command)
-            <div class="card-header"><h3>Obtener Token para Cuestionario</h3></div>
-            <div class="card-body">
+<div class="container">
+    @using (Html.BeginForm("gettoken", "response", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Command)
+        <h3>Obtener Token para Cuestionario</h3>
 
-                <div class="row">
-                    <div class="col">
-                        @Html.LabelFor(m => m.QuestionnaireId, new { @class = "form-label" })
-                        @Html.DropDownListFor(m => m.QuestionnaireId,
-                    new SelectList(Model.Questionnaires, "QuestionnaireId", "QuestionnaireName"),
-                    new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.QuestionnaireId)
-                    </div>
-                    <div class="col">
-                        @Html.LabelFor(m => m.MemberId, new { @class = "form-label" })
-                        @Html.TextBoxFor(m => m.Member, new { @class = "form-control" })
-                        @Html.HiddenFor(m => m.MemberId)
-                        @Html.ValidationMessageFor(m => m.MemberId)
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col">
-                        @Html.DisplayFor(m => m.Token, new { @class = "form-control" })
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col">
-                        <input type="submit" class="btn btn-primary" value="Request" />
-                    </div>
-                </div>
+        <div class="form-section">
+            <div class="form-field">
+                @Html.LabelFor(m => m.QuestionnaireId, new { @class = "form-label" })
+                @Html.DropDownListFor(m => m.QuestionnaireId,
+            new SelectList(Model.Questionnaires, "QuestionnaireId", "QuestionnaireName"),
+            new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.QuestionnaireId)
             </div>
-            <div class="card-footer">
-                &nbsp;
+            <div class="form-field">
+                @Html.LabelFor(m => m.MemberId, new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.Member, new { @class = "form-control" })
+                @Html.HiddenFor(m => m.MemberId)
+                @Html.ValidationMessageFor(m => m.MemberId)
             </div>
-        }
-    </div>
+        </div>
+        <div class="form-section">
+            <div class="form-field">
+                @Html.DisplayFor(m => m.Token, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-field">
+                <input type="submit" class="btn btn-primary" value="Request" />
+            </div>
+        </div>
+    }
 </div>

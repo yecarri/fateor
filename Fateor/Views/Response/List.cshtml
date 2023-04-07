@@ -3,7 +3,7 @@
     ViewBag.Title = "Listado de Respuestas";
 }
 @section Scripts
-{
+    {
     <link href='@Url.Content("~/lib/datatables/datatables.css")' rel="stylesheet" />
     <script type="text/javascript" src='@Url.Content("~/lib/datatables/datatables.js")'></script>
     <script type="text/javascript">
@@ -23,7 +23,7 @@
 
                 $("#dataTable").on('click', 'tr', function () {
                     var data = table.row(this).data();
-                    document.location.href = '@Url.Content("~/response")/'+data[0];
+                    document.location.href = '@Url.Content("~/response")/' + data[0];
                 });
             });
 
@@ -39,68 +39,54 @@
         }
     </style>
 }
-<div class="py-2 m-auto container">
-    <div class="card">
-        <div class="card-header"><h3>Respuestas de los Cuestionarios</h3></div>
-        <div class="card-body">
-            <form method="post">
-                <div class="row">
-                    <div class="col-md-4 form-group">
-                        @Html.LabelFor(m => m.QuestionnaireId, htmlAttributes: new { @class = "control-label" })
-                        @Html.DropDownListFor(m => m.QuestionnaireId, new SelectList(Model.Questionnaires, "QuestionnaireId", "QuestionnaireName"), new { @class = "form-control" })
-                    </div>
-                    <div class="col-md-4 form-group">
-                        <div style="margin-top: 2rem">
-                            <input type="button" onclick="search();" class="btn btn-secondary" value="Filtrar"/>
-                            <input type="hidden" id="@Html.IdFor(m=>m.Command)" name="@Html.NameFor(m=>m.CurrentPage)" />
-                            <input type="hidden" id="@Html.IdFor(m=>m.CurrentPage)" name="@Html.NameFor(m=>m.CurrentPage)" />                            
-                        </div>
-                    </div>
-                </div>
-            </form>
-
-            <div class="row">
-                <div class="col">
-                    <table id="dataTable" class="table">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Cuestionario</th>
-                                <th>Miembro</th>
-                                <th>Llenado por</th>
-                                <th>Fecha</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.Responses != null)
-                            {
-                                foreach (var r in Model.Responses)
-                                {
-                                    <tr>
-                                        <td>
-                                            @Html.DisplayFor(m => r.ResponseId)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(m => r.Questionnaire)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(m => r.Member)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(m => r.LastModificationUser)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(m => r.LastModificationDate)
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
-                </div>
+<div class="container">
+    <h3>Respuestas de los Cuestionarios</h3>
+    <form method="post">
+        <div class="form-section">
+            <div class="form-field">
+                @Html.LabelFor(m => m.QuestionnaireId, htmlAttributes: new { @class = "control-label" })
+                @Html.DropDownListFor(m => m.QuestionnaireId, new SelectList(Model.Questionnaires, "QuestionnaireId", "QuestionnaireName"), new { @class = "form-control" })
+                <input type="button" onclick="search();" class="form-button" value="Filtrar" />
+                <input type="hidden" id="@Html.IdFor(m=>m.Command)" name="@Html.NameFor(m=>m.CurrentPage)" />
+                <input type="hidden" id="@Html.IdFor(m=>m.CurrentPage)" name="@Html.NameFor(m=>m.CurrentPage)" />
             </div>
-
         </div>
-        <div class="card-footer"></div>
-    </div>
+    </form>
+
+    <table id="dataTable" class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Cuestionario</th>
+                <th>Miembro</th>
+                <th>Llenado por</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Responses != null)
+            {
+                foreach (var r in Model.Responses)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => r.ResponseId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => r.Questionnaire)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => r.Member)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => r.LastModificationUser)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => r.LastModificationDate)
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 </div>
