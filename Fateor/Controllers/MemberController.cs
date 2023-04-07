@@ -353,7 +353,7 @@ namespace Fateor.Controllers
                     if (token != null)
                     {
                         _logger.LogInformation("Redirecting to initial questionaire");
-                        return Redirect(Url.Content($"~/response/token/{token}"));
+                        return Redirect(Url.Content($"~/response/{token}"));
                     }
                     else
                     {

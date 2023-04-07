@@ -89,50 +89,59 @@
                     @Html.HiddenFor(m => Model.Answers[i].Ord)
                     @Html.DisplayFor(m => Model.Answers[i].QuestionText)
 
-                    <div class="form-section" id="question-@Model.Answers[i].QuestionId">
-                        @{
-                            if (Model.Answers[i].Options != null)
-                            {
-                                if ((Model.Answers[i].QuestionTypeId & 2) > 0)
-                                {
-                                    for (int j = 0; j < Model.Answers[i].Options.Count; j++)
-                                    {
+                    @if (Model.Answers[i].Options != null)
+                    {
+                        <div style="margin-top:1em;" id="question-@Model.Answers[i].QuestionId">
 
-                                        <div class="form-section">
-                                            @Html.HiddenFor(m => Model.Answers[i].Options[j].OptionId)
-                                            @Html.HiddenFor(m => Model.Answers[i].Options[j].AnswerId)
-                                            @Html.CheckBoxFor(m => Model.Answers[i].Options[j].Selected, new { @class = "form-check-input" })
-                                            <label class="form-check-label" for="@Html.IdFor(m => Model.Answers[i].Options[j].OptionId)">&nbsp;
-                                                @Model.Answers[i].Options[j].OptionText
-                                            </label>
-                                        </div>
-                                    }
-                                }
-                                else if ((Model.Answers[i].QuestionTypeId & 1) > 0)
+                            @if ((Model.Answers[i].QuestionTypeId & 2) > 0)
+                            {
+                                for (int j = 0; j < Model.Answers[i].Options.Count; j++)
                                 {
-                                    for (int j = 0; j < Model.Answers[i].Options.Count; j++)
-                                    {
-                                        <div class="form-section">
+
+                                    <div style="display:block; margin-bottom:0.5em; ">
+                                        <div style="display:block; margin-right:1em;">
                                             @Html.HiddenFor(m => Model.Answers[i].Options[j].OptionId)
                                             @Html.HiddenFor(m => Model.Answers[i].Options[j].AnswerId)
-                                            @Html.RadioButtonFor(m => Model.Answers[i].OptionId, Model.Answers[i].Options[j].OptionId, new { @class = "form-check-input" })
+                                            @Html.CheckBoxFor(m => Model.Answers[i].Options[j].Selected)
+                                        </div>
+                                        <div style="display:block">
                                             <label for="@Html.IdFor(m => Model.Answers[i].Options[j].OptionId)">
                                                 &nbsp;
                                                 @Model.Answers[i].Options[j].OptionText
                                             </label>
                                         </div>
-                                    }
+                                    </div>
+                                }
+                            }
+                            else if ((Model.Answers[i].QuestionTypeId & 1) > 0)
+                            {
+                                for (int j = 0; j < Model.Answers[i].Options.Count; j++)
+                                {
+                                    <div style="display:grid; grid-template-columns:1em 1fr; margin-bottom:0.5em;">
+                                        <div style="">
+                                            @Html.HiddenFor(m => Model.Answers[i].Options[j].OptionId)
+                                            @Html.HiddenFor(m => Model.Answers[i].Options[j].AnswerId)
+                                            @Html.RadioButtonFor(m => Model.Answers[i].OptionId, Model.Answers[i].Options[j].OptionId)
+                                        </div>
+
+                                        <div style="">
+                                            <label for="@Html.IdFor(m => Model.Answers[i].Options[j].OptionId)">
+                                                @Model.Answers[i].Options[j].OptionText
+                                            </label>
+                                        </div>
+                                    </div>
                                 }
                             }
 
-                            if ((Model.Answers[i].QuestionTypeId & 4) > 0)
-                            {                                
+                            @if ((Model.Answers[i].QuestionTypeId & 4) > 0)
+                            {
                                 <div class="form-field">
                                     @Html.TextAreaFor(m => Model.Answers[i].Text, new { @class = "form-control w-100", @cols = "100", @style = "max-width:unset !important;" })
                                 </div>
                             }
-                        }
-                    </div>
+
+                        </div>
+                    }
                 </div>
             }
         }

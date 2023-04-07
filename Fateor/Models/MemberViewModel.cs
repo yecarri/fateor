@@ -38,7 +38,6 @@ namespace Fateor.Models
 
         [DisplayName("Número de Documento")]
         [Required(ErrorMessage = "{0} es requerido")]
-        [RegularExpression(@"^[^\s].*[^\s]$")]
         public string IdentityDocumentNumber { get; set; } = "";
 
         [DisplayName("Fecha de Nacimiento")]

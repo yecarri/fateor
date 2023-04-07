@@ -84,7 +84,7 @@ namespace Fateor.Controllers
             return View(model);
         }
 
-        [HttpGet("response/{id:int}")]
+        [HttpGet("/response/{id:int}")]
         [Authorize]
         public ActionResult Index(int id)
         {
@@ -105,7 +105,7 @@ namespace Fateor.Controllers
             return View(model);
         }
 
-        [HttpGet("response/{token:regex([[A-Za-z0-9]]{{16,}})}")]
+        [HttpGet("/response/{token:regex([[A-Za-z0-9]]{{16,}})}")]
         public ActionResult Token(string token)
         {
             var model = new ResponseViewModel();
@@ -122,7 +122,7 @@ namespace Fateor.Controllers
             return View("Index", model);
         }
 
-        [HttpPost("response/{token:regex([[A-Za-z0-9]]{{16,}})}")]
+        [HttpPost("/response/{token:regex([[A-Za-z0-9]]{{16,}})}")]
         public ActionResult Token(string token, ResponseViewModel model)
         {
             Response? response = null;
@@ -144,7 +144,7 @@ namespace Fateor.Controllers
 
         }
 
-        [HttpGet("response/list/{questionnaireId:int?}")]
+        [HttpGet("/response/list/{questionnaireId:int?}")]
         [Authorize]
         public ActionResult List(int? questionnaireId)
         {
@@ -166,7 +166,7 @@ namespace Fateor.Controllers
             return View(model);
         }
 
-        [HttpPost("response/list")]
+        [HttpPost("/response/list")]
         [Authorize]
         public ActionResult List(ResponseListViewModel model)
         {
@@ -181,7 +181,7 @@ namespace Fateor.Controllers
             return View(model);
         }
 
-        [HttpGet("response/gettoken")]
+        [HttpGet("/response/gettoken")]
         [Authorize]
         public ActionResult GetToken()
         {
@@ -190,7 +190,7 @@ namespace Fateor.Controllers
             return View("GetToken", model);
         }
 
-        [HttpPost("response/gettoken")]
+        [HttpPost("/response/gettoken")]
         [Authorize]
         public ActionResult GetToken(GetResponseTokenViewModel model)
         {
