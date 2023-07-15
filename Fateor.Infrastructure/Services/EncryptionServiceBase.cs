@@ -9,8 +9,6 @@ namespace Fateor.Infrastructure.Services
 {
     public abstract class EncryptionServiceBase : IEncryptionService
     {
-
-  
         public virtual T DecryptBase64<T>(string s)
         {
             // First we get the bytes from the encrypted string

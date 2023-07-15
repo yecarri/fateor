@@ -4,7 +4,7 @@ using Fateor.Application.External;
 using Fateor.Application.Gdpr.Services;
 using Fateor.Application.Location.Entities;
 using Fateor.Application.Location.Services;
-using Fateor.Application.Notification;
+using Fateor.Application.Notification.Services;
 using Fateor.Application.Organization.Entities;
 using Fateor.Application.Organization.Service;
 using Fateor.Application.Questionnaires.Services;
@@ -312,8 +312,8 @@ namespace Fateor.Controllers
         {
             var model = new RegistrationViewModel();
 
-            model.CreateExternalUser = _settings.CreateExternalUsers;
-            if (!_settings.CreateExternalUsers)
+            model.CreateExternalUser = _settings.ForumSystem_CreateUser;
+            if (!_settings.ForumSystem_CreateUser)
             {
                 model.AlreadyInIntranet = false;
                 model.Login = "dummy";
@@ -340,8 +340,8 @@ namespace Fateor.Controllers
                 LoadMeberAggregations(model);
 
                 var member = _mapper.Map<RegistrationViewModel, Member>(model);
-                (ok, messages) = _memberService.CreateMember(member, _settings.SystemUserId);
-                if (ok && _settings.CreateExternalUsers)
+                (ok, messages) = _memberService.CreateMember(member, _settings.Default_UserId);
+                if (ok && _settings.ForumSystem_CreateUser)
                 {
                     (ok, messages) = _externalMemberService.CreateMember(member);
                 }
@@ -471,7 +471,7 @@ namespace Fateor.Controllers
 
         private string? InitialQuestionaireToken(Member member)
         {
-            var questionaire = _questionaireService.GetQuestionaireByName(_settings.InitialQuestionnaire);
+            var questionaire = _questionaireService.GetQuestionaireByName(_settings.Default_InitialPoll);
             if (questionaire != null)
             {
                 return _questionaireService.GetQuestionaireToken(member.MemberId, questionaire.QuestionnaireId);

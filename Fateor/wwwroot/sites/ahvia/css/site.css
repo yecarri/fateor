@@ -1,0 +1,11 @@
+:root {
+    --o-font-family: Roboto, sans-serif;
+    --o-header-background-color: #1a4db8;
+    --o-header-color: #FFFFFF;
+    --o-nav-background-color: #000000;
+    --o-nav-hover-color: gray;
+    --o-nav-color: #ffffff;
+    --o-button-background-color: #E0E0E0;
+    --o-button-background-color-darker: #707070;
+    --o-error-color: #b90000;
+}

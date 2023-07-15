@@ -25,7 +25,7 @@ namespace Fateor.Database.MySql
                 using (MySqlCommand cm = cn.CreateCommand())
                 {
                     cn.Open();
-                    cm.CommandText="select ScriptName from db_Scripts";
+                    cm.CommandText="select ScriptName from db_scripts";
                     using(var reader = cm.ExecuteReader())
                     {
                         while (reader.Read())
@@ -38,7 +38,7 @@ namespace Fateor.Database.MySql
                 DirectoryInfo di = new DirectoryInfo(_scriptsDirectory);
                 
                 sb.AppendLine($"Starting DB Update at {DateTime.Now}");
-                using (var insert = new MySqlCommand("INSERT INTO db_Scripts values(@ScriptName, @DateExecuted)"))
+                using (var insert = new MySqlCommand("INSERT INTO db_scripts values(@ScriptName, @DateExecuted)"))
                 {
                     insert.CommandType=System.Data.CommandType.Text;
                     insert.Connection = cn;
@@ -95,7 +95,7 @@ namespace Fateor.Database.MySql
             using (MySqlCommand cm = cn.CreateCommand())
             {
                 cn.Open();
-                cm.CommandText="select count(*) from information_schema.tables where table_name='db_Scripts'";
+                cm.CommandText="select count(*) from information_schema.tables where table_name='db_scripts' and table_schema=database()";
                 var exists = (long)cm.ExecuteScalar();
                 if (exists==0)
                 {

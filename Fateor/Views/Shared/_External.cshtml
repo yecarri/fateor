@@ -11,58 +11,7 @@
     </main>
     <footer>
         <div>Copyright &copy; 2019-@DateTime.Today.Year oSoft Ingeniería de Software SL</div>
-    </footer>
-    @{
-        List<string>? messages = null;
-
-        if (Model.Messages != null && Model.Messages.Count > 0)
-        {
-            messages = Model.Messages;
-        }
-        else if (TempData["messages"] != null)
-        {
-            messages = ((IEnumerable<string>?)TempData["messages"])?.ToList() ?? new List<string>();
-        }
-
-        if (messages != null && messages.Count() > 0)
-        {
-            <script type="text/javascript">
-                $(document).ready(function () {
-                    $("#popup").modal("show");
-                });
-            </script>
-        }
-    }
-    <div id="popup" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h5>Atención</h5>
-                    </div>
-                </div>
-                <div class="modal-body">
-
-                    <ul>
-                        @if (messages != null)
-                        {
-                            foreach (var s in messages)
-                            {
-                                <li>@s</li>
-                            }
-                        }
-                    </ul>
-
-                </div>
-                <div class="modal-footer">
-                    <div class="row">
-                        <div class="col text-center">
-                            <input type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-target="#popup" value="Ok" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </footer>   
+    <partial name="_Error" model="@(Model.Messages ?? ViewBag.Messages)"/>
 </body>
 </html>

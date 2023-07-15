@@ -1,4 +1,4 @@
-﻿using Fateor.Application.Notification;
+﻿using Fateor.Application.Notification.Services;
 using Fateor.Application.UserAccess.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;

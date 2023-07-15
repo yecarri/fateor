@@ -51,7 +51,7 @@ namespace Fateor.Controllers
             if (model.Command == "save" && ModelState.IsValid)
             {
                 response = _mapper.Map<ResponseViewModel, Response>(model);
-                _responseService.Save(response, CurrentUser?.UserId ?? _settings.SystemUserId);
+                _responseService.Save(response, CurrentUser?.UserId ?? _settings.Default_UserId);
             }
 
             model.Questionnaires = _questionnaireService.GetQuestionnaires(false).ToList();
@@ -130,7 +130,7 @@ namespace Fateor.Controllers
             if (model.Command == "save" && ModelState.IsValid)
             {
                 response = _mapper.Map<Models.ResponseViewModel, Response>(model);
-                _responseService.Save(response, CurrentUser?.UserId ?? _settings.SystemUserId);
+                _responseService.Save(response, CurrentUser?.UserId ?? _settings.Default_UserId);
                 var questionaire = _questionnaireService.Get(response.QuestionnaireId);
                 var url = questionaire.RedirectUrl.ToLower().Replace("{responseid}", response.ResponseId.ToString());
                 return Redirect(Url.Content(url));

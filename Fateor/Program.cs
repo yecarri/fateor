@@ -10,7 +10,6 @@ using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("ConnectionStrings.json");
-builder.Configuration.AddJsonFile("Fateor.json");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

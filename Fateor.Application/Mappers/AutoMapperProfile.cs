@@ -52,6 +52,8 @@ namespace Fateor.Application.Mappers
             CreateMap<Gdpr.Dto.Gdpr, Gdpr.Entities.Gdpr>().ReverseMap();
             CreateMap<Gdpr.Dto.GdprMember, Gdpr.Entities.GdprMember>().ReverseMap();
 
+            CreateMap<Notification.Dto.EmailTemplate, Notification.Entities.EmailTemplate>().ReverseMap();
+
             //CreateMap<Bulletin.Dto.Bulletin, Bulletin.Entities.Bulletin>().ReverseMap();
             //CreateMap<Bulletin.Dto.BulletinCountryFilter, Bulletin.Entities.BulletinCountryFilter>().ReverseMap();
             //CreateMap<Bulletin.Dto.BulletinStatusFilter, Bulletin.Entities.BulletinStatusFilter>().ReverseMap();

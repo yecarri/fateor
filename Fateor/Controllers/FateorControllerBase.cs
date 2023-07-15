@@ -28,6 +28,7 @@ namespace Fateor.Controllers
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             ViewBag.Site = _settings.Site;
+            ViewBag.Title = _settings.Site_Name;
             var url = filterContext.HttpContext.Request.GetDisplayUrl();
             if (User.Identity?.IsAuthenticated ?? false)
             {

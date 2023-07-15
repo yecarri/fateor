@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fateor.Infrastructure.Entities
+namespace Fateor.Application.Notification.Entities
 {
     public class EmailConfiguration
     {

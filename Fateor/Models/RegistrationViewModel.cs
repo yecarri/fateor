@@ -32,5 +32,9 @@ namespace Fateor.Models
         public bool AlreadyInIntranet { get; set; }
 
         public bool CreateExternalUser { get; set; }
+
+        public string IntroHtml { get; set; } = string.Empty;
+
+        public string GdprHtml { get; set; } = string.Empty;
     }
 }

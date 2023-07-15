@@ -1,6 +1,5 @@
 ﻿@model Fateor.Models.UnitViewModel
 @{
-    ViewBag.Title = "Editar Sección";
     Layout = "~/Views/Shared/_Internal.cshtml";
 }
 @using (Model.New ? Html.BeginForm("Create", "Unit", FormMethod.Post) : Html.BeginForm("Edit", "Unit", FormMethod.Post))

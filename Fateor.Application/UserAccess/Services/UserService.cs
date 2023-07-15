@@ -59,7 +59,12 @@ namespace Fateor.Application.UserAccess.Services
 
         public Entities.User? GetUser(string login, string email)
         {
-            var u = _userRepository.GetAll().FirstOrDefault(x => string.Compare(x.Login, login, true) == 0 || string.Compare(x.Email, email, true)==0);
+            var u = _userRepository.GetAll()
+                .Where(x => string.Compare(x.Login, login, true)==0 || string.Compare(x.Email, email, true)==0)
+                .OrderBy(x => string.Compare(x.Login, login, true)==0 ? 0 : 1)
+                .ThenBy(x => string.Compare(x.Email, email, true)==0 ? 0 : 1)
+                .FirstOrDefault();
+
             if (u != null)
             {
                 var user = _mapper.Map<Dto.User, Entities.User>(u);

@@ -14,6 +14,8 @@ using Fateor.Application.Location.Repositories.Interfaces;
 using Fateor.Application.Location.Repositories.MySql;
 using Fateor.Application.Gdpr.Repositories.Interfaces;
 using Fateor.Application.Gdpr.Repositories.MySql;
+using Fateor.Application.Notification.Repositories.Interfaces;
+using Fateor.Application.Notification.Repositories.MySql;
 
 namespace Fateor.Setup
 {
@@ -21,26 +23,30 @@ namespace Fateor.Setup
     {
         public static void AddRepositories(this WebApplicationBuilder builder)
         {
-            builder.Services.AddScoped<IUserRepository, UserRepository>(s => new UserRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IMemberRepository, MemberRepository>(s => new MemberRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IMemberFeeBatchRepository, MemberFeeBatchRepository>(s => new MemberFeeBatchRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IResponseRepository, ResponseRepository>(s => new ResponseRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IUnitRepository, UnitRepository>(s => new UnitRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<ICountryRepository, CountryRepository>(s => new CountryRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IRegionRepository, RegionRepository>(s => new RegionRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IStatusRepository, StatusRepository>(s => new StatusRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IQuestionnaireRepository, QuestionnaireRepository>(s => new QuestionnaireRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IQuestionRepository, QuestionRepository>(s => new QuestionRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IOptionRepository, OptionRepository>(s => new OptionRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IResponseRepository, ResponseRepository>(s => new ResponseRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IAnswerRepository, AnswerRepository>(s => new AnswerRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IAnswerOptionRepository, AnswerOptionRepository>(s => new AnswerOptionRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IMemberUnitOfWork, MemberUnitOfWork>(s => new MemberUnitOfWork(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IIdentityDocumentTypeRepository, IdentityDocumentTypeRepository>(s => new IdentityDocumentTypeRepository(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IResponseUnitOfWork, ResponseUnitOfWork>(s => new ResponseUnitOfWork(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IQuestionnaireUnitOfWork, QuestionnaireUnitOfWork>(s => new QuestionnaireUnitOfWork(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IMemberFeeUnitOfWork, MemberFeeUnitOfWork>(s => new MemberFeeUnitOfWork(builder.Configuration.GetConnectionString("fateor")));
-            builder.Services.AddScoped<IGdprUnitOfWork, GdprUnitOfWork>(s => new GdprUnitOfWork(builder.Configuration.GetConnectionString("fateor")));            
+            string connectionString = builder.Configuration.GetConnectionString("fateor");
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>(s => new UserRepository(connectionString));
+            builder.Services.AddScoped<IMemberRepository, MemberRepository>(s => new MemberRepository(connectionString));
+            builder.Services.AddScoped<IMemberFeeBatchRepository, MemberFeeBatchRepository>(s => new MemberFeeBatchRepository(connectionString));
+            builder.Services.AddScoped<IResponseRepository, ResponseRepository>(s => new ResponseRepository(connectionString));
+            builder.Services.AddScoped<IUnitRepository, UnitRepository>(s => new UnitRepository(connectionString));
+            builder.Services.AddScoped<ICountryRepository, CountryRepository>(s => new CountryRepository(connectionString));
+            builder.Services.AddScoped<IRegionRepository, RegionRepository>(s => new RegionRepository(connectionString));
+            builder.Services.AddScoped<IStatusRepository, StatusRepository>(s => new StatusRepository(connectionString));
+            builder.Services.AddScoped<IQuestionnaireRepository, QuestionnaireRepository>(s => new QuestionnaireRepository(connectionString));
+            builder.Services.AddScoped<IQuestionRepository, QuestionRepository>(s => new QuestionRepository(connectionString));
+            builder.Services.AddScoped<IOptionRepository, OptionRepository>(s => new OptionRepository(connectionString));
+            builder.Services.AddScoped<IResponseRepository, ResponseRepository>(s => new ResponseRepository(connectionString));
+            builder.Services.AddScoped<IAnswerRepository, AnswerRepository>(s => new AnswerRepository(connectionString));
+            builder.Services.AddScoped<IAnswerOptionRepository, AnswerOptionRepository>(s => new AnswerOptionRepository(connectionString));
+            builder.Services.AddScoped<IMemberUnitOfWork, MemberUnitOfWork>(s => new MemberUnitOfWork(connectionString));
+            builder.Services.AddScoped<IIdentityDocumentTypeRepository, IdentityDocumentTypeRepository>(s => new IdentityDocumentTypeRepository(connectionString));
+            builder.Services.AddScoped<IResponseUnitOfWork, ResponseUnitOfWork>(s => new ResponseUnitOfWork(connectionString));
+            builder.Services.AddScoped<IQuestionnaireUnitOfWork, QuestionnaireUnitOfWork>(s => new QuestionnaireUnitOfWork(connectionString));
+            builder.Services.AddScoped<IMemberFeeUnitOfWork, MemberFeeUnitOfWork>(s => new MemberFeeUnitOfWork(connectionString));
+            builder.Services.AddScoped<IGdprUnitOfWork, GdprUnitOfWork>(s => new GdprUnitOfWork(connectionString));
+            builder.Services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>(s => new EmailTemplateRepository(connectionString));
+            builder.Services.AddScoped<IEmailRecipientRepository, EmailRecipientRepository>(s => new EmailRecipientRepository(connectionString));
         }
     }
 }

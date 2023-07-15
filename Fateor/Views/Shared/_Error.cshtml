@@ -1,12 +1,14 @@
 ﻿@model List<string>
-@if (Model.Count > 0)
+
+@if (Model != null && Model.Count > 0)
 {
-    <table id="messages">
+    <div id="messages">
         @for (int i = 0; i < Model.Count; i++)
         {
-            <tr>
-                <td colspan="2">@Html.DisplayFor(m => Model[i])</td>
-            </tr>
+            <div>@Html.DisplayFor(m => Model[i])</div>
         }
-    </table>
+    </div>
+    <script type="text/javascript">
+        $("#intro").dialog({ autoOpen: true, autoResize: true });
+    </script>
 }

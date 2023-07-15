@@ -1,4 +1,4 @@
-﻿using Fateor.Application.Notification;
+﻿using Fateor.Application.Notification.Services;
 using Fateor.Application.UserAccess.Services;
 using Fateor.Infrastructure.Services;
 using Fateor.Models;
@@ -45,8 +45,6 @@ namespace Fateor.Controllers
         [Route("login")]
         public ActionResult Login(Models.LoginViewModel model)
         {
-
-
             if (Request.Method == "GET")
                 return View(model);
             else
@@ -68,8 +66,7 @@ namespace Fateor.Controllers
 
                         var principal = new ClaimsPrincipal(identity);
 
-                        HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
+                        HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);                        
                         return (RedirectToAction("Index", "Internal"));
                     }
                     else
@@ -176,9 +173,18 @@ namespace Fateor.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Route("imau")]
+        public ActionResult Imau()
+        {
+            GC.Collect();
+            return Ok();
+        }
+
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             ViewBag.Site = _settings.Site;
+            ViewBag.Title = _settings.Site_Name;
             base.OnActionExecuting(filterContext);
         }
     }

@@ -1,0 +1,1 @@
+create table app_config(ConfigCode varchar(256), ConfigValue varchar(8000), constraint pk_app_config primary key(ConfigCode))

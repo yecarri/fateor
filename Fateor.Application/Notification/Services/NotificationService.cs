@@ -1,9 +1,9 @@
 ﻿using Fateor.Application.Location.Entities;
 using Fateor.Application.Location.Services;
+using Fateor.Application.Notification.Entities;
 using Fateor.Application.Organization.Entities;
 using Fateor.Application.UserAccess.Entities;
 using Fateor.Application.UserAccess.Services;
-using Fateor.Infrastructure.Entities;
 using Fateor.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
 using oSoft.Mail.Entities;
@@ -15,7 +15,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fateor.Application.Notification
+namespace Fateor.Application.Notification.Services
 {
     public sealed class NotificationService : INotificationService
     {
@@ -35,13 +35,13 @@ namespace Fateor.Application.Notification
                                    string url,
                                    string templatesPath)
         {
-            _userService=userService;
-            _locationService=locationService;
-            _emailService=emailService;
-            _baseUrl=url;
-            _emailConfiguration=emailConfiguration;
-            _logger=logger;
-            _templatesPath=templatesPath;
+            _userService = userService;
+            _locationService = locationService;
+            _emailService = emailService;
+            _baseUrl = url;
+            _emailConfiguration = emailConfiguration;
+            _logger = logger;
+            _templatesPath = templatesPath;
         }
         private static string SetVariables(Dictionary<string, string> variables, string html)
         {
@@ -86,8 +86,7 @@ namespace Fateor.Application.Notification
             {
                 string url = GetUrl($"response/token/{token}");
                 var template = _emailConfiguration?.Templates?.First(t => t.TemplateName == "welcome") ?? throw new Exception("Missing Configuration: Template [welcome]");
-                var path = Path.Combine(_templatesPath, template.FileName);
-                var html = File.ReadAllText(path);
+                var html = template.Content;
                 var variables = new Dictionary<string, string>()
                 {
                     {"member.GivenName", member.GivenName},
@@ -121,14 +120,13 @@ namespace Fateor.Application.Notification
             if (template == null)
                 return (false, new List<string>() { "No se ha encontrado la plantilla de correo para el cambio de contraseña. Verifique el archivo de configuración." });
 
-            var path = Path.Combine(_templatesPath, template.FileName);
             var variables = new Dictionary<string, string>()
             {
                 {"user.Login", user.Login },
                 {"url" , url}
             };
 
-            var html = SetVariables(variables, File.ReadAllText(path));
+            var html = SetVariables(variables, template.Content);
             var recipient = new EmailAddress(user.Email, user.Login);
             var sender = _emailConfiguration.DefaultSender;
             return _emailService.SendMail(sender, recipient, template.Subject, html);
@@ -145,9 +143,7 @@ namespace Fateor.Application.Notification
             if (template == null)
                 return (false, new List<string>() { "No se ha encontrado la plantilla de correo para el cambio de contraseña. Verifique el archivo de configuración." });
 
-
-            var path = Path.Combine(_templatesPath, template.FileName);
-            var html = File.ReadAllText(path);
+            var html = template.Content;
 
             foreach (var user in users)
             {

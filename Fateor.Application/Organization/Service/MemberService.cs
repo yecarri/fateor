@@ -10,14 +10,14 @@ using Fateor.Infrastructure.Mappers;
 
 namespace Fateor.Application.Organization.Service
 {
-    public sealed class MemberService : IMemberService
+    public sealed class MemberService : IMemberService, IDisposable
     {
         private readonly IMemberUnitOfWork _uow;
         private readonly IUnitSelector _unitSelector;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly int _initialStatusId;
-
+        private bool disposedValue;
 
         public MemberService(IMemberUnitOfWork memberUow,
                              IUnitSelector unitSelector,
@@ -279,6 +279,38 @@ namespace Fateor.Application.Organization.Service
                 _uow.Rollback();
                 return (false, new List<string>() { "No se puedo actualizar el registro", ex.Message });
             }
+        }
+        #endregion
+
+        #region IDisposable
+
+        private void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _uow.Dispose();                    
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue=true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~MemberService()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion

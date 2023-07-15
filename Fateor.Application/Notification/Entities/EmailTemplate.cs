@@ -5,24 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fateor.Infrastructure.Entities
+namespace Fateor.Application.Notification.Entities
 {
     public class EmailTemplate
     {
-        public EmailTemplate(EmailAddress? sender, IEnumerable<EmailAddress>? recipients, string templateName, string fileName, string subject)
+        public EmailTemplate() { }
+
+        public EmailTemplate(EmailAddress? sender, IEnumerable<EmailAddress>? recipients, string templateName, string subject)
         {
             Sender=sender;
             Recipients=recipients;
             TemplateName=templateName;
-            FileName=fileName;
             Subject=subject;
         }
 
         public EmailAddress? Sender { get; set; }
         public IEnumerable<EmailAddress>? Recipients { get; set; }
-        public string TemplateName { get; set; }
-        public string FileName { get; set; }
-        public string Subject { get; set; }
-
+        public string TemplateName { get; set; } = "";
+        public string Content { get; set; } = string.Empty;
+        public string Subject { get; set; } = "";
     }
 }

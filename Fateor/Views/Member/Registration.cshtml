@@ -1,6 +1,5 @@
 ﻿@model Fateor.Models.RegistrationViewModel
 @{
-    ViewBag.Title = "Editar Miembro";
     Layout = "~/Views/Shared/_External.cshtml";
 }
 @section Scripts
@@ -54,116 +53,14 @@
         @Html.HiddenFor(m => m.MemberId)
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div id="intro" class="text" tabindex="-1" role="dialog" title="Condiciones de los Miembros">
-            <p>
-                El movimiento Libertario de Venezuela es una Organización sin Fines de Lucro que se dedica
-                a la promoción y difusión del Libertarismo en Venezuela y entre los venezolanos alrededor
-                del mundo.
-            </p>
-            <p>Nuestros valores son:</p>
-            <ul>
-                <li>
-                    <span class="bold">Libertad Individual:</span> cada persona tiene el derecho a desarrollar su vida sin más
-                    limitación que el derecho de los demás. Nadie tiene derecho a imponerse sobre otros, ni por
-                    acción ni por coacción.
-                </li>
-                <li>
-                    <span class="bold">Propiedad Privada:</span> toda persona es dueña de cuerpo, del resultado de su trabajo y
-                    su creatividad; y sobre los recursos que ocupe sin perjudicar los derechos de otros.
-                </li>
-                <li>
-                    <span class="bold">Voluntarismo:</span> Las personas están obligadas moralmente a cumplir los pactos y
-                    contratos que acuerde libremente, pero no están obligados a cumplir lo que no han acordado
-                    libremente.
-                <li>
-                    <span class="bold">Igualdad Moral:</span> Todas las personas son iguales ante la ley. Los valores morales
-                    de una persona son tan válidos como los de cualquier otro (excepto si esos valores contravienen
-                    estos principios)
-                <li>
-                    <span class="bold">Responsabilidad:</span> Cada persona es responsable de sus actos y de las consecuencias de sus
-                    consecuencias y eso las obliga a resarcir los daños que causados a otras personas por su acción
-                    o por su negligencia.
-                </li>
-                <li>
-                    <span class="bold">Individualismo Político:</span> El individuo es soberano y tiene derechos frente a otros individuos
-                    y frente a los Estados, incluso antes de que exista una ley escrita que los ampare
-                </li>
-                <li>
-                    <span class="bold">No agresión:</span> Nadie tiene derecho a iniciar la violencia contra otros, sin embargo, todos
-                    tenemos el derecho a responder con violencia proporcional cuando somos víctimas de una agresión
-                </li>
-            </ul>
-            <p>
-                Antes de registrarte en el movimiento, queremos que conozcas los deberes y derechos
-                de los miembros:
-            </p>
-            <p>Como miembro adherente, tienes derecho a:</p>
-            <ul>
-                <li>Participar en las actividades propias del Movimiento</li>
-                <li>Participar en las asambleas</li>
-                <li>Ser informado sobre la gestión del movimiento</li>
-            </ul>
-            <p>
-                Nuestra organización tiene varias categorías de miembros:
-            </p>
-            <ul>
-                <li>
-                    <span class="bold">Miembros Activistas:</span> Pueden elegir y ser ser electos para la Junta Directiva,
-                    el Consejo Académico y otros cargos de elección. Tiene voz y voto en las asambleas.
-                </li>
-                <li>
-                    <span class="bold">Miembros Simpatizantes:</span> Pueden participar en las actividades y en las Asambleas
-                    pero no tienen derecho a votar.
-                </li>
-
-                <li>
-                    <span class="bold">Miembros Benefactores:</span> Apoyan al Movimiento materialmente o en las actividades sin
-                    los deberes y derechos inherentes a los otros tipos de miembros.
-                </li>
-            </ul>
-            <p>Los deberes de los miembros son:</p>
-            <ul>
-                <li>Cumplir y hacer complir los estatutos, reglamentos y decisiones de la Asamblea</li>
-                <li>Asistir y participar en las asambleas, comisiones y actividades del movimiento</li>
-                <li>Desempeñar las funciones para las cuales resulen electos o sean desigandos</li>
-            </ul>
+            @Html.Raw(Model.IntroHtml)
             <div style="display:block; margin:auto; width:40em; text-align:center; align-content:center;">
                 <input type="button" class="form-button" value="No acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedMembershipConditions)').attr('checked', false); $('#intro').dialog('close')" />
                 <input type="button" class="form-button" value="Acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedMembershipConditions)').attr('checked', true); $('#intro').dialog('close')" />
             </div>
         </div>
         <div id="gdpr" class="text" tabindex="-1" role="dialog" title="Política de Protección de Datos">
-            <h6>Responsable del Cuidado de tus Datos</h6>
-            <p>
-                Los datos recogidos en esta página web y los que publiques en la intranet y los foros de discusión son custodiados por la asociación
-                civil Movimiento Libertario de Venezuela y se encuentran almacenados en servidores que están bajo la jurisdicción norteamericana y/o europea.
-            </p>
-            <h6>Consentimiento para el uso de tus datos</h6>
-            <p>
-                Los datos serán usados exclusivamente para los fines propios de nuestra organización, como por ejemplo: el registro de miembros, convocatoria
-                a Asambleas y actividades, comunicaciones internas, discusiones y debates, etc. <span class="bold">Tus datos nunca serán cedidos a terceros</span>
-                fuera de la organización, pero podrían ser accesads por los coordinadores y otras personas que ejercen cargos para el cumplimiento de sus funciones.
-            </p>
-            <h6>Ejercicio de tus derechos ARCO</h6>
-            <p>
-                Puedes ejercer tus derechos de acceso, rectificación, cancelación y oposición al uso de tus datos contactándonos
-                mediante el @Html.ActionLink("Formulario de Solicitud RGPD", "rpgd", "member").
-            </p>
-            <h6>Datos del Usuario</h6>
-            <p>
-                Al aceptar la política de protección de datos te comprometes a garantizar que los datos son verdaderos, exactos, completos y actualizados,
-                siendo responsable de cualquier daño o perjuicio, directo o indirecto, que pudiera ocasionarse como consecuencia del incumplimiento de tal obligación.
-            </p>
-            <h6>Cookies</h6>
-            <p>
-                Las Cookies son archivos que contienen pequeñas cantidades de información que se descargan en el dispositivo del Usuario cuando visita una página web.
-                Sólo usamos las cookies estrictamente necesarias para el funcionamiento de la intranet, los foros de discusión, el sistema de registro de miembros
-                y el sistema de votación. No usamos cookies para el análisis de datos comerciales o de visitas ni otras finalidades.
-            </p>
-            <h6>Aceptación</h6>
-            <p>
-                Al aceptar, reconoces que has leído y comprendes la política de privacidad que te estamos presentando en todos sus aspectos y que esto constituye un
-                acuerdo entre el Movimiento Libertario de Venezuela y tu persona con respecto al uso de tus datos.
-            </p>
+            @Html.Raw(Model.GdprHtml)
 
             <div style="display:block; margin:auto; width:40em; text-align:center; align-content:center;">
                 <input type="button" class="form-button" value="No acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedGDPR)').attr('checked', false); $('#gdpr').dialog('close')" />

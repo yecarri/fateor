@@ -2,7 +2,7 @@
 using Fateor.Application.Organization.Entities;
 using Fateor.Application.UserAccess.Entities;
 
-namespace Fateor.Application.Notification
+namespace Fateor.Application.Notification.Services
 {
     public interface INotificationService
     {
