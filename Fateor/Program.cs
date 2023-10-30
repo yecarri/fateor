@@ -11,6 +11,11 @@ using System.Net;
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("ConnectionStrings.json");
 
+var binPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+var scriptPath = Path.Combine(binPath ?? throw new Exception("No Bin"), "Scripts");
+var dbUpdater = new DBUpdates(builder.Configuration.GetConnectionString("fateor"), scriptPath);
+var dbUpdateLog = dbUpdater.Update();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -45,10 +50,7 @@ builder.Services.Configure<CookieTempDataProviderOptions>(options =>
 
 var app = builder.Build();
 
-var binPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-var scriptPath = Path.Combine(binPath ?? throw new Exception("No Bin"), "Scripts");
-var dbUpdater = new DBUpdates(builder.Configuration.GetConnectionString("fateor"), scriptPath);
-var dbUpdateLog = dbUpdater.Update();
+
 
 (app.Services.GetService<ILogger<DBUpdates>>() ?? throw new Exception("no log")).LogInformation(dbUpdateLog);
 

@@ -376,10 +376,18 @@ namespace Fateor.Controllers
         private void LoadNotifications(RegistrationViewModel model)
         {
             var introPath = System.IO.Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "sites", _settings.Site, "templates", "intro.html");
-            model.IntroHtml = System.IO.File.ReadAllText(introPath);
+            try
+            {
+                model.IntroHtml = System.IO.File.ReadAllText(introPath);
+            }
+            catch { }
 
             var gdprPath = System.IO.Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "sites", _settings.Site, "templates", "gdpr.html");
-            model.GdprHtml= System.IO.File.ReadAllText(gdprPath);
+            try
+            {
+                model.GdprHtml= System.IO.File.ReadAllText(gdprPath);
+            }
+            catch { }
         }
 
         [AllowAnonymous]
