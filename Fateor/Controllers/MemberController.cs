@@ -30,6 +30,8 @@ namespace Fateor.Controllers
         private readonly IIdentityDocumentService _identityDocumentService;
         private readonly ICredentialService _credentialService;
         private readonly IGdprService _gdprService;
+        private readonly IHostEnvironment _hostEnvironment;
+
         public MemberController(ILogger<MemberController> logger,
                                 IMapper mapper,
                                 IEncryptionService encryptionService,
@@ -45,7 +47,8 @@ namespace Fateor.Controllers
                                 IIdentityDocumentService identityDocumentService,
                                 ICredentialService credentialService,
                                 IGdprService gdprService,
-                                Settings settings) : base(logger, mapper, encryptionService, settings)
+                                Settings settings,
+                                IHostEnvironment hostEnvironment) : base(logger, mapper, encryptionService, settings)
         {
             _memberService=memberService;
             _locationService=locationService;
@@ -59,6 +62,7 @@ namespace Fateor.Controllers
             _identityDocumentService=identityDocumentService;
             _credentialService=credentialService;
             _gdprService=gdprService;
+            _hostEnvironment=hostEnvironment;
         }
 
         [HttpGet]
@@ -98,11 +102,11 @@ namespace Fateor.Controllers
                 var documents = _identityDocumentService.GetDocumentTypes();
 
                 var members = GetMembers(name, countryId, regionId, unitId, statusId, includeDeleted);
-                
+
                 var data = members
                     .Join(countries, m => m.CountryId, c => c.CountryId, (Member, Country) => new { Member, Country })
                     .Join(regions, m => m.Member.RegionId, r => r.RegionId, (x, Region) => new { x.Member, x.Country, Region })
-                    .Join(documents, m=> m.Member.IdentityDocumentTypeId, d=> d.IdentityDocumentTypeId, (x, Document) => new { x.Member, x.Country, x.Region, Document})
+                    .Join(documents, m => m.Member.IdentityDocumentTypeId, d => d.IdentityDocumentTypeId, (x, Document) => new { x.Member, x.Country, x.Region, Document })
                     .Select(m => new
                     {
                         m.Member.MemberId,
@@ -139,7 +143,7 @@ namespace Fateor.Controllers
         public ActionResult Create()
         {
             var model = new MemberViewModel();
-            LoadMeberAggregations(model);
+            LoadModel(model);
             model.New = true;
             return View("Edit", model);
         }
@@ -154,7 +158,7 @@ namespace Fateor.Controllers
             {
                 _logger.LogInformation("Changed selected country");
                 model.Command = "";
-                LoadMeberAggregations(model);
+                LoadModel(model);
             }
             else
             {
@@ -169,13 +173,13 @@ namespace Fateor.Controllers
                         return RedirectToAction("Edit", new { Id = member.MemberId });
                     }
                     _logger.LogInformation("Member Created, redirecting to Edit");
-                    LoadMeberAggregations(model);
+                    LoadModel(model);
                     model.Messages = messages;
                 }
                 else
                 {
                     model.Command = string.Empty;
-                    LoadMeberAggregations(model);
+                    LoadModel(model);
                 }
             }
             return View("Edit", model);
@@ -192,7 +196,7 @@ namespace Fateor.Controllers
                 TempData["messages"] = new List<string> { $"No se ha encontrado ningún miembro con id {id}", "Por favor revisa la dirección e intenta de nuevo." };
                 return RedirectToAction("Index", "Home");
             }
-            LoadMeberAggregations(model);
+            LoadModel(model);
 
             model.Responses = _responseService.GetResponsesByMember(model.MemberId, true)
              .Select(r =>
@@ -211,7 +215,7 @@ namespace Fateor.Controllers
         {
             try
             {
-                LoadMeberAggregations(model);
+                LoadModel(model);
                 if (ModelState.IsValid)
                 {
                     bool ok;
@@ -251,7 +255,7 @@ namespace Fateor.Controllers
             catch (Exception ex)
             {
                 model.Messages.Add($"No se pudo guardar: {ex.Message}");
-                LoadMeberAggregations(model);
+                LoadModel(model);
                 return View(model);
             }
         }
@@ -318,7 +322,8 @@ namespace Fateor.Controllers
                 model.Password = "dummy";
                 model.Password2 = "dummy";
             }
-            LoadMeberAggregations(model);
+            LoadModel(model);
+            LoadNotifications(model);
             model.New = true;
             return View(model);
         }
@@ -334,7 +339,8 @@ namespace Fateor.Controllers
 
             if (ModelState.IsValid)
             {
-                LoadMeberAggregations(model);
+                LoadModel(model);
+                LoadNotifications(model);
 
                 var member = _mapper.Map<RegistrationViewModel, Member>(model);
                 (ok, messages) = _memberService.CreateMember(member, _settings.Default_UserId);
@@ -362,9 +368,18 @@ namespace Fateor.Controllers
             else
             {
                 model.Command = string.Empty;
-                LoadMeberAggregations(model);
+                LoadModel(model);
             }
             return View("Registration", model);
+        }
+
+        private void LoadNotifications(RegistrationViewModel model)
+        {
+            var introPath = System.IO.Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "sites", _settings.Site, "templates", "intro.html");
+            model.IntroHtml = System.IO.File.ReadAllText(introPath);
+
+            var gdprPath = System.IO.Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "sites", _settings.Site, "templates", "gdpr.html");
+            model.GdprHtml= System.IO.File.ReadAllText(gdprPath);
         }
 
         [AllowAnonymous]
@@ -444,7 +459,7 @@ namespace Fateor.Controllers
             ).ToList();
         }
 
-        private void LoadMeberAggregations(MemberViewModel model)
+        private void LoadModel(MemberViewModel model)
         {
             if (model.CountryId.HasValue)
                 model.Regions = _locationService.GetRegionsByCountryId(model.CountryId.Value).ToList();
@@ -456,6 +471,7 @@ namespace Fateor.Controllers
             model.Countries = countries;
 
             model.DocumentTypes = _identityDocumentService.GetDocumentTypes().ToList();
+
             _logger.LogInformation("OK");
         }
 

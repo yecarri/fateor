@@ -17,7 +17,7 @@ namespace Fateor.Application.Gdpr.Services
         private readonly IMapper _Mapper;
         private readonly ILogger _logger;
 
-        public GdprService(IGdprUnitOfWork gdprUnitOfWork, IMapper mapper, ILogger logger)
+        public GdprService(IGdprUnitOfWork gdprUnitOfWork, IMapper mapper, ILogger<GdprService> logger)
         {
             _GdprUnitOfWork=gdprUnitOfWork;
             _Mapper=mapper;

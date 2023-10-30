@@ -108,41 +108,6 @@ namespace Fateor.Setup
                 templatesPath
                 )); ;
 
-            services.AddScoped<IResponseService, ResponseService>(s => new ResponseService(
-                s.GetRequiredService<IResponseUnitOfWork>(),
-                s.GetRequiredService<IMapper>(),
-                s.GetRequiredService<IEncryptionService>()
-                ));
-
-            services.AddScoped<ILocationService, LocationService>(s => new LocationService(
-                s.GetRequiredService<ICountryRepository>(),
-                s.GetRequiredService<IRegionRepository>(),
-                s.GetRequiredService<IMapper>()
-                ));
-
-            services.AddScoped<IExternalMemberService, VoidExternalMemberService>(s => new VoidExternalMemberService());
-
-            services.AddScoped<IStatusService, StatusService>(s => new StatusService(
-                s.GetRequiredService<IStatusRepository>(),
-                s.GetRequiredService<IMapper>()
-                ));
-
-            services.AddScoped<IUnitService, UnitService>(s => new UnitService(
-                s.GetRequiredService<IUnitRepository>(),
-                s.GetRequiredService<IMapper>()
-                ));
-
-            services.AddScoped<IQuestionnaireService, QuestionnaireService>(s => new QuestionnaireService(
-                s.GetRequiredService<IQuestionnaireUnitOfWork>(),
-                s.GetRequiredService<IMapper>(),
-                s.GetRequiredService<IEncryptionService>()
-                ));
-
-            services.AddScoped<IIdentityDocumentService, IdentityDocumentService>(s => new IdentityDocumentService(
-                s.GetRequiredService<IIdentityDocumentTypeRepository>(),
-                s.GetRequiredService<IMapper>()
-                ));
-
             services.AddSingleton<ICredentialService, MLVCredentialService>(s => new MLVCredentialService(
                 systemUrl
                 ));
@@ -155,17 +120,61 @@ namespace Fateor.Setup
                  settings.Default_StatusId
                 ));
 
-            services.AddScoped<IMemberFeeBatchService, MemberFeeBatchService>(s => new MemberFeeBatchService(
-                s.GetRequiredService<IMemberFeeUnitOfWork>()
-,
-                s.GetRequiredService<IMapper>(),
-                s.GetRequiredService<ILogger<MemberFeeBatchService>>()));
+            services.AddScoped<IResponseService, ResponseService>();
+            services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<IExternalMemberService, VoidExternalMemberService>();
+            services.AddScoped<IStatusService, StatusService>();
+            services.AddScoped<IUnitService, UnitService>();
+            services.AddScoped<IQuestionnaireService, QuestionnaireService>();
+            services.AddScoped<IIdentityDocumentService, IdentityDocumentService>();
+            services.AddScoped<IMemberFeeBatchService, MemberFeeBatchService>();
+            services.AddScoped<IGdprService, GdprService>();
 
-            services.AddScoped<IGdprService, GdprService>(s => new GdprService(
-                s.GetRequiredService<IGdprUnitOfWork>(),
-                s.GetRequiredService<IMapper>(),
-                s.GetRequiredService<ILogger<MemberFeeBatchService>>()
-                ));
+            //services.AddScoped<IResponseService, ResponseService>(s => new ResponseService(
+            //    s.GetRequiredService<IResponseUnitOfWork>(),
+            //    s.GetRequiredService<IMapper>(),
+            //    s.GetRequiredService<IEncryptionService>()
+            //    ));
+
+            //services.AddScoped<ILocationService, LocationService>(s => new LocationService(
+            //    s.GetRequiredService<ICountryRepository>(),
+            //    s.GetRequiredService<IRegionRepository>(),
+            //    s.GetRequiredService<IMapper>()
+            //    ));
+
+            //services.AddScoped<IExternalMemberService, VoidExternalMemberService>(s => new VoidExternalMemberService());
+
+            //services.AddScoped<IStatusService, StatusService>(s => new StatusService(
+            //    s.GetRequiredService<IStatusRepository>(),
+            //    s.GetRequiredService<IMapper>()
+            //    ));
+
+            //services.AddScoped<IUnitService, UnitService>(s => new UnitService(
+            //    s.GetRequiredService<IUnitRepository>(),
+            //    s.GetRequiredService<IMapper>()
+            //    ));
+
+            //services.AddScoped<IQuestionnaireService, QuestionnaireService>(s => new QuestionnaireService(
+            //    s.GetRequiredService<IQuestionnaireUnitOfWork>(),
+            //    s.GetRequiredService<IMapper>(),
+            //    s.GetRequiredService<IEncryptionService>()
+            //    ));
+
+            //services.AddScoped<IIdentityDocumentService, IdentityDocumentService>(s => new IdentityDocumentService(
+            //    s.GetRequiredService<IIdentityDocumentTypeRepository>(),
+            //    s.GetRequiredService<IMapper>()
+            //    ));
+
+            //            services.AddScoped<IMemberFeeBatchService, MemberFeeBatchService>(s => new MemberFeeBatchService(
+            //                s.GetRequiredService<IMemberFeeUnitOfWork>(),
+            //                s.GetRequiredService<IMapper>(),
+            //                s.GetRequiredService<ILogger<MemberFeeBatchService>>()));
+
+            //            services.AddScoped<IGdprService, GdprService>(s => new GdprService(
+            //                s.GetRequiredService<IGdprUnitOfWork>(),
+            //                s.GetRequiredService<IMapper>(),
+            //                s.GetRequiredService<ILogger<MemberFeeBatchService>>()
+            //                ));
         }
 
         private static EmailAddress GetEmailAddressFromConfiguration(IConfigurationSection s)

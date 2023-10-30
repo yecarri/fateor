@@ -53,6 +53,7 @@
         @Html.HiddenFor(m => m.MemberId)
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div id="intro" class="text" tabindex="-1" role="dialog" title="Condiciones de los Miembros">
+            <a href="#"></a>
             @Html.Raw(Model.IntroHtml)
             <div style="display:block; margin:auto; width:40em; text-align:center; align-content:center;">
                 <input type="button" class="form-button" value="No acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedMembershipConditions)').attr('checked', false); $('#intro').dialog('close')" />
@@ -60,8 +61,8 @@
             </div>
         </div>
         <div id="gdpr" class="text" tabindex="-1" role="dialog" title="Política de Protección de Datos">
+            <a href="#"></a>
             @Html.Raw(Model.GdprHtml)
-
             <div style="display:block; margin:auto; width:40em; text-align:center; align-content:center;">
                 <input type="button" class="form-button" value="No acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedGDPR)').attr('checked', false); $('#gdpr').dialog('close')" />
                 <input type="button" class="form-button" value="Acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedGDPR)').attr('checked', true); $('#gdpr').dialog('close')" />
@@ -153,6 +154,6 @@
     }
 </div>
 <script type="text/javascript">
-    $("#intro").dialog({ autoOpen: false, width: window.innerWidth * 0.8, height: 'auto', autoResize: true });
-    $("#gdpr").dialog({ autoOpen: false, width: window.innerWidth * 0.8, height: 'auto', autoResize: true });
+    $("#intro").dialog({ autoOpen: false, width: window.innerWidth * 0.8, height: window.innerHeight * 0.6 });
+    $("#gdpr").dialog({ autoOpen: false, width: window.innerWidth * 0.8, height: window.innerHeight * 0.6});
 </script>
