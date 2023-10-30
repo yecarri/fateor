@@ -91,7 +91,7 @@ namespace Fateor.Controllers
             return (RedirectToAction("Index"));
         }
 
-        [HttpGet("user/passwordreset/{token}")]
+        [HttpGet("user/resetpassword/{token}")]
         public ActionResult PasswordReset(string token)
         {
 
@@ -115,7 +115,7 @@ namespace Fateor.Controllers
         }
 
         [HttpPost]
-        [Route("user/passwordreset/{token}")]
+        [Route("user/resetpassword/{token}")]
         public ActionResult PasswordReset(PasswordResetViewModel model)
         {
             if (ModelState.IsValid)

@@ -13,7 +13,7 @@ namespace Fateor.Models
         {
             if (string.IsNullOrWhiteSpace(Login) && string.IsNullOrWhiteSpace(Email))
             {
-                yield return new ValidationResult("Por favor, indique su login o su password", new List<string> { nameof(Login), nameof(Email) });
+                yield return new ValidationResult("Por favor, indique su login o su email", new List<string> { nameof(Login), nameof(Email) });
             }
         }
     }

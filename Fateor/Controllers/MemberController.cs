@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using Fateor.Application.Credentials.Services;
+﻿using Fateor.Application.Credentials.Services;
 using Fateor.Application.External;
 using Fateor.Application.Gdpr.Services;
 using Fateor.Application.Location.Entities;
@@ -311,7 +310,6 @@ namespace Fateor.Controllers
         public ActionResult Registration()
         {
             var model = new RegistrationViewModel();
-
             model.CreateExternalUser = _settings.ForumSystem_CreateUser;
             if (!_settings.ForumSystem_CreateUser)
             {
@@ -319,7 +317,6 @@ namespace Fateor.Controllers
                 model.Login = "dummy";
                 model.Password = "dummy";
                 model.Password2 = "dummy";
-
             }
             LoadMeberAggregations(model);
             model.New = true;
