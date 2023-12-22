@@ -25,7 +25,7 @@ namespace Fateor.Database.MySql
                 using (MySqlCommand cm = cn.CreateCommand())
                 {
                     cn.Open();
-                    cm.CommandText="select ScriptName from db_scripts";
+                    cm.CommandText="select ScriptName from db_Scripts";
                     using(var reader = cm.ExecuteReader())
                     {
                         while (reader.Read())
@@ -99,7 +99,7 @@ namespace Fateor.Database.MySql
                 var exists = (long)cm.ExecuteScalar();
                 if (exists==0)
                 {
-                    cm.CommandText="create table db_Scripts(ScriptName varchar(768) not null primary key, DateExecuted DateTime)";
+                    cm.CommandText="create table if not exists db_Scripts(ScriptName varchar(768) not null primary key, DateExecuted DateTime)";
                     cm.ExecuteNonQuery();
                 }
             }

@@ -29,8 +29,8 @@ namespace Fateor.Application.Notification.Repositories.MySql
         {
             string sql = @"SELECT 
                 r.EmailAddressId, r.EmailTemplateId, Address, Name 
-                FROM app_EmailRecipient r 
-                JOIN app_EmailAddress a ON r.EmailAddressId=a.EmailAddressId";
+                FROM app_emailrecipient r 
+                JOIN app_emailaddress a ON r.EmailAddressId=a.EmailAddressId";
             return Connection.Query<EmailRecipient>(sql, transaction: Transaction, commandType: CommandType.Text);                
         }
     }
