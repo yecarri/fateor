@@ -125,7 +125,9 @@ namespace Fateor.Controllers
                         m.Member.PostCode,
                         m.Member.MemberCode,
                         Unit = m.Member.LastStatus?.UnitName,
-                        Status = m.Member.LastStatus?.StatusDescription
+                        Status = m.Member.LastStatus?.StatusDescription,
+                        m.Member.LastStatus?.StatusDate,
+                        StatusMofificationDate = m.Member.LastStatus?.LastModificationDate
                     });
                 ws.Cell(1, 1).InsertTable(data);
                 wb.SaveAs(ms);
