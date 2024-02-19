@@ -52,7 +52,17 @@ namespace Fateor.Setup
                         s.GetRequiredService<IUnitRepository>()));
                     break;
                 default:
-                    services.AddScoped<IUnitSelector, MLVUnitSelector>();
+                    services.AddScoped<IUnitSelector, UnitSelector>(s => new UnitSelector(settings.Default_UnitId));
+                    break;
+            }
+
+            switch (settings.ID_Validator_Type)
+            {
+                case "Fateor.Application.Organization.Service.EspIdentificationNumberValidator":
+                    services.AddScoped<IIdentificationNumberValidator, EspIdentificationNumberValidator>();
+                    break;
+                default:
+                    services.AddScoped<IIdentificationNumberValidator, VoidIdentificationNumberValidator>();
                     break;
             }
 

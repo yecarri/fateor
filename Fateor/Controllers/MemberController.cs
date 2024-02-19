@@ -31,6 +31,7 @@ namespace Fateor.Controllers
         private readonly ICredentialService _credentialService;
         private readonly IGdprService _gdprService;
         private readonly IHostEnvironment _hostEnvironment;
+        private readonly IIdentificationNumberValidator _identifierNumberValidator;
 
         public MemberController(ILogger<MemberController> logger,
                                 IMapper mapper,
@@ -48,7 +49,8 @@ namespace Fateor.Controllers
                                 ICredentialService credentialService,
                                 IGdprService gdprService,
                                 Settings settings,
-                                IHostEnvironment hostEnvironment) : base(logger, mapper, encryptionService, settings)
+                                IHostEnvironment hostEnvironment,
+                                IIdentificationNumberValidator identifierNumberValidator) : base(logger, mapper, encryptionService, settings)
         {
             _memberService=memberService;
             _locationService=locationService;
@@ -63,6 +65,7 @@ namespace Fateor.Controllers
             _credentialService=credentialService;
             _gdprService=gdprService;
             _hostEnvironment=hostEnvironment;
+            _identifierNumberValidator=identifierNumberValidator;
         }
 
         [HttpGet]
@@ -167,16 +170,30 @@ namespace Fateor.Controllers
                 if (ModelState.IsValid)
                 {
                     _logger.LogInformation("Create Member");
-                    var member = _mapper.Map<MemberViewModel, Member>(model);
-                    (bool ok, IList<string> messages) = _memberService.CreateMember(member, CurrentUser?.UserId ?? 0);
-                    if (ok)
+
+                    var documentTypes = _identityDocumentService.GetDocumentTypes().ToList();
+                    var selectedDocType = (documentTypes
+                        ?.FirstOrDefault(t => t.IdentityDocumentTypeId==model.IdentityDocumentTypeId)
+                        ?.IdentityDocument) ?? "";
+
+                    if (_identifierNumberValidator.IsValid(selectedDocType, model.IdentityDocumentNumber) ==
+                    IIdentificationNumberValidator.IdentificationNumberValidity.Invalid)
                     {
-                        _logger.LogInformation("Member Created, redirecting to Edit");
-                        return RedirectToAction("Edit", new { Id = member.MemberId });
+                        ModelState.AddModelError("", $"Por favor, ingrese un {selectedDocType} válido");
                     }
-                    _logger.LogInformation("Member Created, redirecting to Edit");
-                    LoadModel(model);
-                    model.Messages = messages;
+                    else
+                    {
+                        var member = _mapper.Map<MemberViewModel, Member>(model);
+                        (bool ok, IList<string> messages) = _memberService.CreateMember(member, CurrentUser?.UserId ?? 0);
+                        if (ok)
+                        {
+                            _logger.LogInformation("Member Created, redirecting to Edit");
+                            return RedirectToAction("Edit", new { Id = member.MemberId });
+                        }
+                        _logger.LogInformation("Member Created, redirecting to Edit");
+                        LoadModel(model);
+                        model.Messages = messages;
+                    }
                 }
                 else
                 {
@@ -344,28 +361,42 @@ namespace Fateor.Controllers
                 LoadModel(model);
                 LoadNotifications(model);
 
-                var member = _mapper.Map<RegistrationViewModel, Member>(model);
-                (ok, messages) = _memberService.CreateMember(member, _settings.Default_UserId);
-                if (ok && _settings.ForumSystem_CreateUser)
+                var selectedDocType = (model
+                    .DocumentTypes
+                    ?.FirstOrDefault(t => t.IdentityDocumentTypeId==model.IdentityDocumentTypeId)
+                    ?.IdentityDocument) ?? "";
+
+                if (_identifierNumberValidator.IsValid(selectedDocType, model.IdentityDocumentNumber) ==
+                    IIdentificationNumberValidator.IdentificationNumberValidity.Invalid)
                 {
-                    (ok, messages) = _externalMemberService.CreateMember(member);
+                    ModelState.AddModelError("", $"Por favor, ingrese un {selectedDocType} válido");
                 }
-                if (ok)
+                else
                 {
-                    _notificationService.NotifyNewMember(member);
-                    string? token = InitialQuestionaireToken(member);
-                    _notificationService.SendWelcomeEmail(member, token ?? "");
-                    if (token != null)
+                    var member = _mapper.Map<RegistrationViewModel, Member>(model);
+                    (ok, messages) = _memberService.CreateMember(member, _settings.Default_UserId);
+                    if (ok && _settings.ForumSystem_CreateUser)
                     {
-                        _logger.LogInformation("Redirecting to initial questionaire");
-                        return Redirect(Url.Content($"~/response/{token}"));
+                        (ok, messages) = _externalMemberService.CreateMember(member);
                     }
-                    else
+                    if (ok)
                     {
-                        return Redirect(Url.Content($"~/RegistrationOK"));
+                        _notificationService.NotifyNewMember(member);
+                        string? token = InitialQuestionaireToken(member);
+                        _notificationService.SendWelcomeEmail(member, token ?? "");
+                        if (token != null)
+                        {
+                            _logger.LogInformation("Redirecting to initial questionaire");
+                            return Redirect(Url.Content($"~/response/{token}"));
+                        }
+                        else
+                        {
+                            return Redirect(Url.Content($"~/RegistrationOK"));
+                        }
                     }
+
+                    model.Messages = messages;
                 }
-                model.Messages = messages;
             }
             else
             {

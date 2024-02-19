@@ -5,11 +5,16 @@ namespace Fateor.Tests.Infrastructure
     [TestClass]
     public class AesEncryptionServiceTests
     {
-        class T
+        class T : IEquatable<T>
         {
+
             public string MyProperty1 { get; set; } = "";
             public int MyProperty2 { get; set; }
 
+            public bool Equals(T? other)
+            {
+                return this.MyProperty1 == other?.MyProperty1 && this.MyProperty2 == other?.MyProperty2;
+            }
         }
 
         [TestMethod]
