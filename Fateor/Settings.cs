@@ -36,5 +36,6 @@ namespace Fateor
         public string Credentials_Generator_Type { get => _Settings["Credentials_Generator_Type"]; }
         public string Credentials_Generator_Assembly { get => _Settings["Credentials_Generator_Assembly"]; }
         public string Credentials_Enabled { get => _Settings["Credentials_Enabled"]; }
+        public string ID_Validator_Type { get => _Settings["ID_Validator_Type"]; }
     }
 }
