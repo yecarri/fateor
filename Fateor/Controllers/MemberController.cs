@@ -10,6 +10,7 @@ using Fateor.Application.Questionnaires.Services;
 using Fateor.Infrastructure.Mappers;
 using Fateor.Infrastructure.Services;
 using Fateor.Models;
+using Google.Protobuf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -161,7 +162,7 @@ namespace Fateor.Controllers
 
             if (model.Command == "CountryChanged")
             {
-                _logger.LogInformation("Changed selected country");
+                _logger.LogDebug("Changed selected country");
                 model.Command = "";
                 LoadModel(model);
             }
@@ -169,7 +170,7 @@ namespace Fateor.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    _logger.LogInformation("Create Member");
+                    _logger.LogDebug("Create Member");
 
                     var documentTypes = _identityDocumentService.GetDocumentTypes().ToList();
                     var selectedDocType = (documentTypes
@@ -187,10 +188,10 @@ namespace Fateor.Controllers
                         (bool ok, IList<string> messages) = _memberService.CreateMember(member, CurrentUser?.UserId ?? 0);
                         if (ok)
                         {
-                            _logger.LogInformation("Member Created, redirecting to Edit");
+                            _logger.LogDebug("Member Created, redirecting to Edit");
                             return RedirectToAction("Edit", new { Id = member.MemberId });
                         }
-                        _logger.LogInformation("Member Created, redirecting to Edit");
+                        _logger.LogDebug("Member Created, redirecting to Edit");
                         LoadModel(model);
                         model.Messages = messages;
                     }
@@ -381,12 +382,23 @@ namespace Fateor.Controllers
                     }
                     if (ok)
                     {
-                        _notificationService.NotifyNewMember(member);
+                        (ok, messages) = _notificationService.NotifyNewMember(member);
+                        if (!ok)
+                        {
+                            _logger.LogError("Notification Email not sent: {0}", string.Join("\n", messages));
+                        }
                         string? token = InitialQuestionaireToken(member);
-                        _notificationService.SendWelcomeEmail(member, token ?? "");
+
+                        (ok, messages) = _notificationService.SendWelcomeEmail(member, token ?? "");
+
+                        if (!ok)
+                        {
+                            _logger.LogError("Notification Email not sent: {0}", string.Join("\n", messages));
+                        }
+
                         if (token != null)
                         {
-                            _logger.LogInformation("Redirecting to initial questionaire");
+                            _logger.LogDebug("Redirecting to initial questionaire");
                             return Redirect(Url.Content($"~/response/{token}"));
                         }
                         else
@@ -428,12 +440,24 @@ namespace Fateor.Controllers
         public ActionResult ContinueRegistration(int memberId)
         {
             var member = _memberService.GetMemberById(memberId);
-            _notificationService.NotifyNewMember(member);
+            (var ok, IList<string> msg) = _notificationService.NotifyNewMember(member);
+            
+            if (!ok)
+            {
+                _logger.LogError("Notification Email not sent: {0}", string.Join("\n", msg));
+            }
+
             string token = InitialQuestionaireToken(member) ?? "";
-            _notificationService.SendWelcomeEmail(member, token);
+
+            (ok, msg) = _notificationService.SendWelcomeEmail(member, token);
+
+            if (!ok)
+            {
+                _logger.LogError("Notification Email not sent: {0}", string.Join("\n", msg));
+            }
             if (token != null)
             {
-                _logger.LogInformation("Redirecting to initial questionaire");
+                _logger.LogDebug("Redirecting to initial questionaire");
                 return Redirect(Url.Content($"~/response/token/{token}"));
             }
             else
@@ -480,7 +504,7 @@ namespace Fateor.Controllers
                 model.Members = GetMembers(model.Name, model.CountryId, model.RegionId, model.UnitId, model.StatusId, model.IncludeDeleted);
 
                 _gdprService.Save(CurrentUser.UserId.Value, model.Members);
-                _logger.LogInformation("OK");
+                _logger.LogDebug("OK");
             }
             else
             {
@@ -513,14 +537,14 @@ namespace Fateor.Controllers
 
             model.DocumentTypes = _identityDocumentService.GetDocumentTypes().ToList();
 
-            _logger.LogInformation("OK");
+            _logger.LogDebug("OK");
         }
 
         private void LoadStatusAggregations(UpdateStatusViewModel model)
         {
             model.Units = _unitService.GetUnits();
             model.Statuses = _statusService.GetStatuses();
-            _logger.LogInformation("OK");
+            _logger.LogDebug("OK");
         }
 
         private string? InitialQuestionaireToken(Member member)

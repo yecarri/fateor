@@ -39,10 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\sites\ahvia\img\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="wwwroot\css\Default.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

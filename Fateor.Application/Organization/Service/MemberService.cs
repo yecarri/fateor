@@ -43,7 +43,7 @@ namespace Fateor.Application.Organization.Service
             if (withStatuses)
                 m1.MemberStatuses = GetMemberStatusHistory(id);
 
-            _logger.LogInformation("OK");
+            _logger.LogDebug("OK");
             return m1;
         }
         
@@ -61,7 +61,7 @@ namespace Fateor.Application.Organization.Service
                     .ToList();
                 return x;
             }).ToList();
-            _logger.LogInformation("OK");
+            _logger.LogDebug("OK");
             return result;
 
         }
@@ -70,7 +70,7 @@ namespace Fateor.Application.Organization.Service
         {
             var members = _uow.MemberRepository.GetElegibleMembers();
             var result = members.Select(m => _mapper.Map<Organization.Dto.Member, Member>(m)).ToList();
-            _logger.LogInformation("OK");
+            _logger.LogDebug("OK");
             return result;
         }
 
@@ -81,7 +81,7 @@ namespace Fateor.Application.Organization.Service
                 bool ok = true;
                 IList<string> messages = new List<string>();
 
-                _logger.LogInformation($"Creating Member");
+                _logger.LogDebug($"Creating Member");
 
                 _uow.BeginTransaction();
 
@@ -89,9 +89,9 @@ namespace Fateor.Application.Organization.Service
 
                 if (ok)
                 {
-                    _logger.LogInformation($"Member created: {member.MemberId}");
+                    _logger.LogDebug($"Member created: {member.MemberId}");
 
-                    _logger.LogInformation($"Assigning status to member: {member.MemberId}");
+                    _logger.LogDebug($"Assigning status to member: {member.MemberId}");
                     var unitId = _unitSelector.SelectUnit(member);
 
                     var memberStatus = new Organization.Dto.MemberStatus()
@@ -107,7 +107,7 @@ namespace Fateor.Application.Organization.Service
 
                     _uow.Commit();
 
-                    _logger.LogInformation($"Status Assigned to member: {member.MemberId}");
+                    _logger.LogDebug($"Status Assigned to member: {member.MemberId}");
                 }
                 
                 return (ok, messages);
