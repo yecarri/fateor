@@ -25,7 +25,7 @@ namespace Fateor.Database.MySql
                 using (MySqlCommand cm = cn.CreateCommand())
                 {
                     cn.Open();
-                    cm.CommandText="select ScriptName from db_Scripts";
+                    cm.CommandText="select ScriptName from db_scripts";
                     using(var reader = cm.ExecuteReader())
                     {
                         while (reader.Read())
