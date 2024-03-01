@@ -2,7 +2,7 @@
 @{
 }
 @section Scripts
-    {
+{
     <link href="~/lib/fontawesome/css/all.css" rel="stylesheet" />
     <style>
         /* Tooltip container */
@@ -36,98 +36,85 @@
     </style>
 }
 
-<div class="py-2 container">
-    <div class="card">
-        <div class="card-header"><h3>Lote de Cuotas</h3></div>
-        @using (Html.BeginForm(FormMethod.Post))
-        {
-            <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        @Html.LabelFor(m=>m.BatchTitle)
-                        @Html.TextBoxFor(m=>m.BatchTitle, "{0:yyyy-MM-dd}", new { @class="form-control" })
-                    </div>
-                    <div class="col">
-                        <label for="Periodicidad">Periodicidad</label>
-                        @Html.DropDownListFor(m=> m.Periodicity, new SelectList(Periodicity.Periodicities, "Value", "Text"), htmlAttributes: new {@class = "form-select"})
-                    </div>
+@using (Html.BeginForm(FormMethod.Post))
+{
+    <div class="container">
+        <h5>Lote de Cuotas</h5>
+        <div class="form-section">
+            <div class="form-field">
+                @Html.LabelFor(m => m.BatchTitle)
+                @Html.TextBoxFor(m => m.BatchTitle, "{0:yyyy-MM-dd}", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-field">
+                <label for="Periodicidad">Periodicidad</label>
+                @Html.DropDownListFor(m => m.Periodicity, new SelectList(Periodicity.Periodicities, "Value", "Text"), htmlAttributes: new { @class = "form-select" })
+            </div>
+            <div class="form-field">
+                @Html.LabelFor(m => m.DateFrom)
+                @Html.TextBoxFor(m => m.DateFrom, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
+            </div>
+            <div class="form-field">
+                @Html.LabelFor(m => m.DateTo)
+                @Html.TextBoxFor(m => m.DateTo, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-field">
+                <label for="ReferencePatten">Formato para la referencia</label>
+                @Html.TextBoxFor(m => m.ReferencePattern, new { @class = "form-control" })
+            </div>
+            <div>
+                <div class="form-field">
+                    @Html.LabelFor(m => m.Amount)
+                    @Html.TextBoxFor(m => m.Amount, format: "{0:0.00}", htmlAttributes: new { @class = "form-control" })
                 </div>
-                <div class="row">
-                    <div class="col">
-                        @Html.LabelFor(m=>m.DateFrom)
-                        @Html.TextBoxFor(m=>m.DateFrom, "{0:yyyy-MM-dd}", new { @class="form-control", @type="date"})
-                    </div>
-                    <div class="col">
-                        @Html.LabelFor(m=>m.DateTo)
-                        @Html.TextBoxFor(m=>m.DateTo, "{0:yyyy-MM-dd}", new { @class="form-control", @type="date"})
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-lg-6 d-flex align-items-stretch">
-                        <div class="card w-100">
-                            <div class="card-header">
-                                Datos
-                            </div>
-                            <div class="card-body">
-                                <label for="ReferencePatten">Formato para la referencia</label>
-                                @Html.TextBoxFor(m=>m.ReferencePattern,new { @class="form-control"})
-                                @Html.LabelFor(m=>m.Amount)
-                                @Html.TextBoxFor(m=>m.Amount, format: "{0:0.00}", htmlAttributes: new { @class="form-control" })
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 d-flex align-items-stretch">
-                        <div class="card w-100">
-                            <div class="card-header">
-                                Estatuses
-                            </div>
-                            <div class="card-body">
-                                @Html.ListBoxFor(m => m.SelectedStatuses, new SelectList(Model.Statuses, "StatusId", "StatusDescription"), new { @class="form-select"})
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-1">
-                    <div class="col">
-                        <input type="submit" class="btn btn-secondary float-end" value="Actualizar" />
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                Cuotas
-                            </div>
-                            <div class="card-body">
-                                <div style="border-top:inset; border-left:inset; border-right:inset; border-bottom:1px solid lightgray; width: 100%; padding:5px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 30px 1fr 1fr 30px 16px; ">
-                                    <div>Apellido</div>
-                                    <div>Nombre</div>
-                                    <div>Referencia</div>
-                                    <div>Importe</div>
-                                    <div class="tt"><span class="fa fa-coins"></span><span class="tttext">Indica si la cuota está pagada o no</span></div>
-                                    <div>Forma de pago</div>
-                                    <div class="tt">Referencia del Pago<span class="tttext">Puede colocar aquí el número de referencia de la transferencia o el pago por tarjeta</span></div>
-                                    <div></div>
-                                </div>
-                                <div style="border-left:inset; width: 100%; height: 200px; padding:5px; display:  grid; grid-template-columns: 1fr 1fr 1fr 1fr 30px 1fr 1fr 30px; overflow-y:scroll;">
-                                    @foreach (var m in Model.MemberFees)
-                                    {
-                                        @Html.EditorFor(x => m)
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-1">
-                    <div class="col">
-                        <input type="submit" class="btn btn-primary float-end" value="Generar" />
-                    </div>
-                </div>
-            </div>           
-        }
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-field">
+                <label>Estatuses</label>
+                @Html.ListBoxFor(m => m.SelectedStatuses, new SelectList(Model.Statuses, "StatusId", "StatusDescription"), new { @class = "form-select" })
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-field">
+                <input type="submit" class="form-button float-end" value="Actualizar" />
+            </div>
+        </div>
+        <div class="form-section">
+
+            <label>Cuotas</label>
+            <div style="border-top:inset; border-left:inset; border-right:inset; border-bottom:1px solid lightgray; width: 100%; padding:5px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 30px 1fr 1fr 30px 16px; ">
+                <div>Apellido</div>
+                <div>Nombre</div>
+                <div>Referencia</div>
+                <div>Importe</div>
+                <div class="tt"><span class="fa fa-coins"></span><span class="tttext">Indica si la cuota está pagada o no</span></div>
+                <div>Forma de pago</div>
+                <div class="tt">Referencia del Pago<span class="tttext">Puede colocar aquí el número de referencia de la transferencia o el pago por tarjeta</span></div>
+                <div></div>
+            </div>
+            <div style="border-left:inset; width: 100%; height: 200px; padding:5px; display:  grid; grid-template-columns: 1fr 1fr 1fr 1fr 30px 1fr 1fr 30px; overflow-y:scroll;">
+                @foreach (var m in Model.MemberFees)
+                {
+                    @Html.EditorFor(x => m)
+                }
+            </div>
+
+        </div>
+
+        <div class="form-section">
+            <div class="form-field">
+                <input type="submit" class="form-button float-end" value="Generar" />
+            </div>
+        </div>
     </div>
-</div>
+}
+
+
 <template id="feeRow">
     <input type="hidden" name="MemberFeeId" />
     <input type="hidden" name="MemberFeeBatchId" />

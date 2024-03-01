@@ -43,6 +43,13 @@
                         </li>
                     </ul>
                 </li>
+                <li>
+                    <a href="#">Cuotas</a>
+                    <ul>
+                        <li><a href="@Url.Content("~/fee/batch/list")">Listado</a></li>
+                        <li><a href="@Url.Content("~/fee/batch/create")">Crear</a></li>
+                    </ul>
+                </li>
                 <li class="nav-logout"><a href='@Url.Action("Logout","Home")'><span style="margin-right: 1em;">@ViewBag.User</span><span class='fas fa-sign-out-alt'></span> Salir</a></li>
             </ul>
         </div>
