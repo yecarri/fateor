@@ -55,9 +55,9 @@ namespace Fateor.Application.Notification.Services
             return new Uri(new Uri(_baseUrl), relativePath).ToString();
         }
 
-        public (bool ok, List<string> messages) NotifyNewMember(Member member)
+        public (bool ok, IList<string> messages) NotifyNewMember(Member member)
         {
-
+            _logger.LogDebug("NotifyNewMember");
             Country? country = null;
             if (member.CountryId is not null)
                 country = _locationService.GetCountryById(member.CountryId.Value);
@@ -65,8 +65,8 @@ namespace Fateor.Application.Notification.Services
             var users = _userService.GetAllUsers().Where(u => !(u.IsDeleted || string.IsNullOrEmpty(u.Email)));
             try
             {
-                NotifyNewMember(member, country, users);
-                return (true, new List<string>());
+                (var ok, var msg) = NotifyNewMember(member, country, users);
+                return (ok, msg);
             }
             catch (Exception ex)
             {
@@ -74,73 +74,25 @@ namespace Fateor.Application.Notification.Services
             }
         }
 
-        public (bool ok, IList<string> messages) SendWelcomeEmail(Member member, string token)
-        {
-            if (_emailConfiguration.DisableAllEmails)
-                return (true, new List<string>());
-
-            try
-            {
-                string url = GetUrl($"response/token/{token}");
-                var template = _emailConfiguration?.Templates?.First(t => t.TemplateName == "welcome") ?? throw new Exception("Missing Configuration: Template [welcome]");
-                var html = template.Content;
-                var variables = new Dictionary<string, string>()
-                {
-                    {"member.GivenName", member.GivenName},
-                    {"url" , url}
-                };
-
-                html = SetVariables(variables, html);
-                var recipient = new EmailAddress(member.Email, member.FullName);
-                var sender = _emailConfiguration.DefaultSender;
-                return _emailService.SendMail(sender, recipient, template.Subject, html);
-
-            }
-            catch (Exception ex)
-            {
-                return (false, new List<string>() { "No se pudo enviar el correo de bienvenida", ex.Message });
-            }
-        }
-
-        public (bool ok, IList<string> messages) NotifyPasswordChangeRequest(User user)
-        {
-            if (_emailConfiguration.DisableAllEmails)
-                return (true, new List<string>());
-
-            if (user?.UserId is null)
-                throw new ArgumentNullException(nameof(user));
-
-            var token = _userService.GetPasswordResetToken(user.UserId.Value);
-            string url = GetUrl($"user/passwordreset/{token}");
-
-            var template = _emailConfiguration.Templates.FirstOrDefault(t => t.TemplateName == "passwordChange");
-            if (template == null)
-                return (false, new List<string>() { "No se ha encontrado la plantilla de correo para el cambio de contraseña. Verifique el archivo de configuración." });
-
-            var variables = new Dictionary<string, string>()
-            {
-                {"user.Login", user.Login },
-                {"url" , url}
-            };
-
-            var html = SetVariables(variables, template.Content);
-            var recipient = new EmailAddress(user.Email, user.Login);
-            var sender = _emailConfiguration.DefaultSender;
-            return _emailService.SendMail(sender, recipient, template.Subject, html);
-        }
-
         public (bool ok, IList<string> messages) NotifyNewMember(Member member, Country? country, IEnumerable<User> users)
         {
+            _logger.LogDebug("NotifyNewMember");
             if (_emailConfiguration.DisableAllEmails)
+            {
+                _logger.LogDebug("Emails are disabled, will not sent");
                 return (true, new List<string>());
+            }
 
             string url = GetUrl($"member/{member.MemberId}");
 
-            var template = _emailConfiguration.Templates.FirstOrDefault(t => t.TemplateName == "passwordChange");
+            var template = _emailConfiguration.Templates.FirstOrDefault(t => t.TemplateName == "notifyNewMember");
             if (template == null)
                 return (false, new List<string>() { "No se ha encontrado la plantilla de correo para el cambio de contraseña. Verifique el archivo de configuración." });
 
             var html = template.Content;
+
+            bool ok = true;
+            var msg = new List<string>();
 
             foreach (var user in users)
             {
@@ -158,10 +110,79 @@ namespace Fateor.Application.Notification.Services
                 var recipient = new EmailAddress(user.Email, user.Login);
                 var sender = _emailConfiguration.DefaultSender;
 
-                _emailService.SendMail(sender, recipient, template.Subject, html);
+                (var ok1, var msg1) = _emailService.SendMail(sender, recipient, template.Subject, html);
+
+                ok &= ok1;
+                msg.AddRange(msg1);
             }
 
-            return (true, new List<string>());
+            return (ok, msg);
+        }
+
+        public (bool ok, IList<string> messages) SendWelcomeEmail(Member member, string token)
+        {
+            _logger.LogDebug("SendWelcomeEmail");
+            if (_emailConfiguration.DisableAllEmails)
+            {
+                _logger.LogDebug("Emails are disabled, will not sent");
+                return (true, new List<string>());
+            }
+
+            try
+            {
+                string url = GetUrl($"response/token/{token}");
+                var template = _emailConfiguration?.Templates?.First(t => t.TemplateName == "welcome") ?? throw new Exception("Missing Configuration: Template [welcome]");
+                var html = template.Content;
+                var variables = new Dictionary<string, string>()
+                {
+                    {"member.GivenName", member.GivenName},
+                    {"url" , url}
+                };
+
+                html = SetVariables(variables, html);
+                var recipient = new EmailAddress(member.Email, member.FullName);
+                var sender = _emailConfiguration.DefaultSender ?? throw new Exception("Default sender not configured");
+                var result = _emailService.SendMail(sender, recipient, template.Subject, html);
+                _logger.LogDebug("Welcome email sent");
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending welcome email");
+                return (false, new List<string>() { "No se pudo enviar el correo de bienvenida", ex.Message });
+            }
+        }
+
+        public (bool ok, IList<string> messages) NotifyPasswordChangeRequest(User user)
+        {
+            if (_emailConfiguration.DisableAllEmails)
+            {
+                _logger.LogDebug("Emails are disabled, will not sent");
+                return (true, new List<string>());
+            }
+
+            if (user?.UserId is null)
+                throw new ArgumentNullException(nameof(user));
+
+            var token = _userService.GetPasswordResetToken(user.UserId.Value);
+            string url = GetUrl($"user/passwordreset/{token}");
+
+            var template = _emailConfiguration?.Templates?.FirstOrDefault(t => t.TemplateName == "passwordChange");
+            if (template == null)
+                return (false, new List<string>() { "No se ha encontrado la plantilla de correo para el cambio de contraseña. Verifique el archivo de configuración." });
+
+            var variables = new Dictionary<string, string>()
+            {
+                {"user.Login", user.Login },
+                {"url" , url}
+            };
+
+            var html = SetVariables(variables, template.Content);
+            var recipient = new EmailAddress(user.Email, user.Login);
+            var sender = _emailConfiguration?.DefaultSender ?? throw new Exception("Default sender not configured");
+            var result = _emailService.SendMail(sender, recipient, template.Subject, html);
+            return result;
         }
 
     }

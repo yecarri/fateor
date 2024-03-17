@@ -16,7 +16,7 @@ namespace Fateor.Controllers
         private readonly IStatusService _statusService;
         private readonly ILocationService _locationService;
 
-        public BulletinController(ILogger logger,
+        public BulletinController(ILogger<BulletinController> logger,
                                   IMapper mapper,
                                   IEncryptionService encryptionService,
                                   IBulletinService bulletinService,

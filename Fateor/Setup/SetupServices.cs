@@ -28,6 +28,7 @@ namespace Fateor.Setup
             var sp = services.BuildServiceProvider();
 
             var settings = sp.GetRequiredService<Settings>();
+            var logger = sp.GetRequiredService<ILogger<Program>>();
 
             services.AddScoped<IUserService, UserService>(
                 s => new UserService(
@@ -38,11 +39,13 @@ namespace Fateor.Setup
             switch (settings.Unit_Selector_Type)
             {
                 case "Fateor.Application.Organization.Service.MLVUnitSelector":
+                    logger.LogInformation("IUnitSelector: Using MLVUnitSelector");
                     services.AddScoped<IUnitSelector, MLVUnitSelector>(s => new MLVUnitSelector(
                         s.GetRequiredService<ICountryRepository>(),
                         s.GetRequiredService<IUnitRepository>()));
                     break;
                 default:
+                    logger.LogInformation("IUnitSelector: Using default UnitSelector");
                     services.AddScoped<IUnitSelector, UnitSelector>(s => new UnitSelector(settings.Default_UnitId));
                     break;
             }
@@ -50,9 +53,11 @@ namespace Fateor.Setup
             switch (settings.ID_Validator_Type)
             {
                 case "Fateor.Application.Organization.Service.EspIdentificationNumberValidator":
+                    logger.LogInformation("IIdentificationNumberValidator: Using EspIdentificationNumberValidator");
                     services.AddScoped<IIdentificationNumberValidator, EspIdentificationNumberValidator>();
                     break;
                 default:
+                    logger.LogInformation("IIdentificationNumberValidator: Using VoidIdentificationNumberValidator");
                     services.AddScoped<IIdentificationNumberValidator, VoidIdentificationNumberValidator>();
                     break;
             }
@@ -60,6 +65,7 @@ namespace Fateor.Setup
             switch (settings.Email_Service_Provider)
             {
                 case "mailgun":
+                    logger.LogInformation("IEmailService: Using Mailgun for domain {0}", settings.Email_Service_Domain);
                     services.AddSingleton<IEmailService, MailgunService>(s => new MailgunService(
                         settings.Email_Service_Domain,
                         settings.Email_Service_Key,
@@ -67,6 +73,7 @@ namespace Fateor.Setup
                         ));
                     break;
                 case "smtp":
+                    logger.LogInformation("IEmailService: Using Smtp");
                     services.AddSingleton<IEmailService, SmtpService>(s => new SmtpService(
                         settings.Email_Service_Server,
                         settings.Email_Service_Port,
@@ -75,10 +82,12 @@ namespace Fateor.Setup
                         ));
                     break;
                 case "mailersend":
+                    logger.LogInformation("IEmailService: Using MailerSend");
                     services.AddSingleton<IEmailService, MailerSendService>(s => new MailerSendService(
                         settings.Email_Service_Key));
                     break;
                 default:
+                    logger.LogInformation("IEmailService: Not using any email service, please check Email_Service_Provider in settings");
                     services.AddScoped<IEmailService, VoidEmailService>(s => new VoidEmailService(
                         s.GetRequiredService<ILogger<VoidEmailService>>()));
                     break;
@@ -128,57 +137,6 @@ namespace Fateor.Setup
             services.AddScoped<IIdentityDocumentService, IdentityDocumentService>();
             services.AddScoped<IMemberFeeService, MemberFeeService>();
             services.AddScoped<IGdprService, GdprService>();
-
-            //services.AddScoped<IResponseService, ResponseService>(s => new ResponseService(
-            //    s.GetRequiredService<IResponseUnitOfWork>(),
-            //    s.GetRequiredService<IMapper>(),
-            //    s.GetRequiredService<IEncryptionService>()
-            //    ));
-
-            //services.AddScoped<ILocationService, LocationService>(s => new LocationService(
-            //    s.GetRequiredService<ICountryRepository>(),
-            //    s.GetRequiredService<IRegionRepository>(),
-            //    s.GetRequiredService<IMapper>()
-            //    ));
-
-            //services.AddScoped<IExternalMemberService, VoidExternalMemberService>(s => new VoidExternalMemberService());
-
-            //services.AddScoped<IStatusService, StatusService>(s => new StatusService(
-            //    s.GetRequiredService<IStatusRepository>(),
-            //    s.GetRequiredService<IMapper>()
-            //    ));
-
-            //services.AddScoped<IUnitService, UnitService>(s => new UnitService(
-            //    s.GetRequiredService<IUnitRepository>(),
-            //    s.GetRequiredService<IMapper>()
-            //    ));
-
-            //services.AddScoped<IQuestionnaireService, QuestionnaireService>(s => new QuestionnaireService(
-            //    s.GetRequiredService<IQuestionnaireUnitOfWork>(),
-            //    s.GetRequiredService<IMapper>(),
-            //    s.GetRequiredService<IEncryptionService>()
-            //    ));
-
-            //services.AddScoped<IIdentityDocumentService, IdentityDocumentService>(s => new IdentityDocumentService(
-            //    s.GetRequiredService<IIdentityDocumentTypeRepository>(),
-            //    s.GetRequiredService<IMapper>()
-            //    ));
-
-            //            services.AddScoped<IMemberFeeBatchService, MemberFeeBatchService>(s => new MemberFeeBatchService(
-            //                s.GetRequiredService<IMemberFeeUnitOfWork>(),
-            //                s.GetRequiredService<IMapper>(),
-            //                s.GetRequiredService<ILogger<MemberFeeBatchService>>()));
-
-            //            services.AddScoped<IGdprService, GdprService>(s => new GdprService(
-            //                s.GetRequiredService<IGdprUnitOfWork>(),
-            //                s.GetRequiredService<IMapper>(),
-            //                s.GetRequiredService<ILogger<MemberFeeBatchService>>()
-            //                ));
-        }
-
-        private static EmailAddress GetEmailAddressFromConfiguration(IConfigurationSection s)
-        {
-            return new EmailAddress(s.GetValue<string>("Email"), s.GetValue<string>("Name"));
         }
     }
 }

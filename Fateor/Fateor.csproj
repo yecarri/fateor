@@ -26,7 +26,7 @@
     </PackageReference>
     <PackageReference Include="Karambolo.Extensions.Logging.File" Version="3.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="oSoft.Data.Annotation" Version="1.3.0" />
+    <PackageReference Include="oSoft.Data.Annotation" Version="1.3.1" />
     <PackageReference Include="oSoft.Mail" Version="1.0.1" />
     <PackageReference Include="oSoft.Mail.MailerSend" Version="1.0.0" />
     <PackageReference Include="oSoft.Mail.Mailgun" Version="1.0.0" />
@@ -36,10 +36,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Fateor.Application\Fateor.Application.csproj" />
     <ProjectReference Include="..\Fateor.Infrastructure\Fateor.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\sites\ahvia\img\" />
   </ItemGroup>
 
   <ItemGroup>

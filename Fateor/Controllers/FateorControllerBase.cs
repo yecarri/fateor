@@ -33,7 +33,7 @@ namespace Fateor.Controllers
             if (User.Identity?.IsAuthenticated ?? false)
             {
                 var identity = (ClaimsIdentity?)User.Identity;
-                _logger.LogInformation("{url} executing {authentication}", url, $"authenticated as {identity?.Name}");
+                _logger.LogDebug("{url} executing {authentication}", url, $"authenticated as {identity?.Name}");
 
                 CurrentUser = new User
                 {
@@ -45,7 +45,7 @@ namespace Fateor.Controllers
             }
             else
             {
-                _logger.LogInformation("{url} executing {authentication}", url, "not authenticated");
+                _logger.LogDebug("{url} executing {authentication}", url, "not authenticated");
             }
         }
 
