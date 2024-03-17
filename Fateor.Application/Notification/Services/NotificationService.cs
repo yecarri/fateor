@@ -25,23 +25,20 @@ namespace Fateor.Application.Notification.Services
         private readonly EmailConfiguration _emailConfiguration;
         private readonly ILogger _logger;
         private readonly string _baseUrl;
-        private readonly string _templatesPath;
 
         public NotificationService(IUserService userService,
                                    ILocationService locationService,
                                    IEmailService emailService,
                                    ILogger logger,
                                    EmailConfiguration emailConfiguration,
-                                   string url,
-                                   string templatesPath)
+                                   string url)
         {
             _userService = userService;
             _locationService = locationService;
             _emailService = emailService;
             _baseUrl = url;
             _emailConfiguration = emailConfiguration;
-            _logger = logger;
-            _templatesPath = templatesPath;
+            _logger = logger;         
         }
         private static string SetVariables(Dictionary<string, string> variables, string html)
         {
@@ -65,7 +62,7 @@ namespace Fateor.Application.Notification.Services
             if (member.CountryId is not null)
                 country = _locationService.GetCountryById(member.CountryId.Value);
 
-            var users = _userService.GetAllUsers().Where(u => !string.IsNullOrEmpty(u.Email));
+            var users = _userService.GetAllUsers().Where(u => !(u.IsDeleted || string.IsNullOrEmpty(u.Email)));
             try
             {
                 NotifyNewMember(member, country, users);

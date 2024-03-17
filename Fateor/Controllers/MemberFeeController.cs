@@ -14,13 +14,13 @@ namespace Fateor.Controllers
     public class MemberFeeController : FateorControllerBase
     {
         private readonly IStatusService _statusService;
-        private readonly IMemberFeeBatchService _memberFeeBatchService;
+        private readonly IMemberFeeService _memberFeeBatchService;
 
         public MemberFeeController(ILogger<MemberFeeController> logger,
                                    IMapper mapper,
                                    IEncryptionService encryptionService,
                                    IStatusService statusService,
-                                   IMemberFeeBatchService memberFeeBatchService,
+                                   IMemberFeeService memberFeeBatchService,
                                    Settings settings) : base(logger, mapper, encryptionService, settings)
         {
             _statusService=statusService;

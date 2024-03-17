@@ -1,28 +1,19 @@
 ﻿using Fateor.Application.Credentials.Services;
 using Fateor.Application.External;
-using Fateor.Application.Gdpr.Repositories.Interfaces;
 using Fateor.Application.Gdpr.Services;
 using Fateor.Application.Location.Repositories.Interfaces;
 using Fateor.Application.Location.Services;
 using Fateor.Application.Notification.Entities;
-using Fateor.Application.Notification.Repositories.Interfaces;
 using Fateor.Application.Notification.Services;
 using Fateor.Application.Organization.Repositories.Interfaces;
 using Fateor.Application.Organization.Service;
-using Fateor.Application.Questionnaires.Repositories.Interfaces;
-using Fateor.Application.Questionnaires.Repositories.MySql;
 using Fateor.Application.Questionnaires.Services;
 using Fateor.Application.UserAccess.Repositories.Interfaces;
 using Fateor.Application.UserAccess.Services;
 using Fateor.Infrastructure.Mappers;
 using Fateor.Infrastructure.Services;
-using Microsoft.AspNetCore.WebSockets;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using oSoft.Data;
 using oSoft.Mail.Entities;
 using oSoft.Mail.Services;
-using System.Reflection.Metadata;
 
 namespace Fateor.Setup
 {
@@ -114,9 +105,7 @@ namespace Fateor.Setup
                 s.GetRequiredService<IEmailService>(),
                 s.GetRequiredService<ILogger<NotificationService>>(),
                 emailConfiguration,
-                systemUrl,
-                templatesPath
-                )); ;
+                systemUrl)); ;
 
             services.AddSingleton<ICredentialService, MLVCredentialService>(s => new MLVCredentialService(
                 systemUrl
@@ -137,7 +126,7 @@ namespace Fateor.Setup
             services.AddScoped<IUnitService, UnitService>();
             services.AddScoped<IQuestionnaireService, QuestionnaireService>();
             services.AddScoped<IIdentityDocumentService, IdentityDocumentService>();
-            services.AddScoped<IMemberFeeBatchService, MemberFeeBatchService>();
+            services.AddScoped<IMemberFeeService, MemberFeeService>();
             services.AddScoped<IGdprService, GdprService>();
 
             //services.AddScoped<IResponseService, ResponseService>(s => new ResponseService(

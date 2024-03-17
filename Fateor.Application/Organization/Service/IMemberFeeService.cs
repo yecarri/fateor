@@ -2,7 +2,7 @@
 
 namespace Fateor.Application.Organization.Service
 {
-    public interface IMemberFeeBatchService
+    public interface IMemberFeeService
     {
         MemberFeeBatch GetMemberFeeBatchById(int batchFeeId, bool includeMemberFees = false);
         MemberFeeBatch[] GetMemberFeeBatches(DateTime dateFrom, DateTime dateTo);

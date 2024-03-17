@@ -1,23 +1,21 @@
-﻿using Fateor.Application.Mappers;
+﻿using Fateor.Application.Organization.Repositories.Interfaces;
 using Fateor.Application.Organization.Entities;
-using Fateor.Application.Organization.Repositories.Interfaces;
 using Fateor.Infrastructure.Mappers;
 using Microsoft.Extensions.Logging;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Markup;
 
 namespace Fateor.Application.Organization.Service
 {
-    public class MemberFeeBatchService : IMemberFeeBatchService
+    public class MemberFeeService : IMemberFeeService
     {
         private readonly IMemberFeeUnitOfWork _memberFeeUnitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public MemberFeeBatchService(IMemberFeeUnitOfWork memberFeeUnitOfWork,
+        public MemberFeeService(IMemberFeeUnitOfWork memberFeeUnitOfWork,
                                      IMapper mapper,
-                                     ILogger<MemberFeeBatchService> logger)
+                                     ILogger<MemberFeeService> logger)
         {
             _mapper=mapper;
             _logger=logger;
@@ -67,6 +65,14 @@ namespace Fateor.Application.Organization.Service
                 .ToArray();
         }
 
+        public IEnumerable<MemberFee> GetMemberFeesByBatchId(int batchId)
+        {
+
+            var dtos = _memberFeeUnitOfWork.MemberFeeRepository.GetByBatchId(batchId);
+            var fees = _mapper.MapEnumerable<Dto.MemberFee, MemberFee>(dtos);
+            return fees;
+        }
+
         public IEnumerable<MemberFee> MockFees(MemberFeeBatch batch)
         {
             var re = new Regex(@"(?:%(?<token>FD|FH)(\.(?<format>AAAA|AA|MM|DD|TR))?%|%(?<token>U)\.(?<element>N|A|ID)(?:\((?<length>\d)\))?%)");
@@ -100,7 +106,7 @@ namespace Fateor.Application.Organization.Service
                         case "U":
                             var element = match.Groups["element"];
                             var length = match.Groups["length"];
-                            switch(element.Value.ToUpper())
+                            switch (element.Value.ToUpper())
                             {
                                 case "ID":
                                     textToreplace = m.MemberId.ToString();
@@ -118,21 +124,31 @@ namespace Fateor.Application.Organization.Service
                             if (length != null)
                             {
                                 int l = int.Parse(length.Value);
-                                textToreplace = (new string('0',l-textToreplace.Length) + textToreplace);
+                                textToreplace = (new string('0', l-textToreplace.Length) + textToreplace);
                             }
                             break;
                         default:
                             textToreplace = token.Value;
                             break;
                     }
-                    
+
                     sb.Replace(match.Value, textToreplace);
                 }
                 x.FeeReference = sb.ToString();
                 return x;
             });
         }
-
+        
+        public void SaveMemberFees(IEnumerable<MemberFee> memberFees)
+        {
+            _memberFeeUnitOfWork.BeginTransaction();
+            foreach(var memberFee in _mapper.MapEnumerable<MemberFee, Dto.MemberFee>( memberFees))
+            {
+                _memberFeeUnitOfWork.MemberFeeRepository.Insert(memberFee);
+            }
+            _memberFeeUnitOfWork.Commit();
+        }
+        
         private static string FormatDatePart(DateTime date, string s)
         {
             switch (s)

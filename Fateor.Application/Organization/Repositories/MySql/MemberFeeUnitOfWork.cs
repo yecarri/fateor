@@ -3,6 +3,7 @@ using oSoft.Data.MySql;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,9 @@ namespace Fateor.Application.Organization.Repositories.MySql
 
         public MemberFeeUnitOfWork(string connectionString)
         {
+#if DEBUG
+            Debug.WriteLine($"Disposing {nameof(MemberFeeUnitOfWork)}");
+#endif
             _uow=new UnitOfWork(connectionString);
             MemberFeeBatchRepository = new MemberFeeBatchRepository(_uow);
             MemberFeeRepository= new MemberFeeRepository(_uow);
@@ -41,7 +45,11 @@ namespace Fateor.Application.Organization.Repositories.MySql
                     _uow.Dispose();
                 }
 
-                disposedValue=true;
+                MemberFeeBatchRepository.Dispose();
+                MemberFeeRepository.Dispose();
+                MemberRepository.Dispose();
+                StatusRepository.Dispose();
+                disposedValue =true;
             }
         }
 

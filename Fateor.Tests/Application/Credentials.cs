@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Fateor.Tests.Application
 {
     [TestClass]
-    public class CredentialTest
+    public class Credentials
     {
         [TestMethod]
         public void TestCredential()

@@ -1,21 +1,15 @@
-﻿using Fateor.Application.UserAccess.Repositories.Interfaces;
-using Fateor.Application.UserAccess.Repositories.MySql;
-using Fateor.Application.Organization.Repositories.Interfaces;
-using Fateor.Application.Organization.Repositories.MySql;
-using Fateor.Application.External;
-using Fateor.Application.Location.Services;
-using Fateor.Application.Notification;
-using Fateor.Application.Organization.Service;
-using Fateor.Application.Questionnaires.Services;
-using Fateor.Application.Credentials.Services;
-using Fateor.Application.Questionnaires.Repositories.Interfaces;
-using Fateor.Application.Questionnaires.Repositories.MySql;
+﻿using Fateor.Application.Gdpr.Repositories.Interfaces;
+using Fateor.Application.Gdpr.Repositories.MySql;
 using Fateor.Application.Location.Repositories.Interfaces;
 using Fateor.Application.Location.Repositories.MySql;
-using Fateor.Application.Gdpr.Repositories.Interfaces;
-using Fateor.Application.Gdpr.Repositories.MySql;
 using Fateor.Application.Notification.Repositories.Interfaces;
 using Fateor.Application.Notification.Repositories.MySql;
+using Fateor.Application.Organization.Repositories.Interfaces;
+using Fateor.Application.Organization.Repositories.MySql;
+using Fateor.Application.Questionnaires.Repositories.Interfaces;
+using Fateor.Application.Questionnaires.Repositories.MySql;
+using Fateor.Application.UserAccess.Repositories.Interfaces;
+using Fateor.Application.UserAccess.Repositories.MySql;
 
 namespace Fateor.Setup
 {
