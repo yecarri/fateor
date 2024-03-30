@@ -61,7 +61,7 @@ body {
 
     .form-field input[type=select],
     .form-field select {
-        width: 16em;
+        width: 16em;        
     }
 
 table.form-table {
@@ -82,6 +82,12 @@ table.form-table {
         text-align: left;
         color: black;
     }
+
+select 
+{
+    font-family: var(--o-font-family);
+    font-weight: 300;
+}
 
 button.form-button,
 input[type=button].form-button,
@@ -225,6 +231,11 @@ footer {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+}
+
+.form-select option {
+    font-family: var(--o-font-family);
+    font-weight: 300;
 }
 
     .form-section:not(first-of-type) {

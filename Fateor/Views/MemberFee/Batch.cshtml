@@ -34,19 +34,24 @@
                 visibility: visible;
             }
     </style>
+    <script type="text/javascript">
+        function doSubmit(command) {
+            $('#@Html.IdFor(m => m.Command)').val(command);
+            window.form.sumbit();
+        }
+    </script>
 }
 
 @using (Html.BeginForm(FormMethod.Post))
 {
-    <div class="container">
-        <h5>Lote de Cuotas</h5>
+    @Html.HiddenFor(m => m.Command)
+    <div class="container" style="max-width:75%;">
+        <h5>Cuotas</h5>
         <div class="form-section">
             <div class="form-field">
                 @Html.LabelFor(m => m.BatchTitle)
                 @Html.TextBoxFor(m => m.BatchTitle, "{0:yyyy-MM-dd}", new { @class = "form-control" })
             </div>
-        </div>
-        <div class="form-section">
             <div class="form-field">
                 <label for="Periodicidad">Periodicidad</label>
                 @Html.DropDownListFor(m => m.Periodicity, new SelectList(Periodicity.Periodicities, "Value", "Text"), htmlAttributes: new { @class = "form-select" })
@@ -59,33 +64,27 @@
                 @Html.LabelFor(m => m.DateTo)
                 @Html.TextBoxFor(m => m.DateTo, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
             </div>
-        </div>
-
-        <div class="form-section">
             <div class="form-field">
-                <label for="ReferencePatten">Formato para la referencia</label>
-                @Html.TextBoxFor(m => m.ReferencePattern, new { @class = "form-control" })
-            </div>
-            <div>
-                <div class="form-field">
-                    @Html.LabelFor(m => m.Amount)
-                    @Html.TextBoxFor(m => m.Amount, format: "{0:0.00}", htmlAttributes: new { @class = "form-control" })
-                </div>
+                @Html.LabelFor(m => m.DateDue)
+                @Html.TextBoxFor(m => m.DateDue, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
             </div>
         </div>
         <div class="form-section">
             <div class="form-field">
-                <label>Estatuses</label>
+                @Html.HiddenFor(m => m.ReferencePattern, new { @class = "form-control" })
+                @Html.LabelFor(m => m.Amount)
+                @Html.TextBoxFor(m => m.Amount, format: "{0:0.00}", htmlAttributes: new { @class = "form-control" })
+            </div>
+            <div class="form-field">
+                <label>Seleccione los estatus para crear las cuotas:</label>
                 @Html.ListBoxFor(m => m.SelectedStatuses, new SelectList(Model.Statuses, "StatusId", "StatusDescription"), new { @class = "form-select" })
             </div>
-        </div>
-        <div class="form-section">
-            <div class="form-field">
-                <input type="submit" class="form-button float-end" value="Actualizar" />
+            <div style="display:flex;">
+                <input type="submit" class="form-button" style="margin-top:auto; align-self:flex-end; margin-bottom:1em;" value="Generar" onclick="doSubmit('Generate')" />
             </div>
         </div>
-        <div class="form-section">
 
+        <div class="form-section">
             <label>Cuotas</label>
             <div style="border-top:inset; border-left:inset; border-right:inset; border-bottom:1px solid lightgray; width: 100%; padding:5px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 30px 1fr 1fr 30px 16px; ">
                 <div>Apellido</div>
@@ -98,17 +97,19 @@
                 <div></div>
             </div>
             <div style="border-left:inset; width: 100%; height: 200px; padding:5px; display:  grid; grid-template-columns: 1fr 1fr 1fr 1fr 30px 1fr 1fr 30px; overflow-y:scroll;">
-                @foreach (var m in Model.MemberFees)
-                {
-                    @Html.EditorFor(x => m)
+                @{
+                    var arr = Model.MemberFees.ToArray();
+                    for (int i = 0; i<arr.Length; i++)
+                    {
+                        @Html.EditorFor(x => arr[i])
+                    }
                 }
             </div>
-
         </div>
 
         <div class="form-section">
             <div class="form-field">
-                <input type="submit" class="form-button float-end" value="Generar" />
+                <input type="submit" class="form-button float-end" value="Guardar" onclick="doSubmit('Save')" />
             </div>
         </div>
     </div>

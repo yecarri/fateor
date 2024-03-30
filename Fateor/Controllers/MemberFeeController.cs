@@ -88,9 +88,18 @@ namespace Fateor.Controllers
             if (ModelState.IsValid)
             {
                 var batch = _mapper.Map<MemberFeeBatchViewModel, MemberFeeBatch>(model);
-                // batch.StatusIds = model.SelectedStatuses;
-                IEnumerable<MemberFee> fees = _memberFeeBatchService.MockFees(batch);
-                model.MemberFees = fees;
+                
+                switch(model.Command)
+                {
+                    case "Generate":
+                        var fees = _memberFeeBatchService.MockFees(batch);
+                        model.MemberFees = fees;
+                        break;
+                    case "Save":
+                        _memberFeeBatchService.SaveBatch(batch);
+                        break;
+                }
+                
             }
             return View("Batch", model);
         }

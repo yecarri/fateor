@@ -9,6 +9,7 @@
         public int Periodicity { get; set; } = 1;
         public decimal Amount { get; set; }
         public int[] SelectedStatuses { get; set; } = new int[0];
-        public IEnumerable<MemberFee>? MemberFees { get; set; }
+        public IList<MemberFee>? MemberFees { get; set; }
+        public DateTime? DateDue { get; internal set; }
     }
 }

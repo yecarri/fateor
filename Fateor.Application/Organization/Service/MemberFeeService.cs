@@ -73,7 +73,7 @@ namespace Fateor.Application.Organization.Service
             return fees;
         }
 
-        public IEnumerable<MemberFee> MockFees(MemberFeeBatch batch)
+        public IList<MemberFee> MockFees(MemberFeeBatch batch)
         {
             var re = new Regex(@"(?:%(?<token>FD|FH)(\.(?<format>AAAA|AA|MM|DD|TR))?%|%(?<token>U)\.(?<element>N|A|ID)(?:\((?<length>\d)\))?%)");
             var allMembers = _memberFeeUnitOfWork.MemberRepository.GetByStatusIds(batch.SelectedStatuses);
@@ -81,7 +81,8 @@ namespace Fateor.Application.Organization.Service
             {
                 var x = _mapper.Map<Dto.Member, Entities.MemberFee>(m);
                 var sb = new StringBuilder(batch.ReferencePattern);
-
+                x.DateCreated = DateTime.Now;
+                x.DateDue = batch.DateDue;
                 x.Amout = batch.Amount;
                 var matches = re.Matches(batch.ReferencePattern);
                 string textToreplace;
@@ -136,19 +137,9 @@ namespace Fateor.Application.Organization.Service
                 }
                 x.FeeReference = sb.ToString();
                 return x;
-            });
+            }).ToList();
         }
-        
-        public void SaveMemberFees(IEnumerable<MemberFee> memberFees)
-        {
-            _memberFeeUnitOfWork.BeginTransaction();
-            foreach(var memberFee in _mapper.MapEnumerable<MemberFee, Dto.MemberFee>( memberFees))
-            {
-                _memberFeeUnitOfWork.MemberFeeRepository.Insert(memberFee);
-            }
-            _memberFeeUnitOfWork.Commit();
-        }
-        
+                
         private static string FormatDatePart(DateTime date, string s)
         {
             switch (s)
@@ -165,6 +156,23 @@ namespace Fateor.Application.Organization.Service
                     return ((date.Month -1) / 3 +1).ToString();
                 default: return s;
             }
+        }
+
+        public void SaveBatch(MemberFeeBatch batch)
+        {
+            if (batch == null)
+                return;
+            if (batch.MemberFees == null)
+                return;
+
+            var dateIssued = DateTime.Now;
+            _memberFeeUnitOfWork.BeginTransaction();
+            foreach (var memberFee in _mapper.MapEnumerable<MemberFee, Dto.MemberFee>(batch.MemberFees))
+            {
+                memberFee.DateIssued = dateIssued;
+                _memberFeeUnitOfWork.MemberFeeRepository.Insert(memberFee);
+            }
+            _memberFeeUnitOfWork.Commit();
         }
     }
 }

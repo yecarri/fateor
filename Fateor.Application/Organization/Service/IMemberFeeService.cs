@@ -6,6 +6,7 @@ namespace Fateor.Application.Organization.Service
     {
         MemberFeeBatch GetMemberFeeBatchById(int batchFeeId, bool includeMemberFees = false);
         MemberFeeBatch[] GetMemberFeeBatches(DateTime dateFrom, DateTime dateTo);
-        IEnumerable<MemberFee> MockFees(MemberFeeBatch batch);
+        IList<MemberFee> MockFees(MemberFeeBatch batch);
+        void SaveBatch(MemberFeeBatch batch);
     }
 }

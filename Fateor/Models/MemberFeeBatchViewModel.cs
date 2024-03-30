@@ -15,6 +15,9 @@ namespace Fateor.Models
         [DisplayName("Hasta")]
         public DateTime DateTo { get; set; }
 
+        [DisplayName("Vencimiento")]
+        public DateTime DateDue { get; set; }
+
         [DisplayName("Referecia")]
         public string ReferencePattern { get; set; } = "";
 
@@ -32,6 +35,6 @@ namespace Fateor.Models
         public int[] SelectedStatuses { get; set; } = new int[0];
 
         [DisplayName("Cuotas")]
-        public IEnumerable<MemberFee> MemberFees { get; set; } = new List<MemberFee>();
+        public IList<MemberFee> MemberFees { get; set; } = new List<MemberFee>();
     }
 }
