@@ -17,5 +17,6 @@ namespace Fateor.Application.UserAccess.Services
         (bool, List<string>) UpdateUser(Entities.User user, int currentUserId);
         string GetPasswordResetToken(int value);
         PasswordResetToken DecryptPasswordResetToken(string token);
+        IEnumerable<Entities.User> GetActiveUsers();
     }
 }
