@@ -6,6 +6,7 @@ namespace Fateor.Application.UserAccess.Repositories.Interfaces
     public interface IUserRepository : IRepository<User>
     {
         User CreateUser(string email, string hash);
+        IEnumerable<User> GetActiveUsers();
         User? GetUser(int userId);
         User? GetUserByEmail(string email);
         User? GetUserByLogin(string login);

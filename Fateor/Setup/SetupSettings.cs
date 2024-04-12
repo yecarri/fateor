@@ -3,7 +3,7 @@ using MySql.Data.MySqlClient;
 
 namespace Fateor.Setup
 {
-    public static class SetupControllers
+    public static class SetupSettings
     {
         public static void AddSettings(this WebApplicationBuilder builder)
         {

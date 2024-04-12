@@ -38,6 +38,10 @@ namespace Fateor.Application.Organization.Repositories.MySql
             {
                 if (disposing)
                 {
+                    MemberFeeBatchRepository.Dispose();
+                    MemberFeeRepository.Dispose();
+                    MemberRepository.Dispose();
+                    StatusRepository.Dispose();
                     _uow.Dispose();
                 }
 
