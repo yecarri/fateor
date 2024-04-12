@@ -1,4 +1,6 @@
-﻿using Fateor.Application.Organization.Entities;
+﻿using Fateor.Application;
+using Fateor.Application.Organization.Entities;
+using HtmlAgilityPack;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +8,8 @@ namespace Fateor.Models
 {
     public class MemberFeeBatchViewModel : ViewModelBase
     {
+        public int? MemberFeeBatchId { get; set; }
+
         [DisplayName("Título")]
         public string BatchTitle { get; set; } = "";
 
@@ -22,7 +26,7 @@ namespace Fateor.Models
         public string ReferencePattern { get; set; } = "";
 
         [DisplayName("Periodicidad")]
-        public int Periodicity { get; set; } = 1;
+        public Application.Organization.Periodicity Periodicity { get; set; } = Application.Organization.Periodicity.None;
 
         [DisplayName("Importe")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.00}")]
@@ -36,5 +40,15 @@ namespace Fateor.Models
 
         [DisplayName("Cuotas")]
         public IList<MemberFee> MemberFees { get; set; } = new List<MemberFee>();
+
+        public DateRange DateRange
+        {
+            get => new DateRange(DateFrom, DateTo);
+            set
+            {
+                DateFrom =value.Item1;
+                DateTo =value.Item2;
+            }
+        }
     }
 }

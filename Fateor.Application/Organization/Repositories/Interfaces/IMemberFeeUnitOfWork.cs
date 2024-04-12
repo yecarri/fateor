@@ -7,5 +7,6 @@ namespace Fateor.Application.Organization.Repositories.Interfaces
         IMemberFeeBatchRepository MemberFeeBatchRepository { get; }
         IMemberFeeRepository MemberFeeRepository { get; }
         IMemberRepository MemberRepository { get; }
+        IMemberFeeBatchStatusRepository MemberFeeBatchStatusRepository { get; }
     }
 }

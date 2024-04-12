@@ -37,13 +37,20 @@ namespace Fateor.Application.Organization.Service
                         .GetByBatchId(batchId)
                         .Join(members, mf => mf.MemberId, m => m.MemberId, (mf, m) =>
                         {
-                            var e = _mapper.Map<Dto.MemberFee, Entities.MemberFee>(mf);
+                            var e = _mapper.Map<Dto.MemberFee, MemberFee>(mf);
                             e.Surname = m.Surname;
                             e.GivenName = m.GivenName;
                             return e;
                         })
                         .ToList();
                 }
+
+                result.SelectedStatuses = _memberFeeUnitOfWork
+                    .MemberFeeBatchStatusRepository
+                    .GetByFeeBatchId(batchId)
+                    .Select(j => j.StatusId)
+                    .ToArray();
+
                 return result;
             }
             catch (Exception ex)
@@ -73,73 +80,81 @@ namespace Fateor.Application.Organization.Service
             return fees;
         }
 
-        public IList<MemberFee> MockFees(MemberFeeBatch batch)
+        public string GetFeeReference(MemberFee fee, MemberFeeBatch batch)
         {
             var re = new Regex(@"(?:%(?<token>FD|FH)(\.(?<format>AAAA|AA|MM|DD|TR))?%|%(?<token>U)\.(?<element>N|A|ID)(?:\((?<length>\d)\))?%)");
+            var matches = re.Matches(batch.ReferencePattern);
+            var sb = new StringBuilder(batch.ReferencePattern);
+            string textToreplace;
+
+            foreach (Match match in matches)
+            {
+                var token = match.Groups["token"];
+                Group format;
+                string s;
+                switch (token.Value.ToUpper())
+                {
+                    case "FD":
+                        format = match.Groups["format"];
+                        s= format.Value.ToUpper();
+                        textToreplace=FormatDatePart(batch.DateFrom, s);
+                        break;
+                    case "FH":
+                        format = match.Groups["format"];
+                        s= format.Value.ToUpper();
+                        textToreplace=FormatDatePart(batch.DateTo, s);
+                        break;
+                    case "U":
+                        var element = match.Groups["element"];
+                        var length = match.Groups["length"];
+                        switch (element.Value.ToUpper())
+                        {
+                            case "ID":
+                                textToreplace = fee.MemberId.ToString();
+                                break;
+                            case "N":
+                                textToreplace = fee.GivenName;
+                                break;
+                            case "A":
+                                textToreplace = fee.Surname;
+                                break;
+                            default:
+                                textToreplace = token.Value;
+                                break;
+                        }
+                        if (length != null)
+                        {
+                            int l = int.Parse(length.Value);
+                            textToreplace = (new string('0', l-textToreplace.Length) + textToreplace);
+                        }
+                        break;
+                    default:
+                        textToreplace = token.Value;
+                        break;
+                }
+
+                sb.Replace(match.Value, textToreplace);
+            }
+            return sb.ToString();
+        }
+
+        public IList<MemberFee> MockFees(MemberFeeBatch batch)
+        {
             var allMembers = _memberFeeUnitOfWork.MemberRepository.GetByStatusIds(batch.SelectedStatuses);
             return allMembers.Select(m =>
             {
                 var x = _mapper.Map<Dto.Member, Entities.MemberFee>(m);
-                var sb = new StringBuilder(batch.ReferencePattern);
+
                 x.DateCreated = DateTime.Now;
                 x.DateDue = batch.DateDue;
-                x.Amout = batch.Amount;
-                var matches = re.Matches(batch.ReferencePattern);
-                string textToreplace;
-
-                foreach (Match match in matches)
-                {
-                    var token = match.Groups["token"];
-                    Group format;
-                    string s;
-                    switch (token.Value.ToUpper())
-                    {
-                        case "FD":
-                            format = match.Groups["format"];
-                            s= format.Value.ToUpper();
-                            textToreplace=FormatDatePart(batch.DateFrom, s);
-                            break;
-                        case "FH":
-                            format = match.Groups["format"];
-                            s= format.Value.ToUpper();
-                            textToreplace=FormatDatePart(batch.DateTo, s);
-                            break;
-                        case "U":
-                            var element = match.Groups["element"];
-                            var length = match.Groups["length"];
-                            switch (element.Value.ToUpper())
-                            {
-                                case "ID":
-                                    textToreplace = m.MemberId.ToString();
-                                    break;
-                                case "N":
-                                    textToreplace = m.GivenName;
-                                    break;
-                                case "A":
-                                    textToreplace = m.Surname;
-                                    break;
-                                default:
-                                    textToreplace = token.Value;
-                                    break;
-                            }
-                            if (length != null)
-                            {
-                                int l = int.Parse(length.Value);
-                                textToreplace = (new string('0', l-textToreplace.Length) + textToreplace);
-                            }
-                            break;
-                        default:
-                            textToreplace = token.Value;
-                            break;
-                    }
-
-                    sb.Replace(match.Value, textToreplace);
-                }
-                x.FeeReference = sb.ToString();
+                x.Amount = batch.Amount;
+                x.FeeReference = GetFeeReference(x, batch);
                 return x;
+
+
             }).ToList();
         }
-                
+
         private static string FormatDatePart(DateTime date, string s)
         {
             switch (s)
@@ -166,11 +181,45 @@ namespace Fateor.Application.Organization.Service
                 return;
 
             var dateIssued = DateTime.Now;
+            var dto = _mapper.Map<MemberFeeBatch, Dto.MemberFeeBatch>(batch);
             _memberFeeUnitOfWork.BeginTransaction();
-            foreach (var memberFee in _mapper.MapEnumerable<MemberFee, Dto.MemberFee>(batch.MemberFees))
+
+            // Save Batch
+            if (batch.MemberFeeBatchId == 0)
+                batch.MemberFeeBatchId = _memberFeeUnitOfWork.MemberFeeBatchRepository.Insert(dto);
+            else
+                _memberFeeUnitOfWork.MemberFeeBatchRepository.Update(dto);
+
+            // Save Statuses
+            _memberFeeUnitOfWork.MemberFeeBatchStatusRepository.Update(batch.MemberFeeBatchId, batch.SelectedStatuses);
+
+            foreach (MemberFee f in batch.MemberFees)
             {
-                memberFee.DateIssued = dateIssued;
-                _memberFeeUnitOfWork.MemberFeeRepository.Insert(memberFee);
+                f.MemberFeeBatchId = batch.MemberFeeBatchId;
+                f.FeeReference = GetFeeReference(f, batch);
+                f.Amount = batch.Amount;
+                f.DateIssued = dateIssued;
+                f.DateCreated = DateTime.Now;
+                f.DateIssued = DateTime.Today;
+                f.IsIssued = true;
+                f.DateDue = batch.DateDue;
+                f.CreatedByUserId=1;
+
+                var fee = _mapper.Map<MemberFee, Dto.MemberFee>(f);
+
+                try
+                {
+                    if (f.MemberFeeId == 0)
+                        f.MemberFeeId = _memberFeeUnitOfWork.MemberFeeRepository.Insert(fee);
+                    else
+                        _memberFeeUnitOfWork.MemberFeeRepository.Update(fee);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Unable to save fee: {0}", ex);
+                    _memberFeeUnitOfWork.Rollback();
+                    throw;
+                }
             }
             _memberFeeUnitOfWork.Commit();
         }

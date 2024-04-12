@@ -1,4 +1,6 @@
-﻿using Fateor.Application.Organization.Entities;
+﻿using DocumentFormat.OpenXml.EMMA;
+using Fateor.Application;
+using Fateor.Application.Organization.Entities;
 using Fateor.Application.Organization.Service;
 using Fateor.Infrastructure.Mappers;
 using Fateor.Infrastructure.Services;
@@ -52,33 +54,57 @@ namespace Fateor.Controllers
         public IActionResult CreateBatch()
         {
             var model = new MemberFeeBatchViewModel();
-            model.Statuses = _statusService.GetStatuses().Where(s => !s.IsDeleted && s.CanVote).ToArray();
-            model.Periodicity = 2;
+            model.Statuses = _statusService.GetVotingStatuses().ToArray();
+            model.Periodicity = Application.Organization.Periodicity.Quarterly;
+            model.DateRange = GetDefaultDateRange(model.Periodicity);
+            model.ReferencePattern = GetReferencePattern(model.Periodicity);
+            model.BatchTitle =$"Cuota {model.Periodicity}";
+            return View("Batch", model);
+        }
+
+        private DateRange GetDefaultDateRange(Application.Organization.Periodicity periodicity)
+        {
             int y, m;
             y = DateTime.Today.Year;
+            DateTime dateFrom, dateTo;
 
-            switch (model.Periodicity)
+            switch (periodicity)
             {
-                case 2:
+                case  Application.Organization.Periodicity.Quarterly:
                     m = ((DateTime.Today.Month-1) / 3)*3+1;
-                    model.DateFrom = new DateTime(y, m, 1);
-                    model.DateTo = new DateTime(y, m+2, DateTime.DaysInMonth(y, m+2));
-                    model.ReferencePattern="%FD.AAAA%-Q%FD.TR%-%U.ID(4)%";
+                    dateFrom = new DateTime(y, m, 1);
+                    dateTo = new DateTime(y, m+2, DateTime.DaysInMonth(y, m+2));
                     break;
-                case 3:
+                case  Application.Organization.Periodicity.Monthly:
                     m = DateTime.Today.Month;
-                    model.DateFrom = new DateTime(y, m, 1);
-                    model.DateTo = new DateTime(y, m, DateTime.DaysInMonth(y, m));
-                    model.ReferencePattern="%FD.AAAA%%FD.MM%-%U.ID(4)%";
+                    dateFrom = new DateTime(y, m, 1);
+                    dateTo = new DateTime(y, m, DateTime.DaysInMonth(y, m));
+                    break;
+                case Application.Organization.Periodicity.Yearly:
+                    dateFrom=new DateTime(y,1,1);
+                    dateTo=new DateTime(y,12,31);
                     break;
                 default:
-                    model.ReferencePattern="%FD.AAAA%%FD.MM%%FD.DD%-%FH.AAAA%%FH.MM%%FH.DD%-%U.ID(4)%";
+                    dateFrom = DateTime.Today;
+                    dateTo = DateTime.Today.AddDays(30);
                     break;
             }
+            return new DateRange(dateFrom, dateTo);
+        }
 
-            model.BatchTitle ="Cuota";
-
-            return View("Batch", model);
+        private string GetReferencePattern(Application.Organization.Periodicity periodicity)
+        {
+            switch (periodicity)
+            {
+                case Application.Organization.Periodicity.Quarterly:
+                    return "%FD.AAAA%-Q%FD.TR%-%U.ID(4)%";
+                case Application.Organization.Periodicity.Monthly:
+                    return "%FD.AAAA%%FD.MM%-%U.ID(4)%";
+                case Application.Organization.Periodicity.Yearly:
+                    return "%FD.AAAA%-%U.ID(4)%";
+                default:
+                    return "%FD.AAAA%%FD.MM%%FD.DD%-%FH.AAAA%%FH.MM%%FH.DD%-%U.ID(4)%";
+            }
         }
 
         [HttpPost("fee/batch/create")]
@@ -88,8 +114,8 @@ namespace Fateor.Controllers
             if (ModelState.IsValid)
             {
                 var batch = _mapper.Map<MemberFeeBatchViewModel, MemberFeeBatch>(model);
-                
-                switch(model.Command)
+
+                switch (model.Command)
                 {
                     case "Generate":
                         var fees = _memberFeeBatchService.MockFees(batch);
@@ -97,9 +123,9 @@ namespace Fateor.Controllers
                         break;
                     case "Save":
                         _memberFeeBatchService.SaveBatch(batch);
-                        break;
+                        return Redirect($"fee/batch/edit/{batch.MemberFeeBatchId}");
                 }
-                
+
             }
             return View("Batch", model);
         }
@@ -109,13 +135,15 @@ namespace Fateor.Controllers
         {
             var batch = _memberFeeBatchService.GetMemberFeeBatchById(batchFeeId, true);
             var model = _mapper.Map<MemberFeeBatch, MemberFeeBatchViewModel>(batch);
-
+            model.Statuses = _statusService.GetVotingStatuses().ToArray();
             return View("Batch", model);
         }
 
         [HttpPost("fee/batch/edit/{batchFeeId}")]
         public IActionResult EditBatch(MemberFeeBatchViewModel model)
         {
+            var batch = _mapper.Map<MemberFeeBatchViewModel, MemberFeeBatch>(model);
+            _memberFeeBatchService.SaveBatch(batch);
             return View("Batch", model);
         }
     }

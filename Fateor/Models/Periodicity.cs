@@ -6,21 +6,19 @@ namespace Fateor.Models
 {
     public class Periodicity
     {
-        public int Value { get; set; }
+        public byte Value { get; set; }
 
         public string Text { get; set; } = "";
 
-        public Periodicity(int value, string text)
+        public Periodicity(byte value, string text)
         {
             Value=value;
             Text=text;
         }
 
-        private static Periodicity[] _periodicities = new Periodicity[] {
-            new Periodicity(1, "Variable"),
-            new Periodicity(2, "Trimestral"),
-            new Periodicity(3, "Mensual")
-        };
+        private static Periodicity[] _periodicities = (from Application.Organization.Periodicity p
+                                                       in Enum.GetValues(typeof(Periodicity))
+                                                       select new Periodicity((byte)p, p.ToString())).ToArray();
 
         public static Periodicity[] Periodicities => _periodicities;
     }

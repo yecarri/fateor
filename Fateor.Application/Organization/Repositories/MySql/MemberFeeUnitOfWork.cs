@@ -19,21 +19,19 @@ namespace Fateor.Application.Organization.Repositories.MySql
         public IMemberFeeBatchRepository MemberFeeBatchRepository { get; private set; }
         public IMemberFeeRepository MemberFeeRepository { get; private set; }
         public IMemberRepository MemberRepository { get; private set; }
-        public IStatusRepository StatusRepository { get; private set; }
+        public IMemberFeeBatchStatusRepository MemberFeeBatchStatusRepository { get; private set; }
 
         public IDbConnection Connection => _uow.Connection;
         public IDbTransaction Transaction => _uow.Transaction;
 
+
         public MemberFeeUnitOfWork(string connectionString)
         {
-#if DEBUG
-            Debug.WriteLine($"Disposing {nameof(MemberFeeUnitOfWork)}");
-#endif
             _uow=new UnitOfWork(connectionString);
             MemberFeeBatchRepository = new MemberFeeBatchRepository(_uow);
             MemberFeeRepository= new MemberFeeRepository(_uow);
             MemberRepository = new MemberRepository(_uow);
-            StatusRepository = new StatusRepository(_uow);
+            MemberFeeBatchStatusRepository = new MemberFeeBatchStatusRepository(_uow);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -43,17 +41,11 @@ namespace Fateor.Application.Organization.Repositories.MySql
                 if (disposing)
                 {
                     MemberFeeBatchRepository.Dispose();
+                    MemberFeeBatchStatusRepository.Dispose();
                     MemberFeeRepository.Dispose();
                     MemberRepository.Dispose();
-                    StatusRepository.Dispose();
-                    _uow.Dispose();
+                    disposedValue =true;
                 }
-
-                MemberFeeBatchRepository.Dispose();
-                MemberFeeRepository.Dispose();
-                MemberRepository.Dispose();
-                StatusRepository.Dispose();
-                disposedValue =true;
             }
         }
 

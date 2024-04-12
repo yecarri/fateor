@@ -18,7 +18,12 @@ namespace Fateor.Application.Organization.Service
         public IEnumerable<Status> GetStatuses()
         {
             var results = _statusRepository.GetAll();
-            return results.Select(x => _mapper.Map<Organization.Dto.Status, Status>(x)).ToList();
+            return results.Select(x => _mapper.Map<Dto.Status, Status>(x));
+        }
+
+        public IEnumerable<Status> GetVotingStatuses()
+        {
+            return GetStatuses().Where(s => !s.IsDeleted && s.CanVote);
         }
     }
 }

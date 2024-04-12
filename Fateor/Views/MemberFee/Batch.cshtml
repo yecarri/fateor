@@ -51,6 +51,7 @@
             <div class="form-field">
                 @Html.LabelFor(m => m.BatchTitle)
                 @Html.TextBoxFor(m => m.BatchTitle, "{0:yyyy-MM-dd}", new { @class = "form-control" })
+                @Html.HiddenFor(m=>m.MemberFeeBatchId)
             </div>
             <div class="form-field">
                 <label for="Periodicidad">Periodicidad</label>
@@ -86,22 +87,17 @@
 
         <div class="form-section">
             <label>Cuotas</label>
-            <div style="border-top:inset; border-left:inset; border-right:inset; border-bottom:1px solid lightgray; width: 100%; padding:5px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 30px 1fr 1fr 30px 16px; ">
+            <div style="border-top:inset; border-left:inset; border-right:inset; border-bottom:1px solid lightgray; width: 100%; padding:5px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr">
                 <div>Apellido</div>
                 <div>Nombre</div>
                 <div>Referencia</div>
                 <div>Importe</div>
-                <div class="tt"><span class="fa fa-coins"></span><span class="tttext">Indica si la cuota está pagada o no</span></div>
-                <div>Forma de pago</div>
-                <div class="tt">Referencia del Pago<span class="tttext">Puede colocar aquí el número de referencia de la transferencia o el pago por tarjeta</span></div>
-                <div></div>
             </div>
-            <div style="border-left:inset; width: 100%; height: 200px; padding:5px; display:  grid; grid-template-columns: 1fr 1fr 1fr 1fr 30px 1fr 1fr 30px; overflow-y:scroll;">
+            <div style="border-left:inset; width: 100%; height: 200px; padding:5px; display:  grid; grid-template-columns: 1fr 1fr 1fr 1fr; overflow-y:scroll;">
                 @{
-                    var arr = Model.MemberFees.ToArray();
-                    for (int i = 0; i<arr.Length; i++)
+                    for (int i = 0; i<Model.MemberFees.Count; i++)
                     {
-                        @Html.EditorFor(x => arr[i])
+                        @Html.EditorFor(x => Model.MemberFees[i])
                     }
                 }
             </div>

@@ -5,22 +5,4 @@
 <div>@Html.DisplayFor(m=>m.Surname)</div>
 <div>@Html.DisplayFor(m=>m.GivenName)</div>
 <div>@Html.DisplayFor(m=>m.FeeReference)</div>
-<div>@Html.DisplayFor(m=>m.Amout)</div>
-<div style="align-content:flex-start; text-align:left">
-    @Html.CheckBoxFor(m=> m.IsPaid, htmlAttributes: new { @class="form-check"})
-</div>
-<div style="width:95%">
-    @Html.DropDownListFor(
-        m=>m.PaymentMethodId, 
-        new List<SelectListItem>()
-        {
-            new SelectListItem("― Select ―", null),
-            new SelectListItem("Transferencia","1"),
-            new SelectListItem("Tarjeta","2"),
-            new SelectListItem("Domiciliación","3"),
-            new SelectListItem("Efectivo","4"),
-        },
-        htmlAttributes:new { @class="form-select" })
-</div>
-<div>@Html.TextBoxFor(m=> m.PaymentReference, htmlAttributes: new {@class="form-control", @type="text"})</div>
-<div style="align-content:center; text-align:center"><span class="fa fa-trash-alt"></span></div>
+<div>@Html.DisplayFor(m=>m.Amount)</div>

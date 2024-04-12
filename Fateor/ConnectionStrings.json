@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
     //"fateor": "Server=20.86.168.76;Database=lvs_fateor;Uid=mlv;Pwd=MlvREDACTED;"
-    "fateor": "Server=127.0.0.1;Database=lvs_fateor;Uid=root;Pwd=MyREDACTED;"
+    "fateor": "Server=127.0.0.1;Database=lvs_fateor;Uid=root;Pwd=MysREDACTED;"
   }
 }

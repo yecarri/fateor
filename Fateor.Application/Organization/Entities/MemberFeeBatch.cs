@@ -10,6 +10,7 @@
         public decimal Amount { get; set; }
         public int[] SelectedStatuses { get; set; } = new int[0];
         public IList<MemberFee>? MemberFees { get; set; }
-        public DateTime? DateDue { get; internal set; }
+        public DateTime? DateDue { get; set; }
+        public int MemberFeeBatchId { get; set; }
     }
 }
