@@ -2,18 +2,13 @@
 using Dapper;
 using MySql.Data.MySqlClient;
 using oSoft.Data;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Fateor.Application.UserAccess.Dto;
 using Fateor.Application.UserAccess.Repositories.Interfaces;
 
 namespace Fateor.Application.UserAccess.Repositories.MySql
 {
-    internal class UserRepository : oSoft.Data.MySql.Repository<User>, IUserRepository
+    public class UserRepository : oSoft.Data.MySql.Repository<User>, IUserRepository
     {
         public UserRepository(IDbConnection connection) : base(connection)
         {
@@ -111,6 +106,12 @@ namespace Fateor.Application.UserAccess.Repositories.MySql
                 Transaction,
                 null,
                 CommandType.Text);
+        }
+
+        public IEnumerable<User> GetActiveUsers()
+        {
+            return Connection.Query<User>("SELECT * FROM app_user WHERE IsDeleted=0",
+                transaction: Transaction);
         }
     }
 }

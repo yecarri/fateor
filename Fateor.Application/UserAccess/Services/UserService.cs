@@ -173,5 +173,11 @@ namespace Fateor.Application.UserAccess.Services
         {
             return _encryptionService.DecryptHex<PasswordResetToken>(token);
         }
+
+        public IEnumerable<User> GetActiveUsers()
+        {
+            var users = _userRepository.GetActiveUsers().Select(u => _mapper.Map<Dto.User, Entities.User>(u));
+            return users;
+        }
     }
 }
