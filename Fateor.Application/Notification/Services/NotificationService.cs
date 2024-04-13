@@ -62,7 +62,7 @@ namespace Fateor.Application.Notification.Services
             if (member.CountryId is not null)
                 country = _locationService.GetCountryById(member.CountryId.Value);
 
-            var users = _userService.GetAllUsers().Where(u => !(u.IsDeleted || string.IsNullOrEmpty(u.Email)));
+            var users = _userService.GetActiveUsers().Where(u => !string.IsNullOrEmpty(u.Email));
             try
             {
                 (var ok, var msg) = NotifyNewMember(member, country, users);
@@ -110,7 +110,7 @@ namespace Fateor.Application.Notification.Services
                 var recipient = new EmailAddress(user.Email, user.Login);
                 var sender = _emailConfiguration.DefaultSender;
 
-                (var ok1, var msg1) = _emailService.SendMail(sender, recipient, template.Subject, html);
+                (var ok1, var msg1) = _emailService.SendMail(sender, recipient, template.Subject, htmlInstance);
 
                 ok &= ok1;
                 msg.AddRange(msg1);
