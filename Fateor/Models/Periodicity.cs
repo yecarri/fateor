@@ -17,7 +17,7 @@ namespace Fateor.Models
         }
 
         private static Periodicity[] _periodicities = (from Application.Organization.Periodicity p
-                                                       in Enum.GetValues(typeof(Periodicity))
+                                                       in Enum.GetValues(typeof(Application.Organization.Periodicity))
                                                        select new Periodicity((byte)p, p.ToString())).ToArray();
 
         public static Periodicity[] Periodicities => _periodicities;

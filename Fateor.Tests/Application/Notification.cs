@@ -34,7 +34,7 @@ namespace Fateor.Tests.Application
                 }
             }
         }
-       
+
 
         [TestMethod]
         public void SendNotification()
@@ -131,13 +131,12 @@ namespace Fateor.Tests.Application
 
             var mockLogger = new Mock<ILogger<NotificationService>>();
 
-            var notificationService = new NotificationService(mockUserService.Object,
+            var notificationService = new Fateor.Application.Notification.Services.NotificationService(mockUserService.Object,
                                                               mockLocationService.Object,
                                                               mockEmailService.Object,
                                                               mockLogger.Object,
                                                               emailConf,
-                                                              "http://localhost",
-                                                              "");
+                                                              "http://localhost");
 
             var (ok, messages) =notificationService.NotifyNewMember(new Fateor.Application.Organization.Entities.Member() { City="Madriz", GivenName="Yván", Surname="Ecarri", CountryId=1 });
             Assert.IsTrue(ok);
