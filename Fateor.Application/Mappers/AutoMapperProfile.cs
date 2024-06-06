@@ -25,6 +25,7 @@ namespace Fateor.Application.Mappers
                    .ReverseMap();
             CreateMap<Organization.Dto.MemberFee, Organization.Entities.MemberFee>().ReverseMap();
             CreateMap<Organization.Dto.MemberFeeBatch, Organization.Entities.MemberFeeBatch>().ReverseMap();
+            CreateMap<Organization.Periodicity, int>().ReverseMap();
 
             CreateMap<Questionnaires.Dto.Option, Questionnaires.Entities.Option>().ReverseMap();
 

@@ -1,11 +1,10 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using Fateor.Application;
+﻿using Fateor.Application;
+using Fateor.Application.Organization;
 using Fateor.Application.Organization.Entities;
 using Fateor.Application.Organization.Service;
 using Fateor.Infrastructure.Mappers;
 using Fateor.Infrastructure.Services;
 using Fateor.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 
@@ -58,7 +57,7 @@ namespace Fateor.Controllers
             model.Periodicity = Application.Organization.Periodicity.Quarterly;
             model.DateRange = GetDefaultDateRange(model.Periodicity);
             model.ReferencePattern = GetReferencePattern(model.Periodicity);
-            model.BatchTitle =$"Cuota {model.Periodicity}";
+            model.BatchTitle =$"Cuota {model.Periodicity.Description()}";
             return View("Batch", model);
         }
 
@@ -70,19 +69,19 @@ namespace Fateor.Controllers
 
             switch (periodicity)
             {
-                case  Application.Organization.Periodicity.Quarterly:
+                case Application.Organization.Periodicity.Quarterly:
                     m = ((DateTime.Today.Month-1) / 3)*3+1;
                     dateFrom = new DateTime(y, m, 1);
                     dateTo = new DateTime(y, m+2, DateTime.DaysInMonth(y, m+2));
                     break;
-                case  Application.Organization.Periodicity.Monthly:
+                case Application.Organization.Periodicity.Monthly:
                     m = DateTime.Today.Month;
                     dateFrom = new DateTime(y, m, 1);
                     dateTo = new DateTime(y, m, DateTime.DaysInMonth(y, m));
                     break;
                 case Application.Organization.Periodicity.Yearly:
-                    dateFrom=new DateTime(y,1,1);
-                    dateTo=new DateTime(y,12,31);
+                    dateFrom=new DateTime(y, 1, 1);
+                    dateTo=new DateTime(y, 12, 31);
                     break;
                 default:
                     dateFrom = DateTime.Today;

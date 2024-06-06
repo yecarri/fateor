@@ -55,7 +55,7 @@
             </div>
             <div class="form-field">
                 <label for="Periodicidad">Periodicidad</label>
-                @Html.DropDownListFor(m => m.Periodicity, new SelectList(Periodicity.Periodicities, "Value", "Text"), htmlAttributes: new { @class = "form-select" })
+                @Html.DropDownListFor(m => m.Periodicity, Html.GetEnumSelectList<Fateor.Application.Organization.Periodicity>(), htmlAttributes: new { @class = "form-select" })
             </div>
             <div class="form-field">
                 @Html.LabelFor(m => m.DateFrom)
