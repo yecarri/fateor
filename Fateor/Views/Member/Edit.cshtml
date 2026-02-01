@@ -3,18 +3,18 @@
     Layout = "~/Views/Shared/_Internal.cshtml";
 }
 @section Scripts
-    {
+{
     <script src="~/js/regions.js"></script>
     <script type="text/javascript">
         function submitForm(command) {
-            $("#@Html.IdFor(m=>m.Command)").val(command);
+            $("#@Html.IdFor(m => m.Command)").val(command);
             document.forms[0].submit();
         }
 
         function onCountryChanged() {
             var url = '@Url.Content("~/api/country")';
-            setRegions(url, '#@Html.IdFor(m=> Model.CountryId)', '#@Html.IdFor(m=> Model.RegionId)');
-        }        
+            setRegions(url, '#@Html.IdFor(m => Model.CountryId)', '#@Html.IdFor(m => Model.RegionId)');
+        }
     </script>
 }
 <div class="container">
@@ -27,6 +27,9 @@
         @Html.HiddenFor(model => model.MemberId)
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <partial name="Member"></partial>
+        <div class="form-section">
+            <input type="button" class="form-button" style="margin-top: 1rem;" onclick="submitForm('ResendWelcomeEmail')" value="Re-enviar email" />
+        </div>
         <div class="form-section">
             <div class="form-field">
                 @{
@@ -97,7 +100,6 @@
                     }
                 </tbody>
             </table>
-
         </div>
         <input type="hidden" value="@Model.MemberId" name="id" />
         <div class="form-section">

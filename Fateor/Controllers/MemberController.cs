@@ -260,6 +260,10 @@ namespace Fateor.Controllers
                                 return File(ms, "application/pdf", $"{member.MemberCode}.pdf");
                             }
                             break;
+                        case "ResendWelcomeEmail":
+                            string? token = InitialQuestionaireToken(member);
+                            (ok, messages) = _notificationService.SendWelcomeEmail(member, token ?? "");
+                            break;
                         default:
                             (ok, messages) = _memberService.UpdateMember(member, CurrentUser?.UserId ?? throw new NullReferenceException("CurrentUser.UserId"));
                             break;
