@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Fateor.Application.Organization.Repositories.Interfaces
 {
-    public interface IMemberStatusRepository : IRepository<MemberStatus>, IDisposable
+    public interface IMemberStatusRepository : IRepository<MemberStatus, int>, IDisposable
     {
         IEnumerable<MemberStatus> GetAllStatusesAt(DateTime date);
         IEnumerable<MemberStatus> GetByMemberId(int id);

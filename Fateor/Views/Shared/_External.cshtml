@@ -12,6 +12,6 @@
     <footer>
         <div>Copyright &copy; 2019-@DateTime.Today.Year oSoft Ingeniería de Software SL</div>
     </footer>   
-    <partial name="_Error" model="@(Model.Messages ?? ViewBag.Messages)"/>
+    <partial name="_Errors" model="@(Model.Messages ?? ViewBag.Messages)" />
 </body>
 </html>

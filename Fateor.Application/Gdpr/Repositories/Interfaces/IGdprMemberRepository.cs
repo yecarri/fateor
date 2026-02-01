@@ -2,7 +2,7 @@
 
 namespace Fateor.Application.Gdpr.Repositories.Interfaces
 {
-    public interface IGdprMemberRepository : IRepository<Dto.GdprMember>, IDisposable
+    public interface IGdprMemberRepository : IRepository<Dto.GdprMember, Dto.GdprMemberKey>, IDisposable
     {
     }
 }

@@ -111,7 +111,7 @@
 {
     <div class="card bg-warning mt-2">
         <div class="container">
-            <partial name="_Error" model="Model.Messages">
+            <partial name="_Errors" model="@(Model.Messages ?? ViewBag.Messages)" />
         </div>
     </div>
 }

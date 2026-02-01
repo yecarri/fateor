@@ -15,4 +15,10 @@ namespace Fateor.Application.Gdpr.Dto
         [ExplicitKey]
         public int MemberId { get; set; }
     }
+
+    public struct GdprMemberKey
+    {
+        public int GdprId { get; set; }
+        public int MemberId { get; set; }
+    }
 }

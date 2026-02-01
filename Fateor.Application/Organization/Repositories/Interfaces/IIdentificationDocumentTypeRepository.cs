@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fateor.Application.Organization.Repositories.Interfaces
 {
-    public interface IIdentityDocumentTypeRepository : IRepository<Dto.IdentityDocumentType>, IDisposable
+    public interface IIdentityDocumentTypeRepository : IRepository<Dto.IdentityDocumentType, int>
     {
     }
 }

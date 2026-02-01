@@ -26,7 +26,7 @@ namespace Fateor.Application.Bulletin.Repositories.MySql
         {
         }
 
-        public override BulletinStatus Get(dynamic id)
+        public override BulletinStatus Get(int id)
         {
             return Connection.Get<BulletinStatus>((int)id, Transaction);
         }

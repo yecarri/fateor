@@ -30,7 +30,7 @@ namespace Fateor.Application.Bulletin.Repositories.MySql
             return (int)ret;
         }
 
-        public override Dto.Bulletin Get(dynamic id)
+        public override Dto.Bulletin Get(int id)
         {
             var ret = Connection.Get<Dto.Bulletin>((int)id);
             return ret;

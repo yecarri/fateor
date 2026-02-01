@@ -117,6 +117,10 @@ namespace Fateor.Controllers
             }
             model.Units = GetUnitsDD();
             model.Members = GetActiveMembersList();
+            
+            if (model.Messages == null)
+                model.Messages = [];
+
             return View("Edit", model);
         }
 
