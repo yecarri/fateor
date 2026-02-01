@@ -3,7 +3,6 @@ using Fateor.Application.Organization.Service;
 using Fateor.Infrastructure.Mappers;
 using Fateor.Infrastructure.Services;
 using Fateor.Models;
-using Google.Protobuf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
