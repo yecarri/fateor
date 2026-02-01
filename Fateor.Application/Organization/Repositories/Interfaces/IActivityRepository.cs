@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fateor.Application.Organization.Repositories.Interfaces
 {
-    public interface IActivityRepository : IRepository<Dto.Activity>, IDisposable
+    public interface IActivityRepository : IRepository<Dto.Activity, int>
     {
         IEnumerable<Dto.Activity> GetActivities(DateTime? dateFrom, DateTime? dateTo);
         IEnumerable<Dto.Activity> GetActivitiesByMemberId(int memberId, DateTime? dateFrom, DateTime? dateTo);

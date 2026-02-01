@@ -17,5 +17,18 @@ namespace Fateor.Application.Gdpr.Repositories.MySql
         public GdprRepository(string connectionString) : base(connectionString)
         {
         }
+
+        public override int Insert(Dto.Gdpr data)
+        {
+            try
+            {
+                return base.Insert(data);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error inserting GDPR record: {ex.ToString()}");
+                throw;
+            }
+        }
     }
 }

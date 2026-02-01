@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fateor.Application.Organization.Repositories.Interfaces
 {
-    public interface IUnitRepository : IRepository<Dto.Unit>
+    public interface IUnitRepository : IRepository<Dto.Unit, int>
     {
     }
 }

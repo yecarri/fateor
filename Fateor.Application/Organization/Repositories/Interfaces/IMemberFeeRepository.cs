@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Fateor.Application.Organization.Repositories.Interfaces
 {
-    public interface IMemberFeeRepository : IRepository<MemberFee>
+    public interface IMemberFeeRepository : IRepository<MemberFee, int>
     {
         IEnumerable<MemberFee> GetByBatchId(int batchId);
     }

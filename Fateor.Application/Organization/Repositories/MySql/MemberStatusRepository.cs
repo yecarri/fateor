@@ -67,7 +67,7 @@ namespace Fateor.Application.Organization.Repositories.MySql
             return results.FirstOrDefault();
         }
 
-        public override MemberStatus Get(dynamic id)
+        public  MemberStatus Get(dynamic id)
         {
             var parameters = new { id.MemberId, id.StatusDate };
             var results = Connection.Query<MemberStatus>(SELECT +

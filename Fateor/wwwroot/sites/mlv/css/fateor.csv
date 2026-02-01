@@ -1,0 +1,5 @@
+key,worktype,summary
+FATEOR-26,task,Migrate to oSoft.Data 1.6.1
+FATEOR-25,bug,Password Reset Error
+FATEOR-24,bug,Resend Welcome Email
+FATEOR-18,task,Membership Fees

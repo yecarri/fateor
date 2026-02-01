@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fateor.Application.Organization.Repositories.Interfaces
 {
-    public interface IActivityTypeRepository : IRepository<Dto.ActivityType>, IDisposable
+    public interface IActivityTypeRepository : IRepository<Dto.ActivityType, int>
     {
     }
 }

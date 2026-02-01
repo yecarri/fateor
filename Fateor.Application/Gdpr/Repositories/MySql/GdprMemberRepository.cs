@@ -4,7 +4,7 @@ using System.Data;
 
 namespace Fateor.Application.Gdpr.Repositories.MySql
 {
-    public class GdprMemberRepository :  Repository<Dto.GdprMember>, IGdprMemberRepository
+    public class GdprMemberRepository :  Repository<Dto.GdprMember, Dto.GdprMemberKey>, IGdprMemberRepository
     {
         public GdprMemberRepository(IDbConnection connection) : base(connection)
         {

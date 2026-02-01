@@ -33,15 +33,10 @@
             <input type="submit" class="form-button" value="Guardar" />
         </div>
     </div>
-
-
-
-
-
     @if (Model.Messages?.Count > 0)
     {
         <div class="container">
-            <partial name="Error" model="Model.Messages" />
+            <partial name="_Errors" model="@(Model.Messages ?? ViewBag.Messages)" />
         </div>
     }
 }

@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace Fateor.Application.Organization.Repositories.Interfaces
 {
-    public interface IMemberRepository : IRepository<Member>, IDisposable
+    public interface IMemberRepository : IRepository<Member, int>, IDisposable
     {
-        Member Get(int id);
         IEnumerable<Member> GetActiveMembers();
         IEnumerable<Member> GetByFeeBatchId(int batchId);
         IEnumerable<Member> GetByStatusIds(int[] statusIds);

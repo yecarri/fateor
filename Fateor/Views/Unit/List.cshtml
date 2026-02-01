@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_Internal.cshtml";
 }
 @section Scripts
-    {
+{
     <link href='@Url.Content("~/Scripts/DataTables/datatables.min.css")' rel="stylesheet" />
     <script type="text/javascript" src='@Url.Content("~/lib/DataTables/datatables.min.js")'></script>
     <script type="text/javascript">
@@ -24,32 +24,48 @@
             });
     </script>
 }
-    <div class="container py-2">
-        <div class="card">
-            <div class="card-header"><h3>Listado de Secciones</h3></div>
-            <div class="card-body">
-                <table class="table hover" id="unitTable">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>
-                                Sección
-                            </th>
-                            <th>
-                                Pertenece a
-                            </th>
-                            <th>
-                                Coordinador
-                            </th>
+<div class="container py-2">
+    <div class="card">
+        <div class="card-header"><h3>Listado de Secciones</h3></div>
+        <div class="card-body">
+            <table class="table hover" id="unitTable">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>
+                            Sección
+                        </th>
+                        <th>
+                            Pertenece a
+                        </th>
+                        <th>
+                            Coordinador
+                        </th>
 
-                        </tr>
-                    </thead>
-                    <tbody>
+                    </tr>
+                </thead>
+                <tbody>
 
                     @foreach (var item in Model.Units)
                     {
                         var parent = Model.Units.FirstOrDefault(p => p.UnitId == item.ParentUnitId);
-                        var coordinator = Model.Coordinators.FirstOrDefault(m => m.MemberId == item.CoordinatorId);
+                        Fateor.Application.Organization.Entities.Member? coordinator = null;
+                        try
+                        {
+
+
+                            if (item.CoordinatorId is not null)
+                            {
+                                coordinator = Model
+                                .Coordinators.Where(m => m is not null)
+                                .FirstOrDefault(m => (!(item.CoordinatorId is null)) && m.MemberId == item.CoordinatorId);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.ToString());
+                        }
+
                         <tr>
                             <td>
                                 @Html.DisplayFor(modelItem => item.UnitId)
@@ -60,10 +76,16 @@
                             </td>
                             <td>
                                 @Html.HiddenFor(modelItem => item.ParentUnitId)
-                                @Html.DisplayFor(p => parent.UnitName)
+                                @if (parent is not null)
+                                {
+                                    @Html.DisplayFor(p => parent.UnitName)
+                                }
                             </td>
                             <td>
-                                @Html.DisplayFor(p => coordinator.FullName)
+                                @if (coordinator is not null)
+                                {
+                                    @Html.DisplayFor(p => coordinator.FullName)
+                                }
                             </td>
                         </tr>
                     }
