@@ -23,6 +23,7 @@ namespace Fateor.Setup
             services.AddSingleton<Fateor.Infrastructure.Mappers.IMapper, Fateor.Infrastructure.Mappers.Mapper>(x =>
                 new Fateor.Infrastructure.Mappers.Mapper(x.GetRequiredService<AutoMapper.IMapper>())
                 );
+            
         }
     }
 }

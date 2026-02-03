@@ -22,6 +22,7 @@ namespace Fateor.Mappers
             CreateMap<Models.OptionViewModel, Application.Questionnaires.Entities.Option>().ReverseMap();
             CreateMap<Models.MemberFeeViewModel, Application.Organization.Entities.MemberFee>().ReverseMap();
             CreateMap<Models.MemberFeeBatchViewModel, Application.Organization.Entities.MemberFeeBatch>().ReverseMap();
+            CreateMap<Models.ConfigModel, Application.Config.Entities.Config>().ReverseMap();
         }
     }
 }

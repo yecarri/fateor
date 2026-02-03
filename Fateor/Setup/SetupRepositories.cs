@@ -16,6 +16,8 @@ using Fateor.Application.Gdpr.Repositories.Interfaces;
 using Fateor.Application.Gdpr.Repositories.MySql;
 using Fateor.Application.Notification.Repositories.Interfaces;
 using Fateor.Application.Notification.Repositories.MySql;
+using Fateor.Application.Config.Repositories;
+using System.Configuration;
 
 namespace Fateor.Setup
 {
@@ -23,8 +25,11 @@ namespace Fateor.Setup
     {
         public static void AddRepositories(this WebApplicationBuilder builder)
         {
-            string connectionString = builder.Configuration.GetConnectionString("fateor");
-
+            string? connectionString = builder.Configuration.GetConnectionString("fateor");
+            if(connectionString is null)
+            {
+                throw new ConfigurationErrorsException("Connection string 'fateor' not found.");
+            }
             builder.Services.AddScoped<IUserRepository, UserRepository>(s => new UserRepository(connectionString));
             builder.Services.AddScoped<IMemberRepository, MemberRepository>(s => new MemberRepository(connectionString));
             builder.Services.AddScoped<IMemberFeeBatchRepository, MemberFeeBatchRepository>(s => new MemberFeeBatchRepository(connectionString));
@@ -47,6 +52,7 @@ namespace Fateor.Setup
             builder.Services.AddScoped<IGdprUnitOfWork, GdprUnitOfWork>(s => new GdprUnitOfWork(connectionString));
             builder.Services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>(s => new EmailTemplateRepository(connectionString));
             builder.Services.AddScoped<IEmailRecipientRepository, EmailRecipientRepository>(s => new EmailRecipientRepository(connectionString));
+            builder.Services.AddScoped<IConfigRepository, ConfigRepository>(s => new ConfigRepository(connectionString));
         }
     }
 }

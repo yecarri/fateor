@@ -1,0 +1,100 @@
+﻿@model ConfigViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    Layout = "~/Views/Shared/_Internal.cshtml";
+    var count = Model?.Current?.Length ?? 0;
+}
+@section Scripts
+{
+    <style type="text/css">
+        .container
+        {
+
+        }
+        table.form-table {
+            width: 100%
+        }
+
+            table.form-table th, table.form-table td {
+                padding: 3px;
+            }
+
+                table.form-table td textarea {
+                    top: unset;
+                    margin: unset;
+                    padding: unset;
+                    width: 100%;
+                }
+
+        .field-validation-error,
+        .validation-summary-errors {
+            display: none;
+        }
+
+            .field-validation-error:not(:empty),
+            .validation-summary-errors:not(:empty) {
+                display: block;
+            }
+    </style>
+}
+@using (Html.BeginForm(FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+    <div class="container">
+        @if (count == 0)
+        {
+            <p>No configs available.</p>
+        }
+        else
+        {
+            <table class="form-table">
+                <thead>
+                    <tr>
+                        <th style="width:20%">Config Code</th>
+                        <th style="width:40%">Description</th>
+                        <th style="width:40%">Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < count; i++)
+                    {
+                        var cfg = Model.Current[i];
+
+                        <tr>
+                            <td class="form-field">
+                                @Html.DisplayFor(m => m.Current[i].ConfigCode)
+                                @Html.HiddenFor(m => m.Current[i].ConfigCode)
+                                @Html.HiddenFor(m => m.Current[i].ConfigTypeId)
+                            </td>
+
+                            <td class="form-field">
+                                @Html.TextAreaFor(m => m.Current[i].Description, new { })
+                                @Html.ValidationMessageFor(m => m.Current[i].Description, "", new { @class = "field-validation-error" })
+                            </td>
+
+                            <td class="form-field">
+                                @if (cfg?.ConfigTypeId == 5 && cfg?.Options != null)
+                                {
+                                    var select = new SelectList(cfg.Options, "Value", "Text", cfg.ConfigValue);
+                                    @Html.DropDownListFor(m => m.Current[i].ConfigValue, select, new { })
+                                }
+                                else
+                                {
+                                    @Html.TextAreaFor(m => m.Current[i].ConfigValue, new { })
+                                }
+
+                                @Html.ValidationMessageFor(m => m.Current[i].ConfigValue, "", new { @class = "field-validation-error" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <div>
+            <button type="submit" class="form-button">Save configs</button>
+        </div>
+    </div>
+}

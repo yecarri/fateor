@@ -305,7 +305,7 @@ footer {
     }
 
     .nav-container {
-        max-width: 700px;
+        max-width: 50%;
         height: 100%;
         display: block;
         margin: auto;

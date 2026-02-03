@@ -6,35 +6,35 @@
                     <a href="#">Miembros</a>
                     <ul>
                         <li>
-                            <a href='@Url.Action("List","Member")'>Listado</a>
+                            <a href='@Url.Action("List", "Member")'>Listado</a>
                         </li>
                         <li>
-                            <a href='@Url.Action("Create","Member")'>Crear</a>
+                            <a href='@Url.Action("Create", "Member")'>Crear</a>
                         </li>
                     </ul>
                 </li>
                 <li>
                     <a href="#">Unidades</a>
                     <ul>
-                        <li><a href='@Url.Action("List","Unit")'>Listado</a></li>
-                        <li><a href='@Url.Action("Create","Unit")'>Crear</a></li>
+                        <li><a href='@Url.Action("List", "Unit")'>Listado</a></li>
+                        <li><a href='@Url.Action("Create", "Unit")'>Crear</a></li>
                     </ul>
                 </li>
                 <li>
                     <a href="#">Usuarios</a>
                     <ul>
                         <li>
-                            <a href='@Url.Action("List","User")'>Listado</a>
+                            <a href='@Url.Action("List", "User")'>Listado</a>
                         </li>
                         <li>
-                            <a href='@Url.Action("Create","User")'>Crear</a>
+                            <a href='@Url.Action("Create", "User")'>Crear</a>
                         </li>
                     </ul>
                 </li>
                 <li>
                     <a href="#">Cuestionarios</a>
                     <ul>
-                        <li><a href='@Url.Action("List","Questionnaire")'>Listado</a></li>
+                        <li><a href='@Url.Action("List", "Questionnaire")'>Listado</a></li>
                         <li><a href='@Url.Content("~/Questionnaire/Create")'>Crear</a></li>
                         <li class="nav-separator"></li>
                         <li><a href='@Url.Content("~/response")'>Rellenar</a></li>
@@ -43,7 +43,13 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-logout"><a href='@Url.Action("Logout","Home")'><span style="margin-right: 1em;">@ViewBag.User</span><span class='fas fa-sign-out-alt'></span> Salir</a></li>
+                <li>
+                    <a href="#">Sistema</a>
+                    <ul>
+                        <li><a href='@Url.Content("~/config")'>Configuración</a></li>
+                    </ul>
+                </li>
+                <li class="nav-logout"><a href='@Url.Action("Logout", "Home")'><span style="margin-right: 1em;">@ViewBag.User</span><span class='fas fa-sign-out-alt'></span> Salir</a></li>
             </ul>
         </div>
     </div>

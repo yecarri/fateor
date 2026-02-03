@@ -1,4 +1,5 @@
-﻿using Fateor.Application.Credentials.Services;
+﻿using Fateor.Application.Config.Services;
+using Fateor.Application.Credentials.Services;
 using Fateor.Application.External;
 using Fateor.Application.Gdpr.Repositories.Interfaces;
 using Fateor.Application.Gdpr.Services;
@@ -148,6 +149,7 @@ namespace Fateor.Setup
             services.AddScoped<IIdentityDocumentService, IdentityDocumentService>();
             services.AddScoped<IMemberFeeBatchService, MemberFeeBatchService>();
             services.AddScoped<IGdprService, GdprService>();
+            services.AddScoped<IConfigService, ConfigService>();
         }
     }
 }
