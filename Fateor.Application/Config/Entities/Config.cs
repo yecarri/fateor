@@ -13,5 +13,7 @@ namespace Fateor.Application.Config.Entities
         public string? Description { get; set; }
 
         public int ConfigTypeId { get; set; }
+
+        public IList<string> Options { get; set; } = [];
     }
 }

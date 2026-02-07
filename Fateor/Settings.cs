@@ -18,7 +18,24 @@ namespace Fateor
         public string Unit_Selector_Assembly { get => _Settings["Unit_Selector_Assembly"]; }
         public string Site { get => _Settings["Site"]; }
         public string Site_Name { get => _Settings["Site_Name"]; }
-        public bool ForumSystem_CreateUser { get => int.Parse(_Settings["ForumSystem_CreateUser"]) != 0; }
+        public bool ForumSystem_CreateUser
+        {
+            get
+            {
+                string s = _Settings["ForumSystem_CreateUser"];
+                {
+                    bool result;
+                    if (bool.TryParse(s, out result))
+                        return result;
+                }
+                {
+                    int result;
+                    if (int.TryParse(s, out result))
+                        return result != 0;
+                }
+                return false;
+            }
+        }
         public string Email_Service_Provider { get => _Settings["Email_Service_Provider"]; }
         public string Email_Service_Server { get => _Settings["Email_Service_Server"]; }
         public int Email_Service_Port { get => int.Parse(_Settings["Email_Service_Port"]); }
@@ -28,7 +45,24 @@ namespace Fateor
         public string Email_Service_Domain { get => _Settings["Email_Service_Domain"]; }
         public string Email_Sender_Name { get => _Settings["Email_Sender_Name"]; }
         public string Email_Sender_Address { get => _Settings["Email_Sender_Address"]; }
-        public bool Email_DisabledAll { get => int.Parse(_Settings["Email_DisabledAll"]) != 0; }
+        public bool Email_DisabledAll
+        {
+            get
+            {
+                string s = _Settings["Email_DisabledAll"];
+                {
+                    bool result;
+                    if (bool.TryParse(s, out result))
+                        return result;
+                }
+                {
+                    int result;
+                    if (int.TryParse(s, out result))
+                        return result != 0;
+                }
+                return false;
+            }
+        }
         public int Default_UserId { get => int.Parse(_Settings["Default_UserId"]); }
         public int Default_UnitId { get => int.Parse(_Settings["Default_UnitId"]); }
         public int Default_StatusId { get => int.Parse(_Settings["Default_StatusId"]); }

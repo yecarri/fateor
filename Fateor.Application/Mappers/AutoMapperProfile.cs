@@ -55,6 +55,7 @@ namespace Fateor.Application.Mappers
             CreateMap<Notification.Dto.EmailTemplate, Notification.Entities.EmailTemplate>().ReverseMap();
 
             CreateMap<Config.Dto.Config, Config.Entities.Config>().ReverseMap();
+            CreateMap<Config.Dto.ConfigOption, Config.Entities.ConfigOption>().ReverseMap();
 
             //CreateMap<Bulletin.Dto.Bulletin, Bulletin.Entities.Bulletin>().ReverseMap();
             //CreateMap<Bulletin.Dto.BulletinCountryFilter, Bulletin.Entities.BulletinCountryFilter>().ReverseMap();

@@ -31,6 +31,5 @@ namespace Fateor.Models
                    this.ConfigTypeId == other.ConfigTypeId;
         }
 
-        public string[] Options { get; set; } = Array.Empty<string>();
     }
 }

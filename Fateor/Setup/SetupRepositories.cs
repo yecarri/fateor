@@ -53,6 +53,7 @@ namespace Fateor.Setup
             builder.Services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>(s => new EmailTemplateRepository(connectionString));
             builder.Services.AddScoped<IEmailRecipientRepository, EmailRecipientRepository>(s => new EmailRecipientRepository(connectionString));
             builder.Services.AddScoped<IConfigRepository, ConfigRepository>(s => new ConfigRepository(connectionString));
+            builder.Services.AddScoped<IConfigOptionRepository, ConfigOptionRepository>(s => new ConfigOptionRepository(connectionString));
         }
     }
 }

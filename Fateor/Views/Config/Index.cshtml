@@ -1,5 +1,6 @@
 ﻿@model ConfigViewModel
 @using Microsoft.AspNetCore.Mvc.Rendering
+@using System.Linq
 
 @{
     Layout = "~/Views/Shared/_Internal.cshtml";
@@ -75,14 +76,41 @@
                             </td>
 
                             <td class="form-field">
-                                @if (cfg?.ConfigTypeId == 5 && cfg?.Options != null)
+                                @{
+                                    // decide control by ConfigTypeId
+                                    var name = $"Current[{i}].ConfigValue";
+                                    var id = $"Current_{i}__ConfigValue";
+                                    var value = cfg.ConfigValue ?? string.Empty;
+                                }
+
+                                @if (cfg?.ConfigTypeId == 1)
                                 {
-                                    var select = new SelectList(cfg.Options, "Value", "Text", cfg.ConfigValue);
-                                    @Html.DropDownListFor(m => m.Current[i].ConfigValue, select, new { })
+                                    // 1 = Text -> textarea
+                                    @Html.TextArea(name, value, new { id = id })
+                                }
+                                else if (cfg?.ConfigTypeId == 2 || cfg?.ConfigTypeId == 3)
+                                {
+                                    // 2,3 = textbox
+                                    @Html.TextBox(name, value, new { id = id })
+                                }
+                                else if (cfg?.ConfigTypeId == 4)
+                                {
+                                    // 4 = checkbox -> store "true" / "false" in ConfigValue
+                                    var isChecked = string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) || value == "1";
+                                    <input type="checkbox" id="@id" name="@name" value="true" @(isChecked ? "checked" : "") />
+                                    @* hidden placed after checkbox so when unchecked the hidden posts; when checked the checkbox value appears first in form order *@
+                                    <input type="hidden" name="@name" value="false" />
+                                }
+                                else if (cfg?.ConfigTypeId == 5 && cfg?.Options != null)
+                                {
+                                    // 5 = dropdown, Options is string[]
+                                    var selectList = new SelectList(cfg.Options.Select(o => new { Value = o, Text = o }), "Value", "Text", value);
+                                    @Html.DropDownList(name, selectList, new { id = id })
                                 }
                                 else
                                 {
-                                    @Html.TextAreaFor(m => m.Current[i].ConfigValue, new { })
+                                    // fallback: simple textbox
+                                    @Html.TextBox(name, value, new { id = id })
                                 }
 
                                 @Html.ValidationMessageFor(m => m.Current[i].ConfigValue, "", new { @class = "field-validation-error" })

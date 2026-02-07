@@ -43,7 +43,7 @@ namespace Fateor.Controllers
         }
 
         [Route("login")]
-        public ActionResult Login(Models.LoginViewModel model)
+        public async Task<ActionResult> Login(Models.LoginViewModel model)
         {
             if (Request.Method == "GET")
                 return View(model);
@@ -59,14 +59,22 @@ namespace Fateor.Controllers
                         {
                             new Claim(ClaimTypes.Name , user.Login),
                             new Claim(ClaimTypes.Email, user.Email),
-                            new Claim(ClaimTypes.NameIdentifier, user?.UserId?.ToString() ?? "")
+                            new Claim(ClaimTypes.NameIdentifier, user?.UserId?.ToString() ?? ""),
+                            new Claim(ClaimTypes.Role, "admin")
                         };
 
                         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                         var principal = new ClaimsPrincipal(identity);
 
-                        HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);                        
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                        // Check if the query string has a ReturnUrl param and redirect there
+                        if (Request.Query.ContainsKey("ReturnUrl"))
+                        {
+                            var returnUrl = Request.Query["ReturnUrl"].ToString();
+                            return Redirect(returnUrl);
+                        }
                         return (RedirectToAction("Index", "Internal"));
                     }
                     else

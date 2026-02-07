@@ -4,8 +4,10 @@ CREATE TABLE `app_configtype`
 );
   
 CREATE TABLE `app_configoption`
-(	ConfigOptionId int not null primary key,
-	`Value` varchar(8000)    
+(	ConfigCode varchar(256) not null,
+	`Number` int not null,
+	`Value` varchar(8000)    ,
+    primary key (ConfigCode, Number)
 );  
     
 ALTER TABLE app_Config 
@@ -39,7 +41,7 @@ values
 INSERT INTO `app_config` (ConfigCode, Description, ConfigTypeId)
 VALUES
 ('Credentials_Enabled',               'Enable or disable credentials system',          4),
-('Credentials_Generator_Assembly',    'Assembly containing the credentials generator', 1),
+('Credentials_Generator_Assembly',    'Assembly containing the credentials generator', 5),
 ('Credentials_Generator_Type',        'Type name of the credentials generator',         1),
 ('Default_InitialPoll',               'Default initial questionnaure',                 1),
 ('Default_StatusId',                  'Default status identifier',                     2),
@@ -52,7 +54,7 @@ VALUES
 ('Email_Service_Key',                 'API key for email service',                     1),
 ('Email_Service_Password',            'Password for email service authentication',     1),
 ('Email_Service_Port',                'SMTP port for email service',                   2),
-('Email_Service_Provider',            'Email service provider name',                   1),
+('Email_Service_Provider',            'Email service provider name',                   5),
 ('Email_Service_Server',              'SMTP server hostname',                          1),
 ('Email_Service_User',                'Username for email service authentication',     1),
 ('ForumSystem_CreateUser',            'Allow forum system to create users automatically',4),
@@ -65,3 +67,18 @@ VALUES
 ON DUPLICATE KEY UPDATE
     Description  = s.Description,
     ConfigTypeId = s.ConfigTypeId;
+    
+insert into app_configoption (ConfigCode, Number, Value)
+values 
+	('Credentials_Generator_Assembly',1,'None'),
+    ('Credentials_Generator_Assembly',2,'Fateor.Application.Credentials.Services.MLVCredentialService'),
+	('Email_Service_Provider',1,'None'),
+	('Email_Service_Provider',2,'smtp'),
+    ('Email_Service_Provider',3,'mailgun'),
+    ('Email_Service_Provider',4,'mailersend'),
+    ('Unit_Selector_Type',1,'Default'),
+    ('Unit_Selector_Type',2,'Fateor.Application.Organization.Service.MLVUnitSelector') as s
+ON DUPLICATE KEY UPDATE
+    Value  = s.Value;
+        
+
