@@ -10,7 +10,7 @@ CREATE TABLE `app_configoption`
     primary key (ConfigCode, Number)
 );  
     
-ALTER TABLE app_Config 
+ALTER TABLE `app_config`
 ADD COLUMN Description VARCHAR(8000) AFTER ConfigValue,
 ADD COLUMN ConfigTypeId int,
 ADD CONSTRAINT fk_app_Config_ConfigTypeId foreign key (ConfigTypeId) references `app_configtype`(ConfigTypeId);
@@ -31,14 +31,18 @@ DROP TABLE `app_configoption`
 */
 
 insert into app_configtype
+	(ConfigTypeId, ConfigTypeName)
 values 
+
 	(1,'Text'),
     (2,'Integer'),
     (3,'Real'),
     (4,'Boolean'),
-    (5,'Options');
-
-INSERT INTO `app_config` (ConfigCode, Description, ConfigTypeId)
+    (5,'Options') as s
+ON DUPLICATE KEY UPDATE
+	ConfigTypeName=s.ConfigTypeName;
+    
+INSERT INTO `app_config` (`ConfigCode`, `Description`, `ConfigTypeId`)
 VALUES
 ('Credentials_Enabled',               'Enable or disable credentials system',          4),
 ('Credentials_Generator_Assembly',    'Assembly containing the credentials generator', 5),
@@ -63,10 +67,10 @@ VALUES
 ('Site_Name',                         'Site Name, title displayed in web pages',        1),
 ('Unit_Selector_Assembly',            'Assembly containing the unit selector',          1),
 ('Unit_Selector_Type',                'Type name of the unit selector',                 1),
-('Url',                               'Base site URL',                                 1) as S
+('Url',                               'Base site URL',                                 1) as s
 ON DUPLICATE KEY UPDATE
-    Description  = s.Description,
-    ConfigTypeId = s.ConfigTypeId;
+    `Description`  = s.`Description`,
+    `ConfigTypeId` = s.`ConfigTypeId`;
     
 insert into app_configoption (ConfigCode, Number, Value)
 values 
@@ -81,4 +85,6 @@ values
 ON DUPLICATE KEY UPDATE
     Value  = s.Value;
         
-
+/*
+insert into db_scripts values ('20260202_1523_app_Config.sql',CURRENT_DATE());
+*/

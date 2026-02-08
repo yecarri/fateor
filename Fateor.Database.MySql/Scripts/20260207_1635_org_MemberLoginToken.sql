@@ -5,7 +5,7 @@ create table org_memberlogintoken
     Expiration datetime not null,
     Used bit(1) not null default (b'0'),
     constraint pk_org_memberlogintoken primary key(Guid)   ,
-    constraint fk_org_memberlogintoken_MemberId foreign key (MemberId) references org_Member(MemberId)
+    constraint fk_org_memberlogintoken_MemberId foreign key (MemberId) references `org_member`(MemberId)
 );
 
 /* drop table org_memberlogintoken */
