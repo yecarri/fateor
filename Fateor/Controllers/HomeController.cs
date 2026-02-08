@@ -72,11 +72,11 @@ namespace Fateor.Controllers
                             new Claim(ClaimTypes.Role, "admin")
                         };
 
-                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var identity = new ClaimsIdentity(claims, "admin");
 
                         var principal = new ClaimsPrincipal(identity);
 
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                        await HttpContext.SignInAsync("admin", principal);
 
                         // Check if the query string has a ReturnUrl param and redirect there
                         if (Request.Query.ContainsKey("ReturnUrl"))
@@ -102,10 +102,11 @@ namespace Fateor.Controllers
         }
 
         [Route("logout")]
-        public ActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
-            return (RedirectToAction("Index"));
+            await HttpContext.SignOutAsync("admin");
+            await HttpContext.SignOutAsync("member");
+            return RedirectToAction("Index");
         }
 
         [HttpGet("user/resetpassword/{token}")]

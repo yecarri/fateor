@@ -4,18 +4,19 @@ using Fateor.Application.Questionnaires.Services;
 using Fateor.Infrastructure.Mappers;
 using Fateor.Infrastructure.Services;
 using Fateor.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 
 namespace Fateor.Controllers
 {
+
     public class ResponseController : FateorControllerBase
     {
         private readonly IQuestionnaireService _questionnaireService;
         private readonly IResponseService _responseService;
         private readonly IMemberService _memberService;
-        private readonly Settings _settings;
 
         public ResponseController(ILogger<ResponseController> logger,
                                   IMapper mapper,
@@ -28,12 +29,11 @@ namespace Fateor.Controllers
             _questionnaireService=questionnaireService;
             _responseService=responseService;
             _memberService=memberService;
-            _settings=settings;
         }
 
         // GET: Response
         [HttpGet("/response")]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public ActionResult Index()
         {
             var model = new ResponseViewModel();
@@ -42,7 +42,7 @@ namespace Fateor.Controllers
         }
 
         [HttpPost("/response/{id?}")]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public ActionResult Index(ResponseViewModel model)
         {
             Response? response = null;
@@ -85,7 +85,7 @@ namespace Fateor.Controllers
         }
 
         [HttpGet("/response/{id:int}")]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public ActionResult Index(int id)
         {
             var model = new ResponseViewModel();
@@ -105,47 +105,8 @@ namespace Fateor.Controllers
             return View(model);
         }
 
-        [HttpGet("/response/{token:regex([[A-Za-z0-9]]{{16,}})}")]
-        public ActionResult Token(string token)
-        {
-            var model = new ResponseViewModel();
-            var respKey = _responseService.DecryptResponseKey(token);
-            model.Questionnaires = _questionnaireService.GetQuestionnaires(false).ToList();
-            model.QuestionnaireId = respKey.QuestionnaireId;
-            var questionaire = _questionnaireService.Get(respKey.QuestionnaireId);
-
-            model.MemberId = respKey.MemberId;
-            model.Member = _memberService.GetMemberById(respKey.MemberId).FullName;
-            var response = _responseService.GetLastResponseByQuestionaireAndMember(model.QuestionnaireId.Value, model.MemberId.Value);
-            MapViewModel(model, response, questionaire);
-            model.Locked = true;
-            return View("Index", model);
-        }
-
-        [HttpPost("/response/{token:regex([[A-Za-z0-9]]{{16,}})}")]
-        public ActionResult Token(string token, ResponseViewModel model)
-        {
-            Response? response = null;
-
-            if (model.Command == "save" && ModelState.IsValid)
-            {
-                response = _mapper.Map<Models.ResponseViewModel, Response>(model);
-                _responseService.Save(response, CurrentUser?.UserId ?? _settings.Default_UserId);
-                var questionaire = _questionnaireService.Get(response.QuestionnaireId);
-                var url = questionaire.RedirectUrl.ToLower().Replace("{responseid}", response.ResponseId.ToString());
-                return Redirect(Url.Content(url));
-            }
-            var respKey = _responseService.DecryptResponseKey(token);
-            model.Questionnaires = _questionnaireService.GetQuestionnaires(false).ToList();
-            model.QuestionnaireId = respKey.QuestionnaireId;
-            model.MemberId = respKey.MemberId;
-            model.Member = _memberService.GetMemberById(respKey.MemberId).FullName;
-            return View("Index", model);
-
-        }
-
         [HttpGet("/response/list/{questionnaireId:int?}")]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public ActionResult List(int? questionnaireId)
         {
             var model = new ResponseListViewModel();
@@ -167,7 +128,7 @@ namespace Fateor.Controllers
         }
 
         [HttpPost("/response/list")]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public ActionResult List(ResponseListViewModel model)
         {
             if (model.QuestionnaireId.HasValue)
@@ -182,7 +143,7 @@ namespace Fateor.Controllers
         }
 
         [HttpGet("/response/gettoken")]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public ActionResult GetToken()
         {
             var model = new GetResponseTokenViewModel();
@@ -191,7 +152,7 @@ namespace Fateor.Controllers
         }
 
         [HttpPost("/response/gettoken")]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public ActionResult GetToken(GetResponseTokenViewModel model)
         {
             model.Questionnaires = _questionnaireService.GetQuestionnaires();
@@ -205,6 +166,67 @@ namespace Fateor.Controllers
             }
 
             return View("GetToken", model);
+        }
+
+        [HttpGet("/response/token/{token:regex([[A-Za-z0-9]]{{16,}})}")]
+        public ActionResult Token(string token)
+        {
+            var model = new ResponseViewModel();
+            var respKey = _responseService.DecryptResponseKey(token);
+            model.Questionnaires = _questionnaireService.GetQuestionnaires(false).ToList();
+            model.QuestionnaireId = respKey.QuestionnaireId;
+            var questionaire = _questionnaireService.Get(respKey.QuestionnaireId);
+
+            model.MemberId = respKey.MemberId;
+            model.Member = _memberService.GetMemberById(respKey.MemberId).FullName;
+            var response = _responseService.GetLastResponseByQuestionaireAndMember(model.QuestionnaireId.Value, model.MemberId.Value);
+            MapViewModel(model, response, questionaire);
+            model.Locked = true;
+            return View("Index", model);
+        }
+
+        [HttpPost("/response/token/{token:regex([[A-Za-z0-9]]{{16,}})}")]
+        public async Task<ActionResult> Token(string token, ResponseViewModel model)
+        {
+            Response? response = null;
+
+            if (model.Command == "save" && ModelState.IsValid)
+            {
+                response = _mapper.Map<Models.ResponseViewModel, Response>(model);
+                _responseService.Save(response, CurrentUser?.UserId ?? _settings.Default_UserId);
+                var questionaire = _questionnaireService.Get(response.QuestionnaireId);
+                var url = questionaire.RedirectUrl.ToLower().Replace("{responseid}", response.ResponseId.ToString());
+                var mappedUrl = Url.Content(url);
+                if (string.IsNullOrWhiteSpace(mappedUrl))
+                {
+                    var result = await HttpContext.AuthenticateAsync("admin");
+                    if (result.Succeeded)
+                    {
+                        mappedUrl = Url.Content("/home");
+                    }
+                    else
+                    {
+                        result = await HttpContext.AuthenticateAsync("member");
+                        if (result.Succeeded)
+                        {
+                            mappedUrl = Url.Content("/member/selfservice");
+                        }
+                        else
+                        {
+                            mappedUrl = Url.Content("/");
+                        }
+                    }
+                }
+
+                return Redirect(mappedUrl);
+            }
+            var respKey = _responseService.DecryptResponseKey(token);
+            model.Questionnaires = _questionnaireService.GetQuestionnaires(false).ToList();
+            model.QuestionnaireId = respKey.QuestionnaireId;
+            model.MemberId = respKey.MemberId;
+            model.Member = _memberService.GetMemberById(respKey.MemberId).FullName;
+            return View("Index", model);
+
         }
 
         private void MapViewModel(ResponseViewModel model, Response response, Questionnaire questionaire)

@@ -1,5 +1,5 @@
 ﻿@model Fateor.Models.ResponseViewModel
-<tr class="clickable" onclick="document.location.href = '@( $"{Url.Content("~/Response")}/{Model.Token}" )'">
+<tr class="clickable" onclick="document.location.href = '@( $"{Url.Content("~/Response/token")}/{Model.Token}" )'">
     <td>@Html.DisplayFor(m => m.ResponseId)</td>
     <td>@Html.DisplayFor(m => m.Questionnaire)</td>
     <td>@Html.DisplayFor(m => m.LastModificationDate)</td>
