@@ -67,6 +67,9 @@
     <None Update="Scripts\20260207_1635_org_MemberLoginToken.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\20260208_1049_MemberLoginEmail.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

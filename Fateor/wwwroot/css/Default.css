@@ -83,6 +83,15 @@ table.form-table {
         color: black;
     }
 
+    table.form-table.clickable tr {
+        cursor: pointer;
+    }
+
+    table.form-table tr.clickable:hover td {
+        font-weight:500;
+        cursor:pointer;
+    }
+
 button.form-button,
 input[type=button].form-button,
 input[type=submit].form-button,
@@ -174,7 +183,7 @@ footer {
 }
 
 .input-validation-error {
-    border: 1px solid var(--o-error-color);
+    border: 1px solid var(--o-error-color) !important;
 }
 
 .field-validation-error {

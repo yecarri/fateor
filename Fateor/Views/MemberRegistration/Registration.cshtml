@@ -46,7 +46,7 @@
     </script>
 }
 <div class="container">
-    @using (Html.BeginForm("Registration", "Member", FormMethod.Post, new { @id = "registrationForm", @onsubmit = "return beforeSubmit();" }))
+    @using (Html.BeginForm(FormMethod.Post, new { @id = "registrationForm", @onsubmit = "return beforeSubmit();" }))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.Command)

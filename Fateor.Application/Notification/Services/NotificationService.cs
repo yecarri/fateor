@@ -191,7 +191,7 @@ namespace Fateor.Application.Notification.Services
                 return (true, new List<string>());
             }
 
-            string url = GetUrl($"member/login/{token}");
+            string url = GetUrl($"memberlogin/{token}");
             var template = _emailConfiguration?.Templates?.FirstOrDefault(t => t.TemplateName == "memberLogin");
             if (template == null)
                 return (false, new List<string>() { "No se ha encontrado la plantilla de correo para el login de miembros" });

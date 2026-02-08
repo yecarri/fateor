@@ -97,13 +97,13 @@
                                 for (int j = 0; j < Model.Answers[i].Options.Count; j++)
                                 {
 
-                                    <div style="display:block; margin-bottom:0.5em; ">
-                                        <div style="display:block; margin-right:1em;">
+                                    <div style="display:grid; grid-template-columns:auto 1fr; margin-bottom:0.5em;">
+                                        <div>
                                             @Html.HiddenFor(m => Model.Answers[i].Options[j].OptionId)
                                             @Html.HiddenFor(m => Model.Answers[i].Options[j].AnswerId)
                                             @Html.CheckBoxFor(m => Model.Answers[i].Options[j].Selected)
                                         </div>
-                                        <div style="display:block">
+                                        <div>
                                             <label for="@Html.IdFor(m => Model.Answers[i].Options[j].OptionId)">
                                                 &nbsp;
                                                 @Model.Answers[i].Options[j].OptionText
@@ -116,14 +116,14 @@
                             {
                                 for (int j = 0; j < Model.Answers[i].Options.Count; j++)
                                 {
-                                    <div style="display:grid; grid-template-columns:1em 1fr; margin-bottom:0.5em;">
-                                        <div style="">
+                                    <div style="display:grid; grid-template-columns:auto 1fr; margin-bottom:0.5em;">
+                                        <div>
                                             @Html.HiddenFor(m => Model.Answers[i].Options[j].OptionId)
                                             @Html.HiddenFor(m => Model.Answers[i].Options[j].AnswerId)
                                             @Html.RadioButtonFor(m => Model.Answers[i].OptionId, Model.Answers[i].Options[j].OptionId)
                                         </div>
 
-                                        <div style="">
+                                        <div>
                                             <label for="@Html.IdFor(m => Model.Answers[i].Options[j].OptionId)">
                                                 @Model.Answers[i].Options[j].OptionText
                                             </label>

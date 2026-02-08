@@ -4,11 +4,12 @@ using Fateor.Application.Organization.Service;
 using Fateor.Infrastructure.Mappers;
 using Fateor.Infrastructure.Services;
 using Fateor.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fateor.Controllers
 {
-
+    [Authorize(Roles ="admin")]
     public class BulletinController : FateorControllerBase
     {
         private readonly IBulletinService _bulletinService;

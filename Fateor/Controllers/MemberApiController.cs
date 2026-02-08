@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Fateor.Controllers
 {
+    [Authorize(Roles = "admin")]
     [ApiController]
     public sealed class MemberApiController : ControllerBase
     {

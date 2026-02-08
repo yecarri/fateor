@@ -38,6 +38,9 @@ namespace Fateor.Models
         public List<AnswerViewModel> Answers { get; set; } = new List<AnswerViewModel>();
 
         public List<Application.Questionnaires.Entities.Questionnaire> Questionnaires { get; set; } = new List<Application.Questionnaires.Entities.Questionnaire>();
+        
         public bool Locked { get; set; }
+
+        public string? Token { get; set; }
     }
 }

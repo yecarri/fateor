@@ -10,6 +10,7 @@ using Fateor.Application.Questionnaires.Services;
 using Fateor.Infrastructure.Mappers;
 using Fateor.Infrastructure.Services;
 using Fateor.Models;
+using HtmlAgilityPack;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -18,56 +19,52 @@ using System.Security.Claims;
 
 namespace Fateor.Controllers
 {
-    [Authorize]
-    public class MemberController : FateorControllerBase
+    [Authorize(Roles = "admin")]
+    public class MemberController : MemberControllerBase
     {
-        private readonly IMemberService _memberService;
         private readonly IResponseService _responseService;
-        private readonly IUnitSelector _unitSelector;
-        private readonly ILocationService _locationService;
-        private readonly IExternalMemberService _externalMemberService;
         private readonly INotificationService _notificationService;
         private readonly IStatusService _statusService;
-        private readonly IQuestionnaireService _questionaireService;
         private readonly IUnitService _unitService;
-        private readonly IIdentityDocumentService _identityDocumentService;
         private readonly ICredentialService _credentialService;
         private readonly IGdprService _gdprService;
-        private readonly IHostEnvironment _hostEnvironment;
         private readonly IIdentificationNumberValidator _identifierNumberValidator;
 
-        public MemberController(ILogger<MemberController> logger,
-                                IMapper mapper,
-                                IEncryptionService encryptionService,
-                                IMemberService memberService,
-                                ILocationService locationService,
-                                IResponseService responseService,
-                                IUnitSelector unitSelector,
-                                IExternalMemberService externalMemberService,
-                                IQuestionnaireService questionaireService,
-                                INotificationService notificationService,
-                                IStatusService statusService,
-                                IUnitService unitService,
-                                IIdentityDocumentService identityDocumentService,
-                                ICredentialService credentialService,
-                                IGdprService gdprService,
-                                Settings settings,
-                                IHostEnvironment hostEnvironment,
-                                IIdentificationNumberValidator identifierNumberValidator) : base(logger, mapper, encryptionService, settings)
+
+        public MemberController(
+            ILogger<MemberController> logger,
+            IMapper mapper,
+            IEncryptionService encryptionService,
+            IMemberService memberService,
+            ILocationService locationService,
+            IResponseService responseService,
+            IUnitSelector unitSelector,
+            IExternalMemberService externalMemberService,
+            IQuestionnaireService questionaireService,
+            INotificationService notificationService,
+            IStatusService statusService,
+            IUnitService unitService,
+            IIdentityDocumentService identityDocumentService,
+            ICredentialService credentialService,
+            IGdprService gdprService,
+            Settings settings,
+            IHostEnvironment hostEnvironment,
+            IIdentificationNumberValidator identifierNumberValidator) : base(
+                memberService,
+                identityDocumentService,
+                locationService,
+                questionaireService,
+                encryptionService,
+                logger,
+                mapper,
+                settings)
         {
-            _memberService=memberService;
-            _locationService=locationService;
             _responseService=responseService;
-            _unitSelector=unitSelector;
-            _externalMemberService=externalMemberService;
-            _questionaireService=questionaireService;
             _notificationService=notificationService;
             _statusService=statusService;
             _unitService=unitService;
-            _identityDocumentService=identityDocumentService;
             _credentialService=credentialService;
             _gdprService=gdprService;
-            _hostEnvironment=hostEnvironment;
             _identifierNumberValidator=identifierNumberValidator;
         }
 
@@ -333,203 +330,6 @@ namespace Fateor.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        [Route("")]
-        [Route("Registration")]
-        public ActionResult Registration()
-        {
-            var model = new RegistrationViewModel();
-            model.CreateExternalUser = _settings.ForumSystem_CreateUser;
-            if (!_settings.ForumSystem_CreateUser)
-            {
-                model.AlreadyInIntranet = false;
-                model.Login = "dummy";
-                model.Password = "dummy";
-                model.Password2 = "dummy";
-            }
-            LoadModel(model);
-            LoadNotifications(model);
-            model.New = true;
-            return View(model);
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [Route("")]
-        [Route("Registration")]
-        public ActionResult Registration(RegistrationViewModel model)
-        {
-            bool ok = false;
-            IList<string> messages;
-
-            if (ModelState.IsValid)
-            {
-                LoadModel(model);
-                LoadNotifications(model);
-
-                var selectedDocType = (model
-                    .DocumentTypes
-                    ?.FirstOrDefault(t => t.IdentityDocumentTypeId==model.IdentityDocumentTypeId)
-                    ?.IdentityDocument) ?? "";
-
-                if (_identifierNumberValidator.IsValid(selectedDocType, model.IdentityDocumentNumber) ==
-                    IIdentificationNumberValidator.IdentificationNumberValidity.Invalid)
-                {
-                    ModelState.AddModelError("", $"Por favor, ingrese un {selectedDocType} válido");
-                }
-                else
-                {
-                    var member = _mapper.Map<RegistrationViewModel, Member>(model);
-                    (ok, messages) = _memberService.CreateMember(member, _settings.Default_UserId);
-                    if (ok && _settings.ForumSystem_CreateUser)
-                    {
-                        (ok, messages) = _externalMemberService.CreateMember(member);
-                    }
-                    if (ok)
-                    {
-                        (ok, messages) = _notificationService.NotifyNewMember(member);
-                        if (!ok)
-                        {
-                            _logger.LogError("Notification Email not sent: {0}", string.Join("\n", messages));
-                        }
-                        string? token = InitialQuestionaireToken(member);
-
-                        (ok, messages) = _notificationService.SendWelcomeEmail(member, token ?? "");
-
-                        if (!ok)
-                        {
-                            _logger.LogError("Notification Email not sent: {0}", string.Join("\n", messages));
-                        }
-
-                        if (token != null)
-                        {
-                            _logger.LogDebug("Redirecting to initial questionaire");
-                            return Redirect(Url.Content($"~/response/{token}"));
-                        }
-                        else
-                        {
-                            return Redirect(Url.Content($"~/RegistrationOK"));
-                        }
-                    }
-
-                    model.Messages = messages;
-                }
-            }
-            else
-            {
-                model.Command = string.Empty;
-                LoadModel(model);
-            }
-            return View("Registration", model);
-        }
-
-        private void LoadNotifications(RegistrationViewModel model)
-        {
-            var introPath = System.IO.Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "sites", _settings.Site, "templates", "intro.html");
-            try
-            {
-                model.IntroHtml = System.IO.File.ReadAllText(introPath);
-            }
-            catch { }
-
-            var gdprPath = System.IO.Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "sites", _settings.Site, "templates", "gdpr.html");
-            try
-            {
-                model.GdprHtml= System.IO.File.ReadAllText(gdprPath);
-            }
-            catch { }
-        }
-
-        [AllowAnonymous]
-        [Route("ContinueRegistration/{memberId}")]
-        public ActionResult ContinueRegistration(int memberId)
-        {
-            var member = _memberService.GetMemberById(memberId);
-            (var ok, IList<string> msg) = _notificationService.NotifyNewMember(member);
-            
-            if (!ok)
-            {
-                _logger.LogError("Notification Email not sent: {0}", string.Join("\n", msg));
-            }
-
-            string token = InitialQuestionaireToken(member) ?? "";
-
-            (ok, msg) = _notificationService.SendWelcomeEmail(member, token);
-
-            if (!ok)
-            {
-                _logger.LogError("Notification Email not sent: {0}", string.Join("\n", msg));
-            }
-            if (token != null)
-            {
-                _logger.LogDebug("Redirecting to initial questionaire");
-                return Redirect(Url.Content($"~/response/token/{token}"));
-            }
-            else
-            {
-                return Redirect(Url.Content($"~/RegistrationOK"));
-            }
-        }
-
-        [AllowAnonymous]
-        [Route("RegistrationOk")]
-        public ActionResult RegistrationOk()
-        {
-            return View(new ViewModelBase());
-        }
-
-
-        [HttpGet("SelfService")]
-        public ActionResult SelfService()
-        {
-            return View();
-        }
-
-        [HttpGet("MemberLogin"), AllowAnonymous]
-        public ActionResult MemberLogin()
-        {
-            return View(new MemberLoginViewModel());
-        }
-
-        [HttpPost("MemberLogin"), AllowAnonymous]
-        public ActionResult MemberLogin(MemberLoginViewModel model)
-        {
-            // If Model is valid
-            if (ModelState.IsValid)
-            {
-                // Check if user exists
-                _memberService.RequestMemberLogin(model.Email);                
-            }
-            return View(model);
-        }
-
-        [HttpGet("MemberLogin/{token}"), AllowAnonymous]
-        public async Task<ActionResult> MemberLogin(string token)
-        {
-            var (member, messages) = _memberService.LoginMember(token);
-            if (member is null)
-            {
-                var model = new MemberLoginViewModel();
-                model.Messages = messages;
-                return View(model);
-            }
-            var claims = new List<Claim>()
-            {                            
-                new Claim(ClaimTypes.Email, member.Email),
-                new Claim(ClaimTypes.NameIdentifier, member.MemberId.ToString()),
-                new Claim(ClaimTypes.Role, "member")
-            };
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-           
-            return Redirect(Url.Content("~/"));
-        }
-
         private void LoadMemberListAggregations(MemberListViewModel model)
         {
             if (CurrentUser != null && CurrentUser.UserId != null)
@@ -540,7 +340,7 @@ namespace Fateor.Controllers
                     .OrderBy(c => c.CountryName)
                     .ToList();
 
-                model.Countries.Insert(0, new Application.Location.Entities.Country() { CountryId = -1, CountryName = "- Todos -" });
+                model.Countries.Insert(0, new Country() { CountryId = -1, CountryName = "- Todos -" });
 
                 model.Regions = model.Countries.SelectMany(c => _locationService.GetRegionsByCountryId(c.CountryId))
                     .Where(l => model.Members.Any(m => m.RegionId == l.RegionId))
@@ -548,7 +348,7 @@ namespace Fateor.Controllers
                     .ThenBy(r => r.RegionName)
                     .ToList();
 
-                model.Regions.Insert(0, new Application.Location.Entities.Region() { RegionId = -1, RegionName = "- Todos -" });
+                model.Regions.Insert(0, new Region() { RegionId = -1, RegionName = "- Todos -" });
 
                 model.Statuses =_statusService.GetStatuses()
                     .Where(s => !s.IsDeleted)
@@ -581,38 +381,11 @@ namespace Fateor.Controllers
             ).ToList();
         }
 
-        private void LoadModel(MemberViewModel model)
-        {
-            if (model.CountryId.HasValue)
-                model.Regions = _locationService.GetRegionsByCountryId(model.CountryId.Value).ToList();
-            else
-                model.Regions = new List<Region>();
-
-            var countries = _locationService.GetCountries().ToList();
-            countries.Insert(0, new Country() { CountryId = -1, CountryName = "- selecciona un país- " });
-            model.Countries = countries;
-
-            model.DocumentTypes = _identityDocumentService.GetDocumentTypes().ToList();
-
-            _logger.LogDebug("OK");
-        }
-
         private void LoadStatusAggregations(UpdateStatusViewModel model)
         {
             model.Units = _unitService.GetUnits();
             model.Statuses = _statusService.GetStatuses();
             _logger.LogDebug("OK");
         }
-
-        private string? InitialQuestionaireToken(Member member)
-        {
-            var questionaire = _questionaireService.GetQuestionaireByName(_settings.Default_InitialPoll);
-            if (questionaire != null)
-            {
-                return _questionaireService.GetQuestionaireToken(member.MemberId, questionaire.QuestionnaireId);
-            }
-            return null;
-        }
-
     }
 }

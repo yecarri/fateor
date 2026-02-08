@@ -1,17 +1,33 @@
-﻿@model List<string>
+﻿@model IList<string>
 
-@if (Model != null && Model.Count > 0)
-{
-    <div id="messages" style="display:grid; grid-template-columns: 3em 1fr;">
-        <div style="color:red"><i class="fa-solid fa-triangle-exclamation fa-2xl"></i></div>
-        <div>
-            @for (int i = 0; i < Model.Count; i++)
-            {
-                <div>@Html.DisplayFor(m => Model[i])</div>
-            }
+@{
+    IList<string> messages = new List<string>();
+    if (Model != null)
+    {
+        messages = Model;    
+    }
+    if(TempData["Messages"] is not null)
+    {
+        IList<string> vdMessages = TempData["Messages"]! as IList<string> ?? [];
+        foreach (var message in vdMessages!)
+        {
+            messages.Add(message);
+        }
+    }
+
+    if (messages != null && messages.Count > 0)
+    {
+        <div id="messages" style="display:grid; grid-template-columns: 3em 1fr;">
+            <div style="color:var(--o-error-color)"><i class="fa-solid fa-triangle-exclamation fa-2xl"></i></div>
+            <div>
+                @for (int i = 0; i < messages.Count; i++)
+                {
+                    <div>@Html.DisplayFor(m => messages[i])</div>
+                }
+            </div>
         </div>
-    </div>
-    <script type="text/javascript">
-        $("#messages").dialog({ autoOpen: true, autoResize: true });
-    </script>
+        <script type="text/javascript">
+            $("#messages").dialog({ autoOpen: true, autoResize: true });
+        </script>
+    }
 }

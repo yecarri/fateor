@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fateor.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class InternalController : FateorControllerBase
     {
+        
         public InternalController(ILogger<InternalController> logger,
                                   IMapper mapper,
                                   IEncryptionService encryptionService,
@@ -16,7 +18,6 @@ namespace Fateor.Controllers
         }
 
         [Route("Home")]
-        [Authorize]
         public ActionResult Index()
         {
             var model = new ViewModelBase();

@@ -49,7 +49,7 @@ namespace Fateor.Application.Organization.Service
             _logger.LogDebug("OK");
             return m1;
         }
-        
+
         public IEnumerable<Member> GetAllMembers()
         {
 
@@ -112,7 +112,7 @@ namespace Fateor.Application.Organization.Service
 
                     _logger.LogDebug($"Status Assigned to member: {member.MemberId}");
                 }
-                
+
                 return (ok, messages);
             }
             catch (Exception ex)
@@ -159,7 +159,7 @@ namespace Fateor.Application.Organization.Service
                 _uow.BeginTransaction();
                 var m = _mapper.Map<Member, Organization.Dto.Member>(member);
                 var m1 = _uow.MemberRepository.Get(member.MemberId);
-                
+
                 if (!m.Equals(m1))
                 {
                     m.LastModificationUserId = currentUserId;
@@ -294,6 +294,11 @@ namespace Fateor.Application.Organization.Service
             {
                 var token = new MemberLoginToken(dto.MemberId, DateTime.Now.AddMinutes(5));
                 var tokenStr = _encryptionService.EncryptBase64(token, true);
+
+#if DEBUG
+                _logger.LogInformation($"Login token for {email}: {tokenStr}");
+#endif
+
                 _uow.MemberRepository.InsertMemberLoginToken(
                     new Organization.Dto.MemberLoginToken()
                     {
@@ -307,21 +312,40 @@ namespace Fateor.Application.Organization.Service
 
         public (Member? member, IList<string> messages) LoginMember(string token)
         {
-            var tok = _encryptionService.DecryptBase64<MemberLoginToken>(token, true);
+            MemberLoginToken? tok;
+            try
+            {
+                tok = _encryptionService.DecryptBase64<MemberLoginToken>(token, true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Invalid Token");
+                return (null, ["Invalid Token"]);
+            }
+
             if (tok.Expiration < DateTime.Now)
                 return (null, new List<string>() { "El token ha expirado" });
 
-            var dto = _uow.MemberRepository.GetMemberLoginToken(tok.Guid);
-            if (dto is null || dto.MemberId != tok.MemberId)
-                return (null, new List<string>() { "Token inválido" });
+            try
+            {
 
-            _uow.MemberRepository.UseMemberLoginToken(tok.Guid);
-            var memberDto = _uow.MemberRepository.Get(tok.MemberId);
-            if(memberDto is null)
-                return (null, new List<string>() { "No se encontró el miembro" });
+                var dto = _uow.MemberRepository.GetMemberLoginToken(tok.Guid);
+                if (dto is null || dto.MemberId != tok.MemberId)
+                    return (null, new List<string>() { "Token inválido" });
 
-            var member = _mapper.Map<Organization.Dto.Member, Member>(memberDto);
-            return (member, new List<string>());
+                _uow.MemberRepository.UseMemberLoginToken(tok.Guid);
+                var memberDto = _uow.MemberRepository.Get(tok.MemberId);
+                if (memberDto is null)
+                    return (null, new List<string>() { "No se encontró el miembro" });
+
+                var member = _mapper.Map<Organization.Dto.Member, Member>(memberDto);
+                return (member, new List<string>());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "LoginMember failed");
+                return (null, ["Unable to complete login process"]);
+            }
         }
 
         #endregion
@@ -334,7 +358,7 @@ namespace Fateor.Application.Organization.Service
             {
                 if (disposing)
                 {
-                    _uow.Dispose();                    
+                    _uow.Dispose();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer

@@ -1,0 +1,63 @@
+﻿@model Fateor.Models.MemberViewModel
+@{
+    Layout = "~/Views/Shared/_Member.cshtml";
+}
+@section Scripts
+{
+    <script src="~/js/regions.js"></script>
+    <script type="text/javascript">
+        function beforeSubmit() {
+            enableCheckboxes();
+            return true;
+        }
+
+        function onCountryChanged() {
+            var url = '@Url.Content("~/api/country")';
+            setRegions(url, '#@Html.IdFor(m => Model.CountryId)', '#@Html.IdFor(m => Model.RegionId)');
+        }
+
+        function enableCheckboxes() {
+            $('input').removeAttr('disabled');
+            return true;
+        }
+    </script>
+}
+<div class="container">
+    @using (Html.BeginForm("SelfService", "Member", FormMethod.Post, new { @id = "selfServiceForm" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Command)
+        @Html.HiddenFor(m => m.MemberId)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <partial name="Member" model="Model" />
+        <div style="display:flex; justify-content:flex-end">
+            @if(ViewBag.ShowInitialPoll)
+            {
+                <input type="button" class="form-button" value="Completar Cuestionario" onclick="window.location.href='@Url.Content("~/Response/" + ViewBag.InitialPollToken)'"/>
+            }
+            <input type="submit" class="form-button" value="Guardar" />
+        </div>
+        <div>
+            <h5>Cuestionarios</h5>
+            <table id="polls" class="form-table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Cuestionario</th>
+                        <th class="hide-in-small">Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Responses != null)
+                    {
+                        for (int i = 0; i < Model.Responses.Count; i++)
+                        {
+                            @Html.EditorFor(m => Model.Responses[i])
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+<partial name="_Errors" model="@Model.Messages" />

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Fateor.Controllers
 {
 
-    [Authorize]
+    [Authorize(Roles = "admin")]
     public class ConfigController : FateorControllerBase
     {
         private readonly IConfigService _ConfigService;

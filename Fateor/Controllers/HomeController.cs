@@ -5,6 +5,7 @@ using Fateor.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.VisualBasic;
@@ -39,6 +40,14 @@ namespace Fateor.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+            var exceptionFeature = HttpContext.Features
+                .Get<IExceptionHandlerPathFeature>();
+
+            if (exceptionFeature != null)
+            {
+                _logger.LogError(exceptionFeature.Error, "An unhandled exception occurred on path {Path}", exceptionFeature.Path);
+            }
+        
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
@@ -187,7 +196,7 @@ namespace Fateor.Controllers
         {
             GC.Collect();
             return Ok();
-        }
+        }     
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {

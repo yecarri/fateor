@@ -109,11 +109,4 @@
         </div>
     }
 </div>
-@if (Model.Messages?.Count > 0)
-{
-    <div class="card bg-warning mt-2">
-        <div class="container">
-            <partial name="_Errors" model="@(Model.Messages ?? ViewBag.Messages)" />
-        </div>
-    </div>
-}
+<partial name="_Errors" model="@(Model.Messages ?? ViewBag.Messages)" />
