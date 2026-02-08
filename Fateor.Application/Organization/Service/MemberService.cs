@@ -1,12 +1,9 @@
-﻿using Fateor.Application.Organization.Entities;
+﻿using Fateor.Application.Notification.Services;
+using Fateor.Application.Organization.Entities;
 using Fateor.Application.Organization.Repositories.Interfaces;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Fateor.Infrastructure.Mappers;
+using Fateor.Infrastructure.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Fateor.Application.Organization.Service
 {
@@ -14,6 +11,8 @@ namespace Fateor.Application.Organization.Service
     {
         private readonly IMemberUnitOfWork _uow;
         private readonly IUnitSelector _unitSelector;
+        private readonly INotificationService _notificationService;
+        private readonly IEncryptionService _encryptionService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly int _initialStatusId;
@@ -21,6 +20,8 @@ namespace Fateor.Application.Organization.Service
 
         public MemberService(IMemberUnitOfWork memberUow,
                              IUnitSelector unitSelector,
+                             INotificationService notificationService,
+                             IEncryptionService encryptionService,
                              IMapper mapper,
                              ILogger<MemberService> logger,
                              int initialStatusId)
@@ -30,6 +31,8 @@ namespace Fateor.Application.Organization.Service
             _mapper=mapper;
             _logger=logger;
             _initialStatusId=initialStatusId;
+            _notificationService=notificationService;
+            _encryptionService=encryptionService;
         }
 
 
@@ -280,6 +283,47 @@ namespace Fateor.Application.Organization.Service
                 return (false, new List<string>() { "No se puedo actualizar el registro", ex.Message });
             }
         }
+        #endregion
+
+        #region Login
+
+        public void RequestMemberLogin(string email)
+        {
+            var dto = _uow.MemberRepository.GetMemberByEmail(email);
+            if (dto is not null)
+            {
+                var token = new MemberLoginToken(dto.MemberId, DateTime.Now.AddMinutes(5));
+                var tokenStr = _encryptionService.EncryptBase64(token, true);
+                _uow.MemberRepository.InsertMemberLoginToken(
+                    new Organization.Dto.MemberLoginToken()
+                    {
+                        Guid = token.Guid,
+                        MemberId = token.MemberId,
+                        Expiration = token.Expiration
+                    });
+                _notificationService.SendLogin(dto.Email, tokenStr);
+            }
+        }
+
+        public (Member? member, IList<string> messages) LoginMember(string token)
+        {
+            var tok = _encryptionService.DecryptBase64<MemberLoginToken>(token, true);
+            if (tok.Expiration < DateTime.Now)
+                return (null, new List<string>() { "El token ha expirado" });
+
+            var dto = _uow.MemberRepository.GetMemberLoginToken(tok.Guid);
+            if (dto is null || dto.MemberId != tok.MemberId)
+                return (null, new List<string>() { "Token inválido" });
+
+            _uow.MemberRepository.UseMemberLoginToken(tok.Guid);
+            var memberDto = _uow.MemberRepository.Get(tok.MemberId);
+            if(memberDto is null)
+                return (null, new List<string>() { "No se encontró el miembro" });
+
+            var member = _mapper.Map<Organization.Dto.Member, Member>(memberDto);
+            return (member, new List<string>());
+        }
+
         #endregion
 
         #region IDisposable

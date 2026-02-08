@@ -37,7 +37,7 @@ builder.Services.AddSingleton<IEncryptionService, AesEncryptionService>();
 
 builder.AddSettings();
 
-builder.AddRepositories();
+Fateor.Application.Repositories.SetupRepositories.AddRepositories(builder.Services, builder.Configuration.GetConnectionString("fateor"));
 
 builder.AddServices();
 

@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_External.cshtml";
 }
 @section Scripts
-    {
+{
     <script src="~/js/regions.js"></script>
     <script type="text/javascript">
         $(document).ready(function () { onAlreadyInIntranetChanged(); });
@@ -16,7 +16,7 @@
 
         function onCountryChanged() {
             var url = '@Url.Content("~/api/country")';
-            setRegions(url, '#@Html.IdFor(m=> Model.CountryId)', '#@Html.IdFor(m=> Model.RegionId)');
+            setRegions(url, '#@Html.IdFor(m => Model.CountryId)', '#@Html.IdFor(m => Model.RegionId)');
         }
 
         function enableCheckboxes() {
@@ -25,21 +25,21 @@
         }
 
         function onAlreadyInIntranetChanged() {
-            var inIntranet = $("#@Html.IdFor(m=>m.AlreadyInIntranet)")[0].checked;
+            var inIntranet = $("#@Html.IdFor(m => m.AlreadyInIntranet)")[0].checked;
             if (inIntranet) {
-                $("#@Html.IdFor(m=>m.Password2)").parent().attr("hidden", "hidden");
+                $("#@Html.IdFor(m => m.Password2)").parent().attr("hidden", "hidden");
                 $("#retrieve").removeAttr("hidden");
             }
             else {
-                $("#@Html.IdFor(m=>m.Password2)").parent().removeAttr("hidden");
+                $("#@Html.IdFor(m => m.Password2)").parent().removeAttr("hidden");
                 $("#retrieve").attr("hidden", "hidden");
             }
         }
 
         function alreadyInIntranet() {
-            var inIntranet = $("#@Html.IdFor(m=>m.AlreadyInIntranet)")[0].checked;
+            var inIntranet = $("#@Html.IdFor(m => m.AlreadyInIntranet)")[0].checked;
             if (inIntranet) {
-                $("#@Html.IdFor(m=>m.Password2)").val($("#@Html.IdFor(m=>m.Password)").val());
+                $("#@Html.IdFor(m => m.Password2)").val($("#@Html.IdFor(m => m.Password)").val());
             }
         }
 
@@ -56,16 +56,16 @@
             <a href="#"></a>
             @Html.Raw(Model.IntroHtml)
             <div style="display:block; margin:auto; width:40em; text-align:center; align-content:center;">
-                <input type="button" class="form-button" value="No acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedMembershipConditions)').attr('checked', false); $('#intro').dialog('close')" />
-                <input type="button" class="form-button" value="Acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedMembershipConditions)').attr('checked', true); $('#intro').dialog('close')" />
+                <input type="button" class="form-button" value="No acepto" onclick="$('#@Html.IdFor(m => m.AcceptedMembershipConditions)').attr('checked', false); $('#intro').dialog('close')" />
+                <input type="button" class="form-button" value="Acepto" onclick="$('#@Html.IdFor(m => m.AcceptedMembershipConditions)').attr('checked', true); $('#intro').dialog('close')" />
             </div>
         </div>
         <div id="gdpr" class="text" tabindex="-1" role="dialog" title="Política de Protección de Datos">
             <a href="#"></a>
             @Html.Raw(Model.GdprHtml)
             <div style="display:block; margin:auto; width:40em; text-align:center; align-content:center;">
-                <input type="button" class="form-button" value="No acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedGDPR)').attr('checked', false); $('#gdpr').dialog('close')" />
-                <input type="button" class="form-button" value="Acepto" onclick="$('#@Html.IdFor(m=>m.AcceptedGDPR)').attr('checked', true); $('#gdpr').dialog('close')" />
+                <input type="button" class="form-button" value="No acepto" onclick="$('#@Html.IdFor(m => m.AcceptedGDPR)').attr('checked', false); $('#gdpr').dialog('close')" />
+                <input type="button" class="form-button" value="Acepto" onclick="$('#@Html.IdFor(m => m.AcceptedGDPR)').attr('checked', true); $('#gdpr').dialog('close')" />
             </div>
 
         </div>
@@ -139,10 +139,11 @@
                 <input type="button" class="form-button" value="Leer para aceptar" onclick="$('#gdpr').dialog('open')" />
             </div>
         </div>
-        <div>
-            <input type="submit" class="form-button" value="Guardar" style="float:right" />
+
+        <div style="display:flex; justify-content:flex-end">
+            <input type="submit" class="form-button" value="Guardar" />
         </div>
-    }
+    }    
 
     @if (Model.Messages?.Count > 0)
     {

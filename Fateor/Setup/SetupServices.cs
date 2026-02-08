@@ -135,9 +135,11 @@ namespace Fateor.Setup
             services.AddScoped<IMemberService, MemberService>(s => new MemberService(
                  s.GetRequiredService<IMemberUnitOfWork>(),
                  s.GetRequiredService<IUnitSelector>(),
-                 s.GetRequiredService<IMapper>(),
-                 s.GetRequiredService<ILogger<MemberService>>(),
-                 settings.Default_StatusId
+                 s.GetRequiredService<INotificationService>(),
+                 s.GetRequiredService<IEncryptionService>(),
+                 mapper: s.GetRequiredService<IMapper>(),
+                 logger: s.GetRequiredService<ILogger<MemberService>>(),
+                 initialStatusId: settings.Default_StatusId
                 ));
 
             services.AddScoped<IResponseService, ResponseService>();

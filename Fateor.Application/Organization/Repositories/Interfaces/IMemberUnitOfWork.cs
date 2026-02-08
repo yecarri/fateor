@@ -5,7 +5,7 @@ namespace Fateor.Application.Organization.Repositories.Interfaces
 {
     public interface IMemberUnitOfWork: IUnitOfWork
     {
-        MemberRepository MemberRepository { get; }
-        MemberStatusRepository MemberStatusRepository { get; }        
+        IMemberRepository MemberRepository { get; }
+        IMemberStatusRepository MemberStatusRepository { get; }        
     }
 }

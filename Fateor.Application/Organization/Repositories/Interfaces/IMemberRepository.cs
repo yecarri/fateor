@@ -15,5 +15,9 @@ namespace Fateor.Application.Organization.Repositories.Interfaces
         IEnumerable<Member> GetByStatusIds(int[] statusIds);
         IEnumerable<Member> GetElegibleMembers();
         int LastMemberCode();
+        Member? GetMemberByEmail(string email);
+        MemberLoginToken? GetMemberLoginToken(Guid guid);
+        void InsertMemberLoginToken(MemberLoginToken token);
+        void UseMemberLoginToken(Guid guid);
     }
 }

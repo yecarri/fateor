@@ -9,8 +9,17 @@ namespace Fateor.Infrastructure.Services
 {
     public abstract class EncryptionServiceBase : IEncryptionService
     {
-        public virtual T DecryptBase64<T>(string s)
+        public virtual T DecryptBase64<T>(string s, bool fromUrl = false)
         {
+            if (fromUrl)
+            {
+                s = s.Replace('-', '+').Replace('_', '/');
+                switch (s.Length % 4)
+                {
+                    case 2: s += "=="; break;
+                    case 3: s += "="; break;
+                }
+            }
             // First we get the bytes from the encrypted string
             byte[] encryptedBytes = Convert.FromBase64String(s);
             return Decrypt<T>(encryptedBytes);
@@ -72,10 +81,15 @@ namespace Fateor.Infrastructure.Services
             return sb.ToString();
         }
 
-        public string EncryptBase64<T>(T t)
+        public string EncryptBase64<T>(T t, bool forUrl = false)
         {
             byte[] encryptedBytes = Encrypt(t);
-            return Convert.ToBase64String(encryptedBytes);
+            var base64String = Convert.ToBase64String(encryptedBytes);
+            if (forUrl)
+            {
+                base64String = base64String.Replace('+', '-').Replace('/', '_').TrimEnd('=');
+            }
+            return base64String;
         }
 
         public string EncryptHex<T>(T t)

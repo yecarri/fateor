@@ -10,9 +10,11 @@ using Fateor.Application.Questionnaires.Services;
 using Fateor.Infrastructure.Mappers;
 using Fateor.Infrastructure.Services;
 using Fateor.Models;
-using Google.Protobuf;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Fateor.Controllers
 {
@@ -475,6 +477,57 @@ namespace Fateor.Controllers
         public ActionResult RegistrationOk()
         {
             return View(new ViewModelBase());
+        }
+
+
+        [HttpGet("SelfService")]
+        public ActionResult SelfService()
+        {
+            return View();
+        }
+
+        [HttpGet("MemberLogin"), AllowAnonymous]
+        public ActionResult MemberLogin()
+        {
+            return View(new MemberLoginViewModel());
+        }
+
+        [HttpPost("MemberLogin"), AllowAnonymous]
+        public ActionResult MemberLogin(MemberLoginViewModel model)
+        {
+            // If Model is valid
+            if (ModelState.IsValid)
+            {
+                // Check if user exists
+                _memberService.RequestMemberLogin(model.Email);                
+            }
+            return View(model);
+        }
+
+        [HttpGet("MemberLogin/{token}"), AllowAnonymous]
+        public async Task<ActionResult> MemberLogin(string token)
+        {
+            var (member, messages) = _memberService.LoginMember(token);
+            if (member is null)
+            {
+                var model = new MemberLoginViewModel();
+                model.Messages = messages;
+                return View(model);
+            }
+            var claims = new List<Claim>()
+            {                            
+                new Claim(ClaimTypes.Email, member.Email),
+                new Claim(ClaimTypes.NameIdentifier, member.MemberId.ToString()),
+                new Claim(ClaimTypes.Role, "member")
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+           
+            return Redirect(Url.Content("~/"));
         }
 
         private void LoadMemberListAggregations(MemberListViewModel model)

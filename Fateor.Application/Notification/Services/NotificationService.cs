@@ -4,16 +4,10 @@ using Fateor.Application.Notification.Entities;
 using Fateor.Application.Organization.Entities;
 using Fateor.Application.UserAccess.Entities;
 using Fateor.Application.UserAccess.Services;
-using Fateor.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
 using oSoft.Mail.Entities;
 using oSoft.Mail.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Fateor.Application.Notification.Services
 {
@@ -188,6 +182,31 @@ namespace Fateor.Application.Notification.Services
             return result;
         }
 
+        public (bool ok, IList<string> messages) SendLogin(string email, string token)
+        {
+            _logger.LogDebug("SendLogin");
+            if (_emailConfiguration.DisableAllEmails)
+            {
+                _logger.LogDebug("Emails are disabled, will not sent");
+                return (true, new List<string>());
+            }
+
+            string url = GetUrl($"member/login/{token}");
+            var template = _emailConfiguration?.Templates?.FirstOrDefault(t => t.TemplateName == "memberLogin");
+            if (template == null)
+                return (false, new List<string>() { "No se ha encontrado la plantilla de correo para el login de miembros" });
+
+            var variables = new Dictionary<string, string>()
+            {
+                {"url" , url}
+            };
+
+            var html = SetVariables(variables, template.Content);
+            var recipient = new EmailAddress(email);
+            var sender = _emailConfiguration?.DefaultSender ?? throw new Exception("Default sender not configured");
+            var result = _emailService.SendMail(sender, recipient, template.Subject, html);
+            return result;
+        }
     }
 
 }

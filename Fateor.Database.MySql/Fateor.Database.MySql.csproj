@@ -64,6 +64,9 @@
     <None Update="Scripts\20260202_1523_app_Config.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\20260207_1635_org_MemberLoginToken.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

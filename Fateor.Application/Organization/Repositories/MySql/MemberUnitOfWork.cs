@@ -14,8 +14,8 @@ namespace Fateor.Application.Organization.Repositories.MySql
         private bool disposedValue;
         private readonly UnitOfWork _uow;
 
-        public MemberRepository MemberRepository { get; private set; }
-        public MemberStatusRepository MemberStatusRepository { get; private set; }        
+        public IMemberRepository MemberRepository { get; private set; }
+        public IMemberStatusRepository MemberStatusRepository { get; private set; }        
 
         public IDbConnection Connection => _uow.Connection;
         public IDbTransaction Transaction => _uow.Transaction;

@@ -9,6 +9,7 @@ namespace Fateor.Application.Notification.Services
         (bool ok, IList<string> messages) NotifyNewMember(Member member);
         (bool ok, IList<string> messages) NotifyNewMember(Member member, Country? country, IEnumerable<User> users);
         (bool ok, IList<string> messages) NotifyPasswordChangeRequest(User user);
+        (bool ok, IList<string> messages) SendLogin(string email, string token);
         (bool ok, IList<string> messages) SendWelcomeEmail(Member member, string token);
     }
 }

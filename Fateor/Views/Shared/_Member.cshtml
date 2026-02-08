@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <partial name="_Head" />
+    @RenderSection("Scripts", false)
+</head>
+<body>
+    <partial name="_Header" />
+    <div class="nav-main" role="navigation">
+        <div class="nav-container">
+            <div class="nav-menu-bar" style="display:flex; justify-content:flex-end;">
+                <ul>
+                    <li>
+                        <a href='@Url.Content("~/")'>Inicio</a>
+                    </li>
+                    <li>
+                        <a href='@Url.Content("~/login")'>Soy Admin</a>                        
+                    </li>
+                    <li>
+                        <a href='@Url.Content("~/memberlogin")'>Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <main>
+        @RenderBody()
+    </main>
+    <footer>
+        <div>Copyright &copy; 2019-@DateTime.Today.Year oSoft Ingeniería de Software SL</div>
+    </footer>
+    <partial name="_Errors" model="@(Model.Messages ?? ViewBag.Messages)" />
+</body>
+</html>

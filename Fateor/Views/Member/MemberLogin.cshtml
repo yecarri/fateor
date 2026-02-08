@@ -1,0 +1,21 @@
+﻿@model Fateor.Models.MemberLoginViewModel
+@{
+    Layout = "~/Views/Shared/_External.cshtml";
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div style="width:19em; display:block; margin:auto">
+        <div>
+            <p>Ingresa tu email para entrar al sistema.</p>
+            <p>Te enviaremos un enlace para acceder. El enlace estará activo por 5 minutos.</p>
+        </div>
+        <div class="form-field">
+            <span class="fas fa-user"></span>
+            @Html.TextBoxFor(m => m.Email, new { @required = "required", @autocomplete = "none", placeholder = "Email", @style = "margin-left:0.5em;" })
+        </div>
+        <button type="submit" class="form-button" style="display:block; width:15em; margin:auto; margin-top:1em;" name="login">Enviar Enlace</button>
+    </div>
+
+}
+

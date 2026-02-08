@@ -25,7 +25,7 @@ namespace Fateor.Application.Organization.Repositories.MySql
         {
         }
 
-        public Member Get(int id)
+        public override Member Get(int id)
         {
             return Connection.QueryFirst<Member>("SELECT * FROM org_member WHERE MemberId=?", new { id }, Transaction);
         }
@@ -115,6 +115,36 @@ namespace Fateor.Application.Organization.Repositories.MySql
 	                where m.MemberId=ms.MemberId     
                     order by ms.StatusDate desc limit 1) x
                 where x.StatusId in @StatusIds and x.IsDeleted=0", new { StatusIds = statusIds }, Transaction);
+        }
+
+        public Member? GetMemberByEmail(string email)
+        {
+            if (Connection is null)
+                throw new NullReferenceException(nameof(Connection));
+
+            return Connection.QueryFirstOrDefault<Member>("SELECT * FROM org_member WHERE Email=? AND IsDeleted=0", new { email }, Transaction);
+        }
+
+        public void InsertMemberLoginToken(MemberLoginToken token)
+        {
+            var sql = @"INSERT INTO 
+                        org_memberlogintoken (Guid, MemberId, Expiration)
+                        VALUES               (@Guid, @MemberId, @Expiration)";
+            Connection.Execute(sql, new { Guid = token.Guid.ToByteArray(), token.MemberId, token.Expiration }, Transaction);
+        }
+
+        public void UseMemberLoginToken(Guid guid)
+        {
+            var sql = @"UPDATE org_memberlogintoken
+                        SET Used = 1
+                        WHERE Guid = @Guid";
+            Connection.Execute(sql, new { Guid = guid }, Transaction);
+        }
+
+        public MemberLoginToken? GetMemberLoginToken(Guid guid)
+        {
+            var sql = "SELECT * FROM org_memberlogintoken WHERE Guid=@Guid";
+            return Connection.QueryFirstOrDefault<MemberLoginToken>(sql, new { Guid = guid.ToByteArray() }, Transaction);
         }
     }
 }
