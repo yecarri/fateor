@@ -35,7 +35,6 @@
     <PackageReference Include="oSoft.Mail.Mailgun" Version="1.1.0" />
     <PackageReference Include="oSoft.Mail.Smtp" Version="1.1.0" />
     <PackageReference Include="RestSharp" Version="113.1.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
   </ItemGroup>
 
   <ItemGroup>
