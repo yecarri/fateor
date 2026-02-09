@@ -3,7 +3,7 @@
 namespace Fateor.Application.Config.Dto
 {
 
-    [Table("app_Config")]
+    [Table("app_config")]
     public sealed class Config
     {
         [ExplicitKey]
