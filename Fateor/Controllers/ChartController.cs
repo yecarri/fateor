@@ -33,7 +33,7 @@ namespace Fateor.Controllers
         }
 
         // GET: Chart
-        [HttpGet("nolan/{responseId:int}")]
+        [HttpGet("chart/nolan/{responseId:int}")]
         public ActionResult Nolan(int? responseId)
         {
             var model = new Models.NolanViewModel();

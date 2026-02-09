@@ -33,7 +33,7 @@
         <div style="display:flex; justify-content:flex-end">
             @if(ViewBag.ShowInitialPoll)
             {
-                <input type="button" class="form-button" value="Completar Cuestionario" onclick="window.location.href='@Url.Content("~/Response/" + ViewBag.InitialPollToken)'"/>
+                <input type="button" class="form-button" value="Completar Cuestionario" onclick="window.location.href='@Url.Content("~/Response/token/" + ViewBag.InitialPollToken)'"/>
             }
             <input type="submit" class="form-button" value="Guardar" />
         </div>

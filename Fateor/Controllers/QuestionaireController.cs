@@ -8,7 +8,7 @@ using Fateor.Application.Questionnaires.Entities;
 
 namespace Fateor.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="admin")]
     public sealed class QuestionnaireController : FateorControllerBase
     {
         private readonly IQuestionnaireService _questionnaireService;

@@ -27,11 +27,18 @@ var dbUpdateLog = dbUpdater.Update();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(o =>
+builder.Services.AddAuthentication("admin")
+    .AddCookie("admin", o =>
     {
         o.LoginPath = "/Login";
         o.LogoutPath ="/Logout";
+        o.AccessDeniedPath="/Login";
+        o.ExpireTimeSpan=TimeSpan.FromMinutes(20);
+    })
+    .AddCookie("member", o =>
+    {
+        o.LoginPath = "/MemberLogin";
+        o.AccessDeniedPath="/MemberLogin";
         o.ExpireTimeSpan=TimeSpan.FromMinutes(20);
     });
 
@@ -61,7 +68,7 @@ var app = builder.Build();
 (app.Services.GetService<ILogger<DBUpdates>>() ?? throw new Exception("no log")).LogInformation(dbUpdateLog);
 
 // Configure the HTTP request pipeline.
-if (true || !app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.

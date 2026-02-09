@@ -14,7 +14,7 @@ using System.Security.Claims;
 
 namespace Fateor.Controllers
 {
-    [Authorize(Roles = "member")]
+    [Authorize(AuthenticationSchemes = "member", Roles = "member")]
     public class MemberSelfService : MemberControllerBase
     {
         private readonly IResponseService _responseService;
@@ -46,7 +46,8 @@ namespace Fateor.Controllers
         }
 
 
-        [HttpGet("Member/SelfService"), Authorize(Roles = "member")]
+        [HttpGet("Member/SelfService")]
+        [Authorize(AuthenticationSchemes = "member", Roles = "member")]
         public ActionResult SelfService()
         {
             // Get the MemberId from the claims
@@ -87,6 +88,31 @@ namespace Fateor.Controllers
             return View(model);
         }
 
+        [HttpPost("Member/SelfService")]
+        [Authorize(AuthenticationSchemes = "member", Roles = "member")]
+        public ActionResult SelfService(MemberViewModel model)
+        {
+            // Get the MemberId from the claims
+            int memberId;
+            if(!int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out memberId))
+            {
+                return Redirect(Url.Content("~/MemberLogin"));
+            }
+
+            if (ModelState.IsValid)
+            {
+                var member = _mapper.Map<MemberViewModel, Member>(model);
+                if(member.MemberId != memberId)
+                {
+                    return Redirect(Url.Content("~/MemberLogin"));
+                }
+                _memberService.UpdateMember(member, _settings.Default_UserId);
+                return RedirectToAction("SelfService");
+            }
+            LoadModel(model);
+            return View(model);
+        }
+
         [HttpGet("MemberLogin"), AllowAnonymous]
         public ActionResult MemberLogin()
         {
@@ -122,11 +148,11 @@ namespace Fateor.Controllers
                 new Claim(ClaimTypes.Role, "member")
             };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var identity = new ClaimsIdentity(claims, "member");
 
             var principal = new ClaimsPrincipal(identity);
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            await HttpContext.SignInAsync("member", principal);
 
             return Redirect(Url.Content("~/Member/SelfService"));
         }
