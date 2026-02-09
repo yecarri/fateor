@@ -28,6 +28,8 @@
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.Command)
         @Html.HiddenFor(m => m.MemberId)
+        @Html.HiddenFor(m=> m.MemberCode)
+        @Html.HiddenFor(m=> m.IsDeleted)
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <partial name="Member" model="Model" />
         <div style="display:flex; justify-content:flex-end">
