@@ -1,6 +1,4 @@
-﻿using MigraDocCore.DocumentObjectModel.Fields;
-
-namespace Fateor.Application.Organization.Entities
+﻿namespace Fateor.Application.Organization.Entities
 {
     public class MemberFee
     {

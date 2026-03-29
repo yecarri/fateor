@@ -1,5 +1,4 @@
 ﻿using Dapper.Contrib.Extensions;
-using MigraDocCore.DocumentObjectModel.Fields;
 using System;
 using System.Collections.Generic;
 using System.Linq;

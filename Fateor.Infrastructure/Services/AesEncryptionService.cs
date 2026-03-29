@@ -52,8 +52,7 @@ namespace Fateor.Infrastructure.Services
                 c.Write(originalBytes, 0, originalBytes.Length);
                 c.Close();
             }
-
-            // Now get a base-64 string from the memory stream
+            
             byte[] encryptedBytes = m.ToArray();
             return encryptedBytes;
         }

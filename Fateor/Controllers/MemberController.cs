@@ -29,7 +29,7 @@ namespace Fateor.Controllers
         private readonly ICredentialService _credentialService;
         private readonly IGdprService _gdprService;
         private readonly IIdentificationNumberValidator _identifierNumberValidator;
-
+        private readonly IHostEnvironment _hostEnvironment;
 
         public MemberController(
             ILogger<MemberController> logger,
@@ -66,6 +66,7 @@ namespace Fateor.Controllers
             _credentialService=credentialService;
             _gdprService=gdprService;
             _identifierNumberValidator=identifierNumberValidator;
+            _hostEnvironment=hostEnvironment;
         }
 
         [HttpGet]
@@ -251,12 +252,14 @@ namespace Fateor.Controllers
                             }
                             break;
                         case "PrintCredential":
-                            var ms = new MemoryStream();
-                            (ok, messages) = _credentialService.Generate(ms, member);
-                            if (ok)
+                            using (var ms = new MemoryStream())
                             {
-                                ms.Flush();
-                                return File(ms, "application/pdf", $"{member.MemberCode}.pdf");
+                                (ok, messages) = _credentialService.Generate(ms, member);
+                                if (ok)
+                                {
+                                    ms.Position = 0;   // CRITICAL
+                                    return File(ms.ToArray(), "application/pdf", $"{member.MemberCode}.pdf");
+                                }
                             }
                             break;
                         case "ResendWelcomeEmail":

@@ -34,6 +34,7 @@
     <PackageReference Include="oSoft.Mail.MailerSend" Version="1.1.0" />
     <PackageReference Include="oSoft.Mail.Mailgun" Version="1.1.0" />
     <PackageReference Include="oSoft.Mail.Smtp" Version="1.1.0" />
+    <PackageReference Include="QuestPDF" Version="2025.12.4" />
     <PackageReference Include="RestSharp" Version="113.1.0" />
   </ItemGroup>
 

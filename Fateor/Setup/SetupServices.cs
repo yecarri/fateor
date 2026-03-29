@@ -23,6 +23,8 @@ using Microsoft.Extensions.DependencyInjection;
 using oSoft.Data;
 using oSoft.Mail.Entities;
 using oSoft.Mail.Services;
+using QuestPDF.Drawing;
+using QuestPDF.Infrastructure;
 using System.Reflection.Metadata;
 
 namespace Fateor.Setup
@@ -152,6 +154,19 @@ namespace Fateor.Setup
             services.AddScoped<IMemberFeeBatchService, MemberFeeBatchService>();
             services.AddScoped<IGdprService, GdprService>();
             services.AddScoped<IConfigService, ConfigService>();
+
+            SetupPdfGenerator();
+        }
+
+        private static void SetupPdfGenerator()
+        {
+            QuestPDF.Settings.License = LicenseType.Community;
+            QuestPDF.Settings.UseEnvironmentFonts = false;
+            QuestPDF.Settings.CheckIfAllTextGlyphsAreAvailable = true;
+            FontManager.RegisterFontWithCustomName("DejaVu Sans", new MemoryStream(MLVCredential.DejaVuSans));
+            FontManager.RegisterFontWithCustomName("DejaVu Sans Bold", new MemoryStream(MLVCredential.DejaVuSans_Bold));
+            FontManager.RegisterFontWithCustomName("Chamelton 10 Blk", new MemoryStream(MLVCredential.Chamelton10_Blk));
         }
     }
+
 }

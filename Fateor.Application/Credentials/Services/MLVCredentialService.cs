@@ -1,18 +1,19 @@
 ﻿using Fateor.Application.Organization.Entities;
-using MigraDocCore.DocumentObjectModel;
-using MigraDocCore.Rendering;
-using PdfSharpCore;
-using PdfSharpCore.Drawing;
-using PdfSharpCore.Fonts;
-using PdfSharpCore.Pdf;
 using QRCoder;
-using System.Collections;
+using QuestPDF.Drawing;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using System.Data;
+using System.Globalization;
+using System.IO;
 
 namespace Fateor.Application.Credentials.Services
 {
     public sealed class MLVCredentialService : ICredentialService
     {
         private readonly string _url;
+        private static readonly Image LogoImage = Image.FromBinaryData(MLVCredential.Logo);
 
         public MLVCredentialService(string url)
         {
@@ -27,118 +28,101 @@ namespace Fateor.Application.Credentials.Services
                               string memberCode,
                               string url)
         {
-            const string FontName = "Geosans Light";
-            if (!(GlobalFontSettings.FontResolver is MLVCredentialFontResolver))
+
+            var culture = new CultureInfo("es-ES");
+
+            Document.Create(container =>
             {
-                GlobalFontSettings.FontResolver = new MLVCredentialFontResolver();
-                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-            }
+                container.Page(page =>
+                {
 
-            /* Root document */
-            var pdfDocument = new PdfDocument();
-            var page = pdfDocument.AddPage();
-            page.Size = PageSize.Letter;
+                    page.Size(PageSizes.A4);
+                    page.Margin(2, QuestPDF.Infrastructure.Unit.Centimetre);
 
-            /* Fonts */
-            var normalFont = new Font(FontName, 14);
-            normalFont.Color = Colors.Black;
+                    page.Content()
+                        .Layers(layers =>
+                        {
+                            layers.Layer().Svg(size =>
+                            {
+                                return $"""
+                                    <svg width="{size.Width}" height="{size.Height}"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <line x1="{size.Width + 40}" y1="-40"
+                                              x2="{size.Width +20 }" y2="{size.Height+40}"
+                                              stroke="black" stroke-width="5" />
 
-            var titleFont = new Font(FontName, 20);
-            titleFont.Color = Colors.Black;
-            titleFont.Bold = true;
+                                        <line x1="{size.Width + 20 }" y1="-40"
+                                              x2="{size.Width + 40 }" y2="{size.Height+40}"
+                                              stroke="#f8b202" stroke-width="5" />
+                                    </svg>
+                                    """;
+                            });
 
-            var nameFont = new Font(FontName, 14);
-            nameFont.Bold = true;
+                            layers.PrimaryLayer().Column(column =>
+                            {
+                                column.Spacing(12);
 
-            /* Ornaments */
-            var maxx = page.Width;
-            var maxy = page.Height;
-            var width = XUnit.FromMillimeter(5);
-            var gap = XUnit.FromMillimeter(3);
+                                var logoImage = column.Item()
+                                    .AlignCenter()
+                                    .PaddingTop(2,QuestPDF.Infrastructure.Unit.Centimetre)
+                                    .Width(4, QuestPDF.Infrastructure.Unit.Centimetre)
+                                    .Image(LogoImage);
 
-            var document = new Document();
-            var section = document.AddSection();
+                                column.Item()
+                                    .AlignCenter()
+                                    .Text("Movimiento Libertario de Venezuela")
+                                    .FontFamily("Chamelton 10 Blk")
+                                    .FontSize(20);
 
-            var title = section.AddParagraph("Credencial de Miembro");
-            title.Format.Alignment = ParagraphAlignment.Center;
-            title.Format.Font = titleFont.Clone();
+                                column.Item()
+                                    .AlignCenter()
+                                    .Text("Credencial de Miembro")
+                                    .FontFamily("Chamelton 10 Blk")
+                                    .FontSize(14);
 
-            var para1 = section.AddParagraph("El Movimiento Libertario de Venezuela certifica que:");
-            para1.Format.Alignment = ParagraphAlignment.Left;
-            para1.Format.Font = normalFont.Clone();
+                                column.Item()
+                                    .AlignCenter()
+                                    .Text("El Movimiento Libertario de Venezuela certifica que:")
+                                    .FontFamily("DejaVu Sans")
+                                    .FontSize(14);
 
-            var paraNombre = section.AddParagraph(memberFullName.ToUpper());
-            paraNombre.Format.Alignment = ParagraphAlignment.Center;
-            paraNombre.Format.Font = nameFont.Clone();
+                                column.Item()
+                                    .AlignCenter()
+                                    .Text(memberFullName)
+                                    .FontFamily("DejaVu Sans Bold")
+                                    .FontSize(14);
 
-            var para2 = section.AddParagraph(
-                $"ha sido miembro de esta organización desde el {date:dd 'de' MMMM 'de' yyyy} " +
-                $"y actualmente ostenta la condición de miembro {memberType} " +
-                $"adscrito a la Sección {unit}; con número de credencial {memberCode}.");
+                                column.Item()
+                                    .Text(text =>
+                                    {
+                                        text.DefaultTextStyle(x => x
+                                           .FontFamily("DejaVu Sans")
+                                           .FontSize(14)
+                                           );
 
-            para2.Format.Alignment = ParagraphAlignment.Justify;
-            para2.Format.Font = normalFont.Clone();
+                                        text.Justify();
 
-            var render = new DocumentRenderer(document);
+                                        text.Span("ha sido miembro de esta organización desde el ");
+                                        text.Span(date.ToString("dd 'de' MMMM 'de' yyyy", culture));
+                                        text.Span($" y actualmente ostenta la condición de miembro activo adscrito a la Sección {unit}; con número de credencial {memberCode}.");
+                                    });
 
-            var top = XUnit.FromInch(1);
-            var line = XUnit.FromPoint(14);
-            var marginX = XUnit.FromInch(1);
-            var textWidth = maxx - marginX * 2;
-            render.PrepareDocument();
+                                QRCodeGenerator qrGenerator = new QRCodeGenerator();
 
-            XGraphics gfx = XGraphics.FromPdfPage(page);
+                                QRCodeData qrCodeData = qrGenerator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
+                                BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
+                                byte[] qrCodeBytes = qrCode.GetGraphic(3);
+                                var qrImage = Image.FromBinaryData(qrCodeBytes);
 
-            XGraphicsPath path = new XGraphicsPath();
-            XPen black = new XPen(XColors.Black, width);
-            path.AddLine(maxx - 0.5f * width, 0, maxx - 1.5f * width - gap, maxy);
-            gfx.DrawPath(black, path);
+                                column.Item()
+                                   .AlignCenter()
+                                   .Width(4, QuestPDF.Infrastructure.Unit.Centimetre)
+                                   .Image(qrImage);
 
-            path = new XGraphicsPath();
-            XPen yellow = new XPen(XColor.FromArgb(239, 183, 27), width);
-            path.AddLine(maxx - 1.5f * width - gap, 0, maxx - 0.5f * width, maxy);
-            gfx.DrawPath(yellow, path);
-
-
-
-
-            using (var imageStream = new MemoryStream(MLVCredential.Logo))
-            {
-                XImage image = XImage.FromStream(() => imageStream);
-
-                double logoHeight = 80;
-                double logoWidth = logoHeight * image.PointWidth / image.PointHeight;
-
-                gfx.DrawImage(image, (maxx - logoWidth) / 2, top, logoWidth, logoHeight);
-            }
-            render.RenderObject(gfx, marginX, top + 5 * line, textWidth, title);
-            render.RenderObject(gfx, marginX, top + 9 * line, textWidth, para1);
-            render.RenderObject(gfx, marginX, top + 11 * line, textWidth, paraNombre);
-            render.RenderObject(gfx, marginX, top + 13 * line, textWidth, para2);
-
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(url, QRCodeGenerator.ECCLevel.Q);
-            BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
-            byte[] qrCodeBytes = qrCode.GetGraphic(3);
-
-            var stream = new MemoryStream(qrCodeBytes);
-            stream.Seek(0, SeekOrigin.Begin);
-            XImage qrImage = XImage.FromStream(() => stream);
-
-
-            var qrPosX = (maxx - XUnit.FromPoint(qrImage.PointWidth)) / 2;
-            var qrPosY = (maxy - XUnit.FromPoint(qrImage.PointHeight)) / 2;
-            gfx.DrawImage(qrImage, qrPosX, qrPosY);
-            stream.Dispose();
-
-            var paraUrl = section.AddParagraph(url);
-            paraUrl.Format.Alignment = ParagraphAlignment.Center;
-            paraUrl.Format.Font = normalFont.Clone();
-
-            render.RenderObject(gfx, marginX, qrPosY + XUnit.FromPoint(qrImage.PointHeight) + line, textWidth, paraUrl);
-
-            pdfDocument.Save(outputStream);
+                            });
+                        });
+                });
+            }).GeneratePdf(outputStream);
         }
 
 

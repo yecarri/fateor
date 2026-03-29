@@ -19,7 +19,7 @@ namespace Fateor.Application.Credentials.Services {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class MLVCredential {
@@ -63,9 +63,9 @@ namespace Fateor.Application.Credentials.Services {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] GEOSANSLIGHT {
+        internal static byte[] Chamelton10_Blk {
             get {
-                object obj = ResourceManager.GetObject("GEOSANSLIGHT", resourceCulture);
+                object obj = ResourceManager.GetObject("Chamelton10-Blk", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -73,9 +73,19 @@ namespace Fateor.Application.Credentials.Services {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] GEOSANSLIGHT_OBLIQUE {
+        internal static byte[] DejaVuSans {
             get {
-                object obj = ResourceManager.GetObject("GEOSANSLIGHT_OBLIQUE", resourceCulture);
+                object obj = ResourceManager.GetObject("DejaVuSans", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] DejaVuSans_Bold {
+            get {
+                object obj = ResourceManager.GetObject("DejaVuSans-Bold", resourceCulture);
                 return ((byte[])(obj));
             }
         }
