@@ -10,7 +10,10 @@ using System.Configuration;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Configuration.AddJsonFile("ConnectionStrings.json");
+builder
+    .Configuration
+        .AddJsonFile("ConnectionStrings.json")
+        .AddEnvironmentVariables();
 
 var binPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 var scriptPath = Path.Combine(binPath ?? throw new Exception("No Bin"), "Scripts");
