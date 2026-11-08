@@ -44,6 +44,7 @@ builder.Services.AddAuthentication("admin")
 
 var assemblies = AppDomain.CurrentDomain.GetAssemblies().OrderBy(a => a.FullName);
 
+builder.Logging.AddConsole();
 builder.Logging.AddFile(o => o.RootPath = builder.Environment.ContentRootPath);
 
 builder.Services.AddMappers();

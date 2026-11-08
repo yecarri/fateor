@@ -9,12 +9,15 @@ namespace Fateor.Setup
 
             services.AddSingleton<IMapper>(factory =>
                 {
+                    var loggerFactory = factory.GetRequiredService<ILoggerFactory>();
+
                     var config = new MapperConfiguration(x => x.AddProfiles(
                         new Profile[]
                         {
                             new Mappers.ModelMapper(),
                             new Application.Mappers.AutoMapperProfile()
-                        }));
+                        }), loggerFactory                                                                        
+                    );
 
                     return new Mapper(config);
                 });
